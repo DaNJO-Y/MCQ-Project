@@ -1,6 +1,8 @@
+from .user import User
 from App.database import db
+from flask_login import UserMixin
 
-class Teacher(User):
+class Teacher(User, UserMixin):
     __tablename__ = 'teacher'
     id = db.Column(db.Integer, primary_key=True)
     #add details here
