@@ -1,19 +1,39 @@
 from werkzeug.security import check_password_hash, generate_password_hash
 from App.database import db
+from sqlalchemy_serializer import SerializerMixin
 
-class User(db.Model):
+class User(db.Model, SerializerMixin):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
+    firstName = db.Column(db.String(120), nullable = False)
+    lastName = db.Column(db.String(120), nullable = False)
     username =  db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
 
-    def __init__(self, username, password):
+
+    #type of user
+    type = db.Column(db.String(120))
+
+    __mapper_args__={
+        'polymorphic_identity': 'user',
+        'polymorphic_on': 'type'
+    }
+
+    def __init__(self, firstName, lastName, username, password, email):
+        self.firstName = firstName
+        self.lastName = lastName
         self.username = username
         self.set_password(password)
-
+        self.email = email
+        
     def get_json(self):
         return{
             'id': self.id,
-            'username': self.username
+            'firstName':self.firstName,
+            'lastName':self.lastName,
+            'username': self.username,
+            'email': self.email
         }
 
     def set_password(self, password):
@@ -24,3 +44,4 @@ class User(db.Model):
         """Check hashed password."""
         return check_password_hash(self.password, password)
 
+# pip install sqlalchemy-serializer
