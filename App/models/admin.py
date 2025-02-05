@@ -1,6 +1,8 @@
+from .user import User
 from App.database import db
+from flask_login import UserMixin
 
-class Admin(User):
+class Admin(User, UserMixin):
     __tablename__ = 'admin'
     id = db.Column(db.Integer, primary_key=True)
     #add details here
