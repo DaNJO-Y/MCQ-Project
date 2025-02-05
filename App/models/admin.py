@@ -4,7 +4,7 @@ from flask_login import UserMixin
 
 class Admin(User, UserMixin):
     __tablename__ = 'admin'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     #add details here
 
     __mapper_args__ = {
