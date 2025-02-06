@@ -44,4 +44,10 @@ class User(db.Model, SerializerMixin):
         """Check hashed password."""
         return check_password_hash(self.password, password)
 
+    def __repr__(self):
+        return (
+            f"User-ID(userId={self.id}, firstName='{self.firstName}', "
+            f"lastName='{self.lastName}', email='{self.email}', username='{self.username}')"
+        )
+
 # pip install sqlalchemy-serializer

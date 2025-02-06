@@ -8,11 +8,11 @@ class Admin(User, UserMixin):
     #add details here
 
     __mapper_args__ = {
-        'polymorphic_identity': 'admin'
+        'polymorphic_identity': 'Admin'
     }
 
     def __init__(self, firstName, lastName, username, password, email):
-        super().__init__(firstName, lastName, username, password, email, type='admin')
+        super().__init__(firstName, lastName, username, password, email)
 
     def get_json(self):
         return{
@@ -21,5 +21,11 @@ class Admin(User, UserMixin):
             'lastName' :self.lastName,
             'email':self.email
         }
+
+    def __repr__(self):
+        return (
+            f"User-ID(userId={self.id}, firstName='{self.firstName}', "
+            f"lastName='{self.lastName}', email='{self.email}', username='{self.username}')"
+        )
 
    
