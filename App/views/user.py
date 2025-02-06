@@ -16,7 +16,7 @@ user_views = Blueprint('user_views', __name__, template_folder='../templates')
 def get_user_page():
     users = get_all_users()
     return render_template('users.html', users=users)
-
+#create a user
 @user_views.route('/users', methods=['POST'])
 def create_user_action():
     data = request.form

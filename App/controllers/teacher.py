@@ -7,11 +7,19 @@ def create_teacher(firstName, lastName, username, password, email):
     db.session.commit()
     return newteacher
 
+def is_teacher(id):
+    user = get_teacher(id)
+    if not user:
+        return None
+    user_type = user.type
+    if user_type == "teacher":
+        return user     
+
 def get_teacher_by_username(username):
     return Teacher.query.filter_by(username=username).first()
 
 def get_teacher(id):
-    return teacher.query.get(id)
+    return Teacher.query.get(id)
 
 def get_teacher_json(id):
     teacher = Teacher.query.get(id)
