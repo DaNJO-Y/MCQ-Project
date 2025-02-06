@@ -13,6 +13,14 @@ def get_admin_by_username(username):
 def get_admin(id):
     return Admin.query.get(id)
 
+def is_admin(id):
+    user = get_admin(id)
+    if not user:
+        return None
+    user_type = user.type
+    if user_type == "Admin":
+        return user 
+
 def get_admin_json(id):
     admin = Admin.query.get(id)
     return admin.get_json()
