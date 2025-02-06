@@ -12,7 +12,7 @@ class Teacher(User, UserMixin):
     }
 
     def __init__(self, firstName, lastName, username, password, email):
-        super().__init__(firstName, lastName, username, password, email, type='teacher')
+        super().__init__(firstName, lastName, username, password, email)
 
     def get_json(self):
         return{
