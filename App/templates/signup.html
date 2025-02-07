@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+
+{% block title %}Flask MVC App{% endblock %}
+{% block page %}Flask MVC App{% endblock %}
+
+{{ super() }}
+
+{%block styles%}
+
+.container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
+ 	top: 9px;
+	left: 9px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: white;
+}
+
+{%endblock%}
+
+{% block content %}
+    {% if is_authenticated %}
+        <p> Welcome {{current_user.username}} </p>
+    {% endif %}
+    <p>Signup</p>
+    <form method="POST" action="/signup">
+       
+      <label for="first-name">Your First Name</label>
+      <input type="text" name="first_name" id="first_name" value="{{ request.form['first-name'] }}" class="form-control" required>
+      <label for="first-name">Your Last Name</label>
+      <input type="text" name="last_name" id="last_name" value="{{ request.form['last-name'] }}" class="form-control" required>
+      <label for="username">Your Username</label>
+      <input type="text" name="username" id="username" value="{{ request.form['username'] }}" class="form-control" required>   
+      <label for="email">Enter your email:</label>
+      <input type="email" id="email" name="email" value="{{ request.form['email'] }}">
+      <label for="pwd">Password:</label><br>
+      <input type="password" id="pwd" name="pwd">
+      <!-- <label><input type="radio" name="users" value="Admin" >Admin</label><br>
+      <label><input type="radio" name="users" value="Teacher"> Teacher</label>
+       -->
+      <label class="container">Admin
+        <input type="radio" checked="checked" name="radio" value="admin">
+        <span class="checkmark"></span>
+      </label>
+      <label class="container">Teacher
+        <input type="radio" name="radio" value="teacher">
+        <span class="checkmark"></span>
+      </label>
+      <div>
+          <input type="submit" value="Sign Up" class="submit-btn">
+      </div>
+        
+    </form>
+    
+{% endblock %}
