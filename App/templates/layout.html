@@ -34,11 +34,11 @@
               <form class="right navbar-form" method="POST" action="/login" style="display: flex; flex-wrap: nowrap; align-items: center; margin-right: 10px;">
                   <div class="input-field" style="margin-right: 10px;">
                       <input placeholder="username" name="username" type="text" class="validate" required>
-                      <label for="username">username</label>
+                      <!-- <label for="username">username</label> -->
                   </div>
                   <div class="input-field" style="margin-right: 10px;">
                       <input placeholder="password" name="password" type="password" class="validate" required>
-                      <label for="password">Password</label>
+                      <!-- <label for="password">Password</label> -->
                   </div>
                   <button type="submit" class="btn waves-effect waves-light">Login</button>
               </form>
@@ -56,15 +56,15 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
-      //  M.AutoInit();
+       M.AutoInit();
 
-      //   {% with messages = get_flashed_messages() %}
-      //     {% if messages %}
-      //         {% for message in messages %}
-      //         M.toast({html: '{{message}}'})
-      //         {% endfor %}
-      //     {% endif %}
-      //   {% endwith %}
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              {% for message in messages %}
+              M.toast({html: '{{message}}'})
+              {% endfor %}
+          {% endif %}
+        {% endwith %}
        
     </script>
   </body>

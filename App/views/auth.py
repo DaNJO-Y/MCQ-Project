@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, jsonify, request, flash, send_from_directory, flash, redirect, url_for
-from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, set_access_cookies
-
+from flask import Flask, Blueprint, render_template, jsonify, request, flash, send_from_directory, flash, redirect, url_for
+from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, set_access_cookies, create_access_token, JWTManager
+from werkzeug.security import check_password_hash
+from flask_login import login_user, login_required, logout_user
 
 from.index import index_views
 
@@ -8,22 +9,16 @@ from App.controllers import *
 
 auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
 
-
-
-
 '''
 Page/Action Routes
 '''    
-
 @auth_views.route('/home')
 def home_page():
-  return render_template('layout.html')
+  return render_template('index.html')
 
 @auth_views.route('/base')
-@jwt_required()
 def base_page():
-  user = current_user
-  return render_template('home.html', user=user)
+  return render_template('home.html')
 
 @auth_views.route('/users', methods=['GET'])
 def get_user_page():
@@ -39,25 +34,42 @@ def identify_page():
 @auth_views.route('/login', methods=['POST'])
 def login_action():
     data = request.form
-    token = login(data['username'], data['password'])
-    
-    #response = redirect(request.referrer)
-    
-    if not token:
+    username = data['username']
+    password = data['password']
+    potential_teacher = get_teacher_by_username(username)
+    potential_admin = get_admin_by_username(username)
+    user = get_user_by_username(username)
+    if not potential_teacher == None:
+      if check_password_hash(potential_teacher.password,password):
+        response = redirect(url_for('auth_views.base_page'))
+        login_user(potential_teacher,remember=True)
+        flash('Login Successful')
+        return response
+    elif not potential_admin == None:
+      if check_password_hash(potential_admin.password,password):
+        response = redirect(url_for('auth_views.base_page'))
+        login_user(potential_admin,remember=True)
+        flash('Login Successful')
+        return response
+    elif not user == None:
+      if check_password_hash(user.password,password):
+        response = redirect(url_for('auth_views.base_page'))
+        login_user(user,remember=True)
+        flash('Login Successful')
+        return response
+    else:
         flash('Bad username or password given'), 401
         return redirect(url_for('auth_views.home_page'))
-    else:
-        flash('Login Successful')
-        response = redirect(url_for('auth_views.base_page'))
-        access_token = create_access_token(identity=user.i)
-        set_access_cookies(response, token) 
-    return response
+
 
 @auth_views.route('/logout', methods=['GET'])
+# @jwt_required()
+@login_required
 def logout_action():
-    response = redirect(request.referrer) 
+    response = redirect(url_for('auth_views.home_page')) 
     flash("Logged Out!")
     unset_jwt_cookies(response)
+    logout_user()
     return response
 
 @auth_views.route('/signup')
@@ -75,7 +87,6 @@ def signup_action_data():
   if data['radio'] == 'admin':
     newUser = create_admin(data['first_name'], data['last_name'], data['username'],data['pwd'], data['email'])
     response = redirect(url_for('auth_views.home_page'))
-  # newUser = User(email=data['email'], username=data['username'], password=data['password'])
   elif data['radio'] == 'teacher':
     newUser = create_teacher(data['first_name'], data['last_name'], data['username'],data['pwd'], data['email'])
     response = redirect(url_for('auth_views.home_page'))
