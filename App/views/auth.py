@@ -1,7 +1,7 @@
 from flask import Flask, Blueprint, render_template, jsonify, request, flash, send_from_directory, flash, redirect, url_for
 from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, set_access_cookies, create_access_token, JWTManager
 from werkzeug.security import check_password_hash
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 
 from.index import index_views
 
@@ -17,8 +17,19 @@ def home_page():
   return render_template('index.html')
 
 @auth_views.route('/base')
+@login_required
 def base_page():
-  return render_template('home.html')
+  user = current_user
+  if user.type == 'Admin':
+    title = "Admin"
+    message=f"Hello you are a {current_user.type}"
+  if user.type == 'teacher':
+    title = "Teacher"
+    message=f"Hello you are a {current_user.type}"
+  if user.type == 'user':
+    title = "User"
+    message=f"Hello you are a {current_user.type}"
+  return render_template('home.html',title=title, message=message, current_user=current_user,)
 
 @auth_views.route('/users', methods=['GET'])
 def get_user_page():
@@ -26,7 +37,8 @@ def get_user_page():
     return render_template('users.html', users=users)
 
 @auth_views.route('/identify', methods=['GET'])
-@jwt_required()
+# @jwt_required()
+@login_required
 def identify_page():
     return render_template('message.html', title="Identify", message=f"You are logged in as {current_user.id} - {current_user.username}")
     

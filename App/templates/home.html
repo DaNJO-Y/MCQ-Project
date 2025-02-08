@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
-{% block title %}Flask MVC App{% endblock %}
-{% block page %}Flask MVC App{% endblock %}
+{% block title %}{{title}}{% endblock %}
+{% block page %}{{title}}{% endblock %}
 
 {{ super() }}
 
@@ -14,7 +14,7 @@
         <li><a href="/logout">Logout</a></li>
       </ul>
 
-    <a href="/identify">Tea</a>
+      <p>{{message}}</p>
     
         
 {% endblock %}
