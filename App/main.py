@@ -4,7 +4,8 @@ from flask_uploads import DOCUMENTS, IMAGES, TEXT, UploadSet, configure_uploads
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import  FileStorage
-
+from flask_login import LoginManager
+from .models import User
 
 from App.database import init_db
 from App.config import load_config
@@ -30,6 +31,13 @@ def create_app(overrides={}):
     configure_uploads(app, photos)
     add_views(app)
     init_db(app)
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(app)
+    @login_manager.user_loader
+    def load_user(user_id):
+        # since the user_id is just the primary key of our user table, use it in the query for the user
+        return User.query.get(int(user_id))
     jwt = setup_jwt(app)
     setup_admin(app)
     @jwt.invalid_token_loader
