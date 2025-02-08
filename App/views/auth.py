@@ -104,15 +104,16 @@ def signup_action_data():
     response = redirect(url_for('auth_views.home_page'))
   else:
     newUser = create_user(data['first_name'], data['last_name'], data['username'],data['pwd'], data['email'])
+    response = redirect(url_for('auth_views.login_action'))
     try:
       db.session.add(newUser)
       db.session.commit()
       token = login_user(data['username'], data['password'])
-      response = redirect(url_for('auth_views.login_action'))
       set_access_cookies(response, token)
       flash('Account created!')
     except Exception:
       db.session.rollback()
+      app.logger.error(f"Error occurredd: {e}")
       flash("username or email already exists")  
       response = redirect(url_for('login'))
   return response
