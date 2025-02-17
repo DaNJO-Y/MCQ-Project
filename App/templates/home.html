@@ -7,6 +7,7 @@
 
 
 
+
 {% block content %}
     
     <h1>Welcome {{current_user.username}}</h1>
@@ -15,6 +16,18 @@
       </ul>
 
       <p>{{message}}</p>
+      {% if current_user.type == "Admin" %}
+        <p> Welcome {{current_user.username}} only an Admin can view this message </p>
+        <a href="/aHome">
+          <button>For Admin</button>
+        </a>
+      {% endif %}
+      <a href="/aHome">
+        <button>For Admin</button>
+      </a>
+      <button type="button" disabled>For Admin</button>
+      
+      
     
         
 {% endblock %}
