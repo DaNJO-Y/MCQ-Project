@@ -16,6 +16,21 @@ Page/Action Routes
 def home_page():
   return render_template('index.html')
 
+@auth_views.route('/admin_home')
+def admin_home_page():
+  return render_template('admin.html')
+
+@auth_views.route('/aHome')
+@login_required
+def is_admin():
+  user = current_user
+  if user.type != 'Admin':
+    flash("You are not authorized to view the admin page")
+    response = redirect(url_for('auth_views.base_page'))
+  if user.type == 'Admin':
+    response = redirect(url_for('auth_views.admin_home_page'))
+  return response
+
 @auth_views.route('/base')
 @login_required
 def base_page():
