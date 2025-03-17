@@ -6,7 +6,7 @@ class Teacher(User, UserMixin):
     __tablename__ = 'teacher'
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     exams = db.relationship('Exam', back_populates='teacher')
-    questions = db.relationship('Question', backref=db.backref('question_teacher',lazy='joined'))
+    questions = db.relationship('Question', backref=db.backref('teacher',lazy='joined'))
     #add details here
 
     __mapper_args__ = {
