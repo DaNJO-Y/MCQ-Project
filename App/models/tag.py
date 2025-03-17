@@ -5,7 +5,7 @@ from flask_login import UserMixin
 Question_Tag_Bridge= Table('question_tag_bridge',
         Column('id',Integer,primary_key=True),
         Column('tag_id',Integer, ForeignKey(tag.id)),
-        Column(question_id),Integer,ForeignKey(question.id))
+        Column('question_id'),Integer,ForeignKey(question.id))
 
 
 class Tag(db.Model):
