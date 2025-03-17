@@ -1,15 +1,9 @@
 from App.database import db
 from sqlalchemy.sql import func
 
-exam_questions = db.Table(
-    'exam_questions',
-    db.Column('exam_id', db.Integer, db.ForeignKey('exam.id'), primary_key=True),
-    db.Column('question_id', db.Integer, db.ForeignKey('question.id'), primary_key=True)
-)
-
 class Exam(db.Model):
     __tablename__ = 'exam'
-    
+
     id = db.Column(db.Integer, primary_key=True)
     teacher_id = db.Column(db.Integer, db.ForeignKey('teacher.id'), nullable=False)
     title = db.Column(db.String(120), unique=True, nullable=False)
@@ -17,8 +11,9 @@ class Exam(db.Model):
     date_created = db.Column(db.DateTime, default=func.now(), nullable=False)
 
     teacher = db.relationship('Teacher', back_populates='exams')
-    questions = db.relationship('Question', secondary=exam_questions, back_populates='exams')
+    exam_questions = db.relationship('ExamQuestion', back_populates='exam', cascade="all, delete-orphan")
     statistics = db.relationship('ExamStatistics', back_populates='exam', lazy=True, cascade="all, delete-orphan")
+
 
  
     def __init__(self, teacher_id, title, course_code):
