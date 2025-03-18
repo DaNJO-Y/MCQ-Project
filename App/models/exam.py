@@ -9,6 +9,7 @@ class Exam(db.Model):
     title = db.Column(db.String(120), unique=True, nullable=False)
     course_code = db.Column(db.String(10), nullable=False)
     date_created = db.Column(db.DateTime, default=func.now(), nullable=False)
+    saved = db.Column(db.Boolean, default=False)
 
     teacher = db.relationship('Teacher', back_populates='exams')
     exam_questions = db.relationship('ExamQuestion', back_populates='exam', cascade="all, delete-orphan")
@@ -20,6 +21,7 @@ class Exam(db.Model):
         self.teacher_id = teacher_id
         self.title = title
         self.course_code = course_code
+        self.saved = False
 
 
     def get_json(self):
@@ -29,6 +31,7 @@ class Exam(db.Model):
             "title": self.title,
             "course_code": self.course_code,
             "date_created": self.date_created.isoformat() if self.date_created else None,
+            "saved": self.saved,
             "questions": [question.id for question in self.questions],
             "statistics": [stat.get_json() for stat in self.statistics] if self.statistics else []
         }
