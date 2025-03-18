@@ -6,3 +6,4 @@ from .question import *
 from .exam import *
 from .exam_statistics import *
 from .option import *
+from .question_statistics import *

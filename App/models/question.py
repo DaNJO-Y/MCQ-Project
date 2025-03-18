@@ -8,7 +8,7 @@ class Question(db.Model):
     teacherId = db.Column(db.Integer, db.ForeignKey('teacher.id'))
     examId = db.Column(db.Integer, db.ForeignKey('exam.id'))
     correctOption = db.relationship('Option', backref=db.backref('question', lazy='joined'))
-    teacher = db.relationship('Teacher', backref=db.backref('question', lazy='joined'))
+    # teacher = db.relationship('Teacher', backref=db.backref('question', lazy='joined'))
     image = db.Column(db.String(300))
     difficulty = db.Column(db.String(200))
     tag = db.relationship('Tag', backref=db.backref('Tag', secondary='question_tag_bridge', backref=db.backref('question',lazy=True)))
