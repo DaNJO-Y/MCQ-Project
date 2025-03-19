@@ -1,5 +1,6 @@
 from App.database import db
 from sqlalchemy.sql import func
+from .exam_question import ExamQuestion
 
 class Exam(db.Model):
     __tablename__ = 'exam'
@@ -12,7 +13,7 @@ class Exam(db.Model):
     saved = db.Column(db.Boolean, default=False)
 
     teacher = db.relationship('Teacher', back_populates='exams')
-    exam_questions = db.relationship('ExamQuestion', back_populates='exam', cascade="all, delete-orphan")
+    questions = db.relationship('Question', secondary='exam_question', back_populates='exam')
     statistics = db.relationship('ExamStatistics', back_populates='exam', lazy=True, cascade="all, delete-orphan")
 
 
