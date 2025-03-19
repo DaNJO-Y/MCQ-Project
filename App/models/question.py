@@ -1,5 +1,6 @@
 from .teacher import Teacher
 from .exam import Exam
+from .tag import Tag
 from App.database import db
 
 class Question(db.Model):
@@ -7,15 +8,16 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     teacherId = db.Column(db.Integer, db.ForeignKey('teacher.id'))
     examId = db.Column(db.Integer, db.ForeignKey('exam.id'))
-    correctOption = db.relationship('Option', backref=db.backref('question', lazy='joined'))
+    # tagId = db.Column(db.Integer, db.ForeignKey('tag.id'))
+    correctOption = db.relationship('Option', backref=db.backref('question_correct_option', lazy='joined'))
     # teacher = db.relationship('Teacher', backref=db.backref('question', lazy='joined'))
     image = db.Column(db.String(300))
     difficulty = db.Column(db.String(200))
-    tag = db.relationship('Tag', backref=db.backref('Tag', secondary='question_tag_bridge', backref=db.backref('question',lazy=True)))
+    tag = db.relationship('Tag', secondary='question_tag_bridge', back_populates = 'question')
     courseCode = db.Column(db.String(200))
-    exams = db.relationship('Exam', backref=db.backref('question',lazy='joined'))
+    exams = db.relationship('Exam', secondary='exam_question', back_populates='questions', lazy='joined')
     statistics = db.relationship('QuestionStatistics', backref=db.backref('question_stats',lazy='joined'))
-    options = db.relationship('Option', backref=db.backref('question', lazy='joined'))
+    options = db.relationship('Option', back_populates = 'question')
     lastUsed = db.Column(db.Date, nullable = True)
 
     def __init__(self, teacherId, correctOption, difficulty, courseCode, options):

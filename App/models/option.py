@@ -7,7 +7,7 @@ class Option(db.Model):
     questionId = db.Column(db.Integer, db.ForeignKey('question.id'))
     body = db.Column(db.String(300))
     image = db.Column(db.String(300))
-    question = db.relationship('Question', backref=db.backref('option', lazy='joined'))
+    question = db.relationship('Question', back_populates='options')
 
     def __init__(self, questionId, body=None, image=None):
         self.questionId =questionId
