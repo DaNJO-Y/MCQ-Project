@@ -15,7 +15,7 @@ Flask-JWT-Extended==4.4.4
 Flask-Migrate==3.1.0
 Werkzeug==2.2.3
 gevent==22.10.2
-mysqlclient==2.2.6
+mysqlclient==2.1.1
 Flask-Admin==1.6.1
 sqlalchemy-serializer==1.4.12
 Flask-Login==0.6.3
