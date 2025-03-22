@@ -13,7 +13,7 @@ class Exam(db.Model):
     saved = db.Column(db.Boolean, default=False)
 
     teacher = db.relationship('Teacher', back_populates='exams')
-    questions = db.relationship('Question', secondary='exam_question', back_populates='exam')
+    exam_questions = db.relationship('Question', secondary='exam_question', back_populates='exams')
     statistics = db.relationship('ExamStatistics', back_populates='exam', lazy=True, cascade="all, delete-orphan")
 
 
