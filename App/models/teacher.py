@@ -5,7 +5,7 @@ from flask_login import UserMixin
 class Teacher(User, UserMixin):
     __tablename__ = 'teacher'
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    exams = db.relationship('Exam', back_populates='teacher')
+    my_exams = db.relationship('Exam', back_populates='teacher')
     questions = db.relationship('Question', backref=db.backref('created_by',lazy='joined'))
     #add details here
 
