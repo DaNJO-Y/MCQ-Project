@@ -15,10 +15,16 @@ class Question(db.Model):
     difficulty = db.Column(db.String(200))
     tag = db.relationship('Tag', secondary='question_tag_bridge', back_populates = 'question')
     courseCode = db.Column(db.String(200))
-    exams = db.relationship('Exam', secondary='exam_question', back_populates='questions', lazy='joined')
-    statistics = db.relationship('QuestionStatistics', backref=db.backref('question_stats',lazy='joined'))
-    options = db.relationship('Option', back_populates = 'question')
-    lastUsed = db.Column(db.Date, nullable = True)
+    belonging_exams = db.relationship('Exam', secondary='exam_question', back_populates='exam_questions', lazy='joined')
+    statistics = db.relationship('QuestionStatistics', backref=db.backref('question_statistics', lazy='joined'))
+    options = db.relationship('Option', back_populates='question')
+    lastUsed = db.Column(db.Date, nullable=True)
+# =======
+#     exams = db.relationship('Exam', secondary='exam_question', back_populates='questions', lazy='joined')
+#     statistics = db.relationship('QuestionStatistics', backref=db.backref('question_stats',lazy='joined'))
+#     options = db.relationship('Option', back_populates = 'question')
+#     lastUsed = db.Column(db.Date, nullable = True)
+# >>>>>>> main
 
     def __init__(self, teacherId, correctOption, difficulty, courseCode, options):
         self.teacherId = teacherId

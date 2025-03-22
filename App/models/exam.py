@@ -12,8 +12,8 @@ class Exam(db.Model):
     date_created = db.Column(db.DateTime, default=func.now(), nullable=False)
     saved = db.Column(db.Boolean, default=False)
 
-    teacher = db.relationship('Teacher', back_populates='exams')
-    questions = db.relationship('Question', secondary='exam_question', back_populates='exam')
+    teacher = db.relationship('Teacher', back_populates='my_exams')
+    exam_questions = db.relationship('Question', secondary='exam_question', back_populates='belonging_exams')
     statistics = db.relationship('ExamStatistics', back_populates='exam', lazy=True, cascade="all, delete-orphan")
 
 
