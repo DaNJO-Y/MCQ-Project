@@ -36,12 +36,10 @@ def get_all_teacher_json():
     teachers = [teacher.get_json() for teacher in teachers]
     return teachers
 
-def update_teacher(id, username, firstName, lastName, email):
+def update_teacher(id, username, email):
     teacher = get_teacher(id)
     if teacher:
         teacher.username = username
-        teacher.firstName = firstName
-        teacher.lastName = lastName
         teacher.email = email
         db.session.add(teacher)
         return db.session.commit()
