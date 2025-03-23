@@ -36,10 +36,29 @@ def get_all_teacher_json():
     teachers = [teacher.get_json() for teacher in teachers]
     return teachers
 
-def update_teacher(id, username):
+def update_teacher(id, username, email):
     teacher = get_teacher(id)
     if teacher:
         teacher.username = username
+        teacher.email = email
         db.session.add(teacher)
         return db.session.commit()
+    return None
+
+def createExam(title, questions, createdBy, dateCreated, courseCode):
+    pass
+
+def createQuestion(correctAnswer, options, createdBy, tag, courseCode):
+    pass
+
+def myExams(id):
+    teacher = get_teacher(id)
+    if teacher:
+        return teacher.exams
+    return None
+
+def myQuestions(id):
+    teacher = get_teacher(id)
+    if teacher:
+        return teacher.questions
     return None
