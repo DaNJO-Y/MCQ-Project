@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department of Preclinical Sciences MCQ Bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url(mcq.jpg);
+            background-repeat: no-repeat;
+            background-attachment: fixed; 
+            background-size: 100% 100%;
+            min-height: 100vh;
+           
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 1rem;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+        .profile-button {
+            display: flex;
+            align-items: center;
+            color: white;
+            transition: color 0.3s;
+        }
+        .profile-button:hover {
+            color: grey;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            margin-top: 0.5rem;
+            width: 12rem;
+            background-color: white;
+            border-radius: 0.375rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.25rem;
+        }
+        .button {
+            background-color: white;
+            color: #2b96ad;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            transition: opacity 0.3s;
+            font-size: 1.125rem;
+        }
+        .button:hover {
+            background-color: #e5e7eb;
+        }
+        .nav-button {
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s;
+            font-size: 1.125rem;
+        }
+        .nav-button:hover {
+            background-color: lightgrey;
+        }
+        #toggleNav {
+            position: fixed;
+            top: 5rem;
+            left: 1rem;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            color: #2b96ad;
+            transition: background-color 0.3s;
+        }
+        #toggleNav:hover {
+            background-color: #e5e7eb;
+        }
+        #sideNav {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0.5rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            width: 20%;
+            height: calc(100vh - 8rem);
+            transition: all 0.3s ease;
+        }
+        #mainContent {
+            flex: 1;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0.5rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-left: 2rem;
+            margin-right: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .question-bank-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #2b96ad;
+        }
+
+        /*.filters-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            margin-left:10%;
+        }
+
+        .filter-button {
+            background-color: lightgrey;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            width:200px;
+        }
+
+        .searchbar {
+            width: 50%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            margin-right:10%;
+        }
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+          vertical-align: top;
+        }*/
+        #maindiv{
+            background-color: white;
+            overflow: hidden;
+        }
+        #questiontitle {
+            width: 50%;
+            padding: 0.5rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.375rem;
+            margin-right:10%;
+        }
+        #questiontext {
+            border: 2px solid #d1d5db;
+            border-radius: 0.375rem;
+        }
+        .upload-container {
+            padding: 1rem; /* Padding around content */
+            border-radius: 8px; /* Rounded corners */
+            display: inline-block; /* Keeps it fitting its content */
+        }
+
+        .upload-container label {
+            cursor: pointer;
+            color: #3b82f6; /* Equivalent to text-blue-500 */
+            text-decoration: underline;
+            display: block; /* Makes the label take up full width */
+        }
+        .optioncontainer {
+            margin-bottom: 10px; /* mb-5 */
+            margin-left:10px;
+        }
+
+        .label {
+            display: block;
+            font-weight: 600; /* font-semibold */
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #D1D5DB; /* border-gray-300 */
+            border-radius: 0.25rem;
+            margin-top: 0.25rem; /* mt-1 */
+        }
+
+        .upload-btn {
+            margin-left: 0.5rem; /* ml-2 */
+        }
+
+        .flex-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.25rem; /* mb-5 */
+        }
+
+        .add-btn {
+            color: #3B82F6; /* text-blue-500 */
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+
+        .add-btn span {
+            font-size: 1.5rem; /* text-2xl */
+            margin-right: 0.25rem; /* mr-1 */
+        }
+        #option1{
+            width:50%;
+            border: 2px solid #d1d5db;
+        }
+        #correctanswer{
+            width:50%;
+            border: 2px solid #d1d5db;
+        }
+        .correctcontainer {
+            margin-bottom: 10px; /* mb-5 */
+            margin-left:10px;
+        }
+        .mb-4{
+            margin-left:10px;
+        }
+        #savebutton{
+            background-color:#2b96ad;
+            display:inline-block;
+            float:right;
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+        #savebutton:hover {
+            background-color: #e5e7eb;
+        }
+        #tagbutton{
+            background-color:#2b96ad;
+            display:inline-block;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+        #tagbutton:hover {
+            background-color: #e5e7eb;
+        }
+
+        /*editor toolbar*/
+        [role="toolbar"] .menu-popup {
+          position: relative;
+        }
+
+        [role="toolbar"] .menu-popup [role="menu"] {
+          padding: 0;
+          width: 9.5em;
+          border: 2px solid #ddd;
+          border-radius: 5px;
+          background-color: white;
+          display: none;
+          position: absolute;
+          margin: 0;
+          z-index: 1;
+        }
+
+        [role="toolbar"] .menu-popup [role="menu"].focus {
+          border-color: #005a9c;
+        }
+
+        [role="toolbar"] .menu-popup [role="menu"] li {
+          padding: 0;
+          margin: 0;
+          display: block;
+          text-align: left;
+          list-style: none;
+        }
+
+        [role="toolbar"] .menu-popup [role="menu"] [role="menuitemradio"] {
+          padding: 1px 2px;
+          outline: 0;
+          border: none;
+          border-radius: 0;
+        }
+
+        [role="toolbar"] .menu-popup [role="menu"] [role="menuitemradio"]::before {
+          content: url("../images/menuitemradio-unchecked.svg");
+        }
+
+        [role="toolbar"]
+          .menu-popup
+          [role="menu"]
+          [role="menuitemradio"][aria-checked="true"]::before {
+          content: url("../images/menuitemradio-checked.svg");
+        }
+
+        [role="toolbar"] .menu-popup [role="menu"] [role="menuitemradio"]:focus,
+        [role="toolbar"] .menu-popup [role="menu"] [role="menuitemradio"]:hover {
+          background: rgb(226 239 255);
+          border-top: 1px solid #005a9c;
+          border-bottom: 1px solid #005a9c;
+          padding-top: 0;
+          padding-bottom: 0;
+        }
+
+        [role="toolbar"] .menu-popup [role="menu"] [role="menuitemradio"]:focus {
+          border-color: #005a9c;
+        }
+        [role="toolbar"] {
+          border: 2px solid transparent;
+          border-radius: 5px;
+          padding: 6px;
+          height: 55px;
+          width: 1050px;
+          background-color: lightgrey;
+        }
+
+        [role="toolbar"].focus {
+          border-color: #005a9c;
+          border-width: 3px;
+          padding: 5px;
+        }
+
+        [role="toolbar"] .group {
+          padding: 0.25em;
+          display: block;
+          float: left;
+        }
+
+        [role="toolbar"] .group:not(:first-child) {
+          margin-left: 0.75em;
+        }
+
+        [role="toolbar"] button,
+        [role="toolbar"] [role="radio"],
+        [role="toolbar"] label,
+        [role="toolbar"] .spinbutton,
+        [role="toolbar"] a,
+        [role="toolbar"] .input {
+          border: 1px solid rgb(255 255 255);
+          outline: none;
+          display: inline-block;
+          padding: 6px 12px;
+          border-radius: 5px;
+          text-align: center;
+          background: rgb(255 255 255);
+          color: #222428;
+          font-size: 14px;
+          line-height: 1.5em;
+          margin-right: 0.25em;
+        }
+
+        [role="toolbar"] button.popup {
+          position: relative;
+        }
+
+        [role="toolbar"] button .popup-label {
+          display: block;
+          width: initial;
+          border: 1px solid white;
+          padding: 2px 4px;
+          border-radius: 5px;
+          position: absolute;
+          top: -30000em;
+          background-color: black;
+          color: white;
+          font-weight: normal;
+        }
+
+        [role="toolbar"] button .popup-label.show {
+          text-align: center;
+          top: -2.5em;
+        }
+
+        [role="toolbar"] button .popup-label::after,
+        [role="toolbar"] button .popup-label::before {
+          top: 100%;
+          left: 50%;
+          border: solid transparent;
+          content: " ";
+          height: 0;
+          width: 0;
+          position: absolute;
+          pointer-events: none;
+        }
+
+        [role="toolbar"] button .popup-label::after {
+          border-color: rgb(0 0 0 / 0%);
+          border-top-color: #000;
+          border-width: 10px;
+          margin-left: -10px;
+        }
+
+        [role="toolbar"] button .popup-label::before {
+          border-color: rgb(255 255 255 / 0%);
+          border-top-color: #fff;
+          border-width: 12px;
+          margin-left: -12px;
+        }
+
+        [role="toolbar"] button[aria-pressed="true"],
+        [role="toolbar"] [role="radio"][aria-checked="true"] {
+          border-color: #555;
+          font-weight: bold;
+          background-color: #f4f4f4;
+        }
+
+        [role="toolbar"] button[aria-disabled="true"] {
+          color: #889;
+          cursor: not-allowed;
+        }
+
+        [role="toolbar"] button[aria-disabled="true"]:focus {
+          border-color: #005a9c;
+        }
+
+        [role="toolbar"] button::-moz-focus-inner {
+          border: 0;
+        }
+
+        [role="toolbar"] button:focus,
+        [role="toolbar"] [role="radio"]:focus,
+        [role="toolbar"] .spinbutton:focus,
+        [role="toolbar"] .focus,
+        [role="toolbar"] a:focus {
+          border-width: 2px;
+          border-color: #005a9c;
+          background: rgb(226 239 255);
+          padding: 5px 11px;
+        }
+
+        [role="toolbar"] button:hover,
+        [role="toolbar"] [role="radio"]:hover,
+        [role="toolbar"] .spinbutton:hover,
+        [role="toolbar"] label.input:hover,
+        [role="toolbar"] a:hover {
+          border-color: #005a9c;
+          background: rgb(226 239 255);
+        }
+
+        [role="toolbar"] [role="spinbutton"] .value,
+        [role="toolbar"] [role="spinbutton"] .increase,
+        [role="toolbar"] [role="spinbutton"] .decrease {
+          width: 60px;
+          display: inline-block;
+          padding: 0;
+          margin: 0;
+        }
+
+        [role="toolbar"] button[aria-haspopup] span {
+          float: right;
+        }
+
+        [role="toolbar"] button[aria-haspopup] span::after {
+          content: url("../images/pulldown-icon.svg");
+        }
+
+        [role="toolbar"] button[aria-haspopup]:focus span::after {
+          content: url("../images/pulldown-icon-focus.svg");
+        }
+
+        [role="toolbar"] [role="spinbutton"] .increase,
+        [role="toolbar"] [role="spinbutton"] .decrease {
+          width: 20px;
+          border: 1px solid #ececea;
+          border-radius: 3px;
+          background-color: #ececea;
+        }
+
+        [role="toolbar"] [role="spinbutton"] .increase:hover,
+        [role="toolbar"] [role="spinbutton"] .decrease:hover,
+        [role="toolbar"] [role="spinbutton"]:focus .increase,
+        [role="toolbar"] [role="spinbutton"]:focus .decrease {
+          fill: #005a9c;
+          border-color: #005a9c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="text-2xl font-bold">
+                <a href="homepage.html" class="text-white hover:text-gray-500 transition duration-300">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+            <button class="button">New Question</button>
+            <button class="button">New Exam</button>
+            <div class="relative">
+                <button id="profileButton" class="profile-button">
+                    <i class="fas fa-user-circle text-3xl"></i>
+                    <span class="ml-2">Your Profile</span>
+                </button>
+                <div id="profileDropdown" class="dropdown-menu">
+                    <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex">
+            <button id="toggleNav"><i class="fas fa-angle-left"></i></button>
+            <nav id="sideNav">
+                <ul class="space-y-4">
+                    <li><button class="nav-button"><i class="fas fa-file-alt mr-2"></i> My Questions</button></li>
+                    <li><button class="nav-button"><i class="fas fa-file-alt mr-2"></i> My Exams</button></li>
+                    <li><button class="nav-button"><i class="fas fa-file-upload mr-2"></i> Import Questions</button></li>
+                    <li><button class="nav-button"><i class="fas fa-question-circle mr-2"></i> Help</button></li>
+                </ul>
+            </nav>
+
+            <main id="mainContent">
+                <h1 class="question-bank-title">
+                    Create Question
+                </h1>
+                <!-- Question Content -->
+                <div id="maindiv">
+                    <div class="format" role="toolbar" aria-label="Text Formatting" aria-controls="textarea1">
+                      <div class="group characteristics">
+                        <button type="button" class="item bold popup" aria-pressed="false" value="bold" tabindex="0">
+                          <span class="fas fa-bold" aria-hidden="true"></span>
+                          <span class="popup-label">Bold</span>
+                        </button>
+                        <button type="button" class="item italic popup" aria-pressed="false" value="italic" tabindex="-1">
+                          <span class="fas fa-italic" aria-hidden="true"></span>
+                          <span class="popup-label">Italic</span>
+                        </button>
+                        <button type="button" class="item underline popup" aria-pressed="false" value="underline" tabindex="-1">
+                          <span class="fas fa-underline" aria-hidden="true"></span>
+                          <span class="popup-label">Underline</span>
+                        </button>
+                      </div>
+                      <div class="group" role="radiogroup" aria-label="Text Alignment">
+                        <button type="button" role="radio" class="item align-left popup" aria-checked="true" tabindex="-1">
+                          <span class="fas fa-align-left" aria-hidden="true"></span>
+                          <span class="popup-label">Text Align Left</span>
+                        </button>
+                        <button type="button" role="radio" class="item align-center popup" aria-checked="false" tabindex="-1">
+                          <span class="fas fa-align-center" aria-hidden="true"></span>
+                          <span class="popup-label">Text Align Center</span>
+                        </button>
+                        <button type="button" role="radio" class="item align-right popup" aria-checked="false" tabindex="-1">
+                          <span class="fas fa-align-right" aria-hidden="true"></span>
+                          <span class="popup-label">Text Align Right</span>
+                        </button>
+                      </div>
+                      <div class="group">
+                        <button type="button" class="item copy" aria-disabled="true" tabindex="-1">Copy</button>
+                        <button type="button" class="item paste" aria-disabled="true" tabindex="-1">Paste</button>
+                        <button type="button" class="item cut" aria-disabled="true" tabindex="-1">Cut</button>
+                      </div>
+                      <div class="menu-popup group">
+                        <button type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menu1" class="item menu-button" tabindex="-1" aria-label="Font: Sans-serif" style="text-align: left; width: 140px; font-family: sans-serif">
+                          SANS-SERIF
+                          <span></span>
+                        </button>
+                        <ul role="menu" id="menu1" aria-label="Font Family">
+                          <li role="menuitemradio" aria-checked="true" style="font-family: sans-serif">Sans-serif</li>
+                          <li role="menuitemradio" aria-checked="false" style="font-family: serif">Serif</li>
+                          <li role="menuitemradio" aria-checked="false" style="font-family: monospace">Monospace</li>
+                          <li role="menuitemradio" aria-checked="false" style="font-family: fantasy">Fantasy</li>
+                          <li role="menuitemradio" aria-checked="false" style="font-family: cursive">Cursive</li>
+                        </ul>
+                      </div>
+
+                      <div class="group">
+                        <div class="item spinbutton" role="spinbutton" tabindex="-1" aria-valuenow="14" aria-valuetext="14pt" aria-valuemin="8" aria-valuemax="40" aria-label="Font size in points">
+                          <span class="value">14pt</span>
+                          <span class="increase">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12">
+                              <polygon class="increase" fill="#333" points="0,12 11,12 6,2"></polygon>
+                            </svg>
+                          </span>
+                          <span class="decrease">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12">
+                              <polygon class="decrease" fill="#333" points="0,2 11,2 6,12"></polygon>
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="group">
+                        <label class="input"><input id="checkbox" class="item nightmode" type="checkbox" tabindex="-1"> Night Mode</label>
+                        <a id="link" class="item link" href="../help.html" tabindex="-1">Help</a>
+                      </div>
+                    </div>
+                    <label for="textarea1" class="hidden">Text Sample</label><br>
+                    <div class="mb-4">
+                        <h2 class="font-semibold">Question Title:</h2>
+                        <input id="questiontitle" type="text" class="p-2 border rounded" placeholder="Enter question title">
+                    </div>
+                    <div class="mb-4 flex">
+                        <div class="w-2/3 pr-2">
+                            <h2 class="font-semibold">Question Text</h2>
+                            <textarea id="questiontext" class="w-full p-2 border rounded" rows="4" placeholder="Enter question text"></textarea>
+                        </div>
+                        <div class="w-1/3 pl-2">
+                            <h2 class="font-semibold">Image 1</h2>
+                            <div class="border rounded p-4 flex items-center justify-center">
+                                <div class="upload-container">
+                                    <label for="file-upload">+ Add Image</label>
+                                    <input type="file" id="file-upload" class="hidden" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="optioncontainer">
+                        <label for="option1" class="label">Option 1:</label>
+                        <div class="input-container">
+                            <input type="text" id="option1" class="text-input">
+                            <button class="upload-btn">
+                                <div class="upload-container">
+                                    <label for="file-upload">+ Add Image</label>
+                                    <input type="file" id="file-upload" class="hidden" />
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex-container">
+                        <button class="add-btn">
+                            <span>+</span>
+                            Add Answer Options
+                        </button>
+                    </div>
+                    
+                    <div class="correctcontainer">
+                        <label for="correctanswer" class="label">Correct Answer</label>
+                        <div class="input-container">
+                            <input type="text" id="correctanswer" class="text-input">
+                            <button class="upload-btn">
+                                <div class="upload-container">
+                                    <label for="file-upload">+ Add Image</label>
+                                    <input type="file" id="file-upload" class="hidden" />
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    <button id="tagbutton" class="text-white py-1 px-4 rounded">Add Tags</button>
+                    <button id="savebutton" class="text-white py-1 px-4 rounded">Save</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const toggleNav = document.getElementById('toggleNav');
+        const sideNav = document.getElementById('sideNav');
+        let isNavOpen = true;
+
+        toggleNav.addEventListener('click', () => {
+            isNavOpen = !isNavOpen;
+
+            if (isNavOpen) {
+                sideNav.style.marginLeft = '0';
+                sideNav.style.width = '25%';
+                mainContent.style.marginLeft = '20px';
+                mainContent.style.marginRight = '2rem';
+            } else {
+                sideNav.style.marginLeft = '-25%';
+                sideNav.style.width = '0';
+                mainContent.style.marginLeft = '22rem';
+                mainContent.style.marginRight = '2rem';
+            }
+        });
+    </script>
+</body>
+</html>
