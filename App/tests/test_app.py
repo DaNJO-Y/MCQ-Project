@@ -3,15 +3,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from App.main import create_app
 from App.database import db, create_db
-from App.models import User
-from App.controllers import (
-    create_user,
-    get_all_users_json,
-    login,
-    get_user,
-    get_user_by_username,
-    update_user
-)
+from App.models import *
+from App.controllers import *
 
 
 LOGGER = logging.getLogger(__name__)
@@ -41,6 +34,31 @@ class UserUnitTests(unittest.TestCase):
         password = "mypass"
         user = User("bob", password)
         assert user.check_password(password)
+
+class TeacherUnitTests(unittest.TestCase):
+    def test_new_teacher(self):
+        teacher = Teacher("Terry", "Wu", "Terry234", "terpass", "terry@email.com")
+        assert teacher.firstName == "Terry"
+        assert teacher.lastName == "Wu"
+        assert teacher.check_password("terpass")
+        assert teacher.email == "terry@email.com"
+
+    def test_get_json(self):
+        teacher = Teacher("Terry", "Wu", "Terry234", "terpass", "terry@email.com")
+        teacher_json = teacher.get_json()
+        self.assertDictEqual(teacher_json, {"id":None, "firstName":"Terry", "lastName":"Wu", "userName":"Terry234", "email":"terry@email.com"})
+
+    def test_hashed_password(self):
+        password = "terpass"
+        hashed = generate_password_hash(password, method='sha256')
+        teacher = Teacher("Terry", "Wu", "Terry234", password, "terry@email.com")
+        assert teacher.password != password
+
+    def test_check_password(self):
+        password = "terpass"
+        teacher = Teacher("Terry", "Wu", "Terry234", password, "terry@email.com")
+        assert teacher.check_password(password)
+    
 
 '''
     Integration Tests
