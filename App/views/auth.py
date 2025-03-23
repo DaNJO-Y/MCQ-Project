@@ -55,7 +55,7 @@ def login_action():
         return response
     else:
         flash('Bad username or password given'), 401
-        return redirect(url_for('auth_views.login'))
+        return redirect(url_for('auth_views.login_action'))
 
 
 @auth_views.route('/logout', methods=['GET'])
