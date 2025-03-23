@@ -12,28 +12,28 @@ LOGGER = logging.getLogger(__name__)
 '''
    Unit Tests
 '''
-class UserUnitTests(unittest.TestCase):
+# class UserUnitTests(unittest.TestCase):
 
-    def test_new_user(self):
-        user = User("bob", "bobpass")
-        assert user.username == "bob"
+#     def test_new_user(self):
+#         user = User("bob", "bobpass")
+#         assert user.username == "bob"
 
-    # pure function no side effects or integrations called
-    def test_get_json(self):
-        user = User("bob", "bobpass")
-        user_json = user.get_json()
-        self.assertDictEqual(user_json, {"id":None, "username":"bob"})
+#     # pure function no side effects or integrations called
+#     def test_get_json(self):
+#         user = User("bob", "bobpass")
+#         user_json = user.get_json()
+#         self.assertDictEqual(user_json, {"id":None, "username":"bob"})
     
-    def test_hashed_password(self):
-        password = "mypass"
-        hashed = generate_password_hash(password, method='sha256')
-        user = User("bob", password)
-        assert user.password != password
+#     def test_hashed_password(self):
+#         password = "mypass"
+#         hashed = generate_password_hash(password, method='sha256')
+#         user = User("bob", password)
+#         assert user.password != password
 
-    def test_check_password(self):
-        password = "mypass"
-        user = User("bob", password)
-        assert user.check_password(password)
+#     def test_check_password(self):
+#         password = "mypass"
+#         user = User("bob", password)
+#         assert user.check_password(password)
 
 class TeacherUnitTests(unittest.TestCase):
     def test_new_teacher(self):
@@ -74,24 +74,59 @@ def empty_db():
     db.drop_all()
 
 
-def test_authenticate():
-    user = create_user("bob", "bobpass")
-    assert login("bob", "bobpass") != None
+# def test_authenticate():
+#     user = create_user("bob", "bobpass")
+#     assert login("bob", "bobpass") != None
 
-class UsersIntegrationTests(unittest.TestCase):
+class TeachersIntegrationTests(unittest.TestCase):
+    def test_create_teacher(self):
+        teacher = create_teacher("Terry", "Wu", "Terry234", "terpass", "terry@email.com")
+        assert teacher.firstName == "Terry"
+        assert teacher.lastName == "Wu"
+        assert teacher.check_password("terpass")
+        assert teacher.email == "terry@email.com"
+    
+    def test_get_all_teachers_json(self):
+        teacher = create_teacher("Wendy", "Frey", "Wen25", "wenderpass", "wendy@email.com")
+        teachers_json = get_all_teacher_json()
+        self.assertListEqual([
+            {'id':1,
+            'firstName':"Terry",
+            'lastName' :"Wu",
+            'userName' : "Terry234",
+            'email':"terry@email.com"}, 
 
-    def test_create_user(self):
-        user = create_user("rick", "bobpass")
-        assert user.username == "rick"
+            {'id':2, 
+            'firstName':"Wendy",
+            'lastName' :"Frey",
+            'userName' : "Wen25",
+            'email':"wendy@email.com"}
+            ], teachers_json)
 
-    def test_get_all_users_json(self):
-        users_json = get_all_users_json()
-        self.assertListEqual([{"id":1, "username":"bob"}, {"id":2, "username":"rick"}], users_json)
+    def test_update_teacher(self):
+        update_teacher(2, "WenWarrior", "Wen@email.com")
+        teacher = get_teacher(2)
+        assert teacher.username == "WenWarrior"
+        assert teacher.email == "Wen@email.com"
 
-    # Tests data changes in the database
-    def test_update_user(self):
-        update_user(1, "ronnie")
-        user = get_user(1)
-        assert user.username == "ronnie"
+
+
+
+
+# class UsersIntegrationTests(unittest.TestCase):
+
+#     def test_create_user(self):
+#         user = create_user("rick", "bobpass")
+#         assert user.username == "rick"
+
+#     def test_get_all_users_json(self):
+#         users_json = get_all_users_json()
+#         self.assertListEqual([{"id":1, "username":"bob"}, {"id":2, "username":"rick"}], users_json)
+
+#     # Tests data changes in the database
+#     def test_update_user(self):
+#         update_user(1, "ronnie")
+#         user = get_user(1)
+#         assert user.username == "ronnie"
         
 
