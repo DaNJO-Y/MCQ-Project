@@ -64,5 +64,20 @@ def add_tag(id,tag):
         return db.session.commit()
     return None
 
+def toggle_isCorrectOption(id, option_id):
+    question = get_question(id)
+    if question:
+        for option in question.options:
+            if option.id == option_id:
+                option.toggle()
+                db.session.commit()
+                return {"message": "Option is_correct toggled"} 
+        return {"error": "Option not found for this question"} 
+    return {"error": "Question not found"}
+        
+    
+
+    
+
 
 

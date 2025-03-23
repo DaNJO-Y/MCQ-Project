@@ -21,6 +21,7 @@ class Teacher(User, UserMixin):
             'id': self.id,
             'firstName':self.firstName,
             'lastName' :self.lastName,
+            'userName' : self.username,
             'email':self.email
     }
 
@@ -28,6 +29,7 @@ class Teacher(User, UserMixin):
         return (
             f"FirstName={self.firstName}, "
             f"LastName={self.lastName}, "
+            f"UserName={self.username},"
             f"Email={self.email}"
         )
     
@@ -35,5 +37,6 @@ class Teacher(User, UserMixin):
         return (
             f"FirstName: '{self.firstName}' | "
             f"LastName: '{self.lastName}'  |"
+            f"UserName: '{self.username}' |"
             f"Email={self.email}"
         )
