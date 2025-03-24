@@ -35,28 +35,21 @@ def login_action():
     potential_teacher = get_teacher_by_username(username)
     potential_admin = get_admin_by_username(username)
     user = get_user_by_username(username)
-    if not potential_teacher == None:
-      if check_password_hash(potential_teacher.password,password):
-        response = redirect(url_for('auth_views.homePage'))
+    if potential_teacher and check_password_hash(potential_teacher.password,password):
         login_user(potential_teacher,remember=True)
-        flash('Login Successful')
-        return response
-    elif not potential_admin == None:
-      if check_password_hash(potential_admin.password,password):
-        response = redirect(url_for('auth_views.homePage'))
+        flash(f'Login Successful! Welcome {user.firstName}')
+        return redirect(url_for('auth_views.homePage'))
+    elif potential_admin and check_password_hash(potential_admin.password,password):
         login_user(potential_admin,remember=True)
-        flash('Login Successful')
-        return response
-    elif not user == None:
-      if check_password_hash(user.password,password):
-        response = redirect(url_for('auth_views.homePage'))
+        flash(f'Login Successful! Welcome {user.firstName}')
+        return redirect(url_for('auth_views.homePage'))
+    elif user and check_password_hash(user.password,password):
         login_user(user,remember=True)
-        flash('Login Successful')
-        return response
+        flash(f'Login Successful! Welcome {user.firstName}')
+        return redirect(url_for('auth_views.homePage'))
     else:
-        flash('Bad username or password given'), 401
-        return redirect(url_for('auth_views.login_action'))
-
+        flash('Bad username or password given')
+        return render_template('login.html'), 401
 
 @auth_views.route('/logout', methods=['GET'])
 # @jwt_required()
@@ -88,7 +81,7 @@ def signup_action_data():
     response = redirect(url_for('auth_views.home_page'))
   else:
     newUser = create_user(data['first_name'], data['last_name'], data['username'],data['pwd'], data['email'])
-    response = redirect(url_for('auth_views.login_action'))
+    response = redirect(url_for('auth_views.home_page'))
     try:
       db.session.add(newUser)
       db.session.commit()

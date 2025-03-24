@@ -6,6 +6,13 @@
     <title>Department of Preclinical Sciences MCQ Bank</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
+    
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
+    
     <style>
         body {
             background-image: url(mcq.jpg);
@@ -100,7 +107,19 @@
             margin-right: 2rem;
             transition: all 0.3s ease;
         }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            bottom: auto; /* Override Materialize's bottom positioning */
+            left: auto; /* Override Materialize's left positioning */
+            transform: none !important; /* Prevent Materialize's default transform */
+            /* color: white ;  */
+            color: #2b96ad;
+            /* background-color: rgba(0, 0, 0, 0.7) ; */
+        }
     </style>
+  
 </head>
 <body>
     <div class="container">
@@ -149,8 +168,39 @@
             </main>
         </div>
     </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     {% with messages = get_flashed_messages() %}
+        //         {% if messages %}
+        //             {% for message in messages %}
+        //                 M.toast({html: '{{message}}'});
+        //             {% endfor %}
+        //         {% endif %}
+        //     {% endwith %}
+        // });
+
+        M.AutoInit();
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              {% for message in messages %}
+              M.toast({html: '{{message}}'})
+              {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+
+        // M.AutoInit();
+
+        // {% with messages = get_flashed_messages() %}
+        //   {% if messages %}
+        //       {% for message in messages %}
+        //       M.toast({html: '{{message}}'})
+        //       {% endfor %}
+        //   {% endif %}
+        // {% endwith %}
+
         const toggleNav = document.getElementById('toggleNav');
         const sideNav = document.getElementById('sideNav');
         let isNavOpen = true;
