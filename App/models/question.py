@@ -8,6 +8,7 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     teacherId = db.Column(db.Integer, db.ForeignKey('teacher.id'))
     examId = db.Column(db.Integer, db.ForeignKey('exam.id'))
+    text = db.Column(db.String(500))
     # correctOption = db.relationship('Option', backref=db.backref('question_correct_option', lazy='joined'))#where is question_correct_option?
     image = db.Column(db.String(300))
     difficulty = db.Column(db.String(200))
@@ -18,9 +19,10 @@ class Question(db.Model):
     options = db.relationship('Option', back_populates='question')
     lastUsed = db.Column(db.Date, nullable=True)
 
-    def __init__(self, teacherId, difficulty, courseCode, options):
+    def __init__(self, teacherId, text, difficulty, courseCode, options):
         self.teacherId = teacherId
         # self.correctOption = correctOption
+        self.text = text
         self.difficulty = difficulty
         self.courseCode = courseCode
         self.options = options
@@ -29,8 +31,9 @@ class Question(db.Model):
         return {
             "id": self.id,
             "teacherid": self.teacherId,
+            "text": self.text,
             # "correct option": self.correctOption,
             "difficulty": self.difficulty,
             "course code": self.courseCode,
-            "options": [options for op in self.options]
+            "options": [op.get_json() for op in self.options]
         }

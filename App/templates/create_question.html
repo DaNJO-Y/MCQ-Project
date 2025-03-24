@@ -157,6 +157,20 @@
             border: 2px solid #d1d5db;
             border-radius: 0.375rem;
         }
+        #difficultytitle {
+            width: 50%;
+            padding: 0.5rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.375rem;
+            margin-right:10%;
+        }
+        #courseCodetitle {
+            width: 50%;
+            padding: 0.5rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.375rem;
+            margin-right:10%;
+        }
         .upload-container {
             padding: 1rem; /* Padding around content */
             border-radius: 8px; /* Rounded corners */
@@ -475,6 +489,17 @@
           fill: #005a9c;
           border-color: #005a9c;
         }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            bottom: auto; /* Override Materialize's bottom positioning */
+            left: auto; /* Override Materialize's left positioning */
+            transform: none !important; /* Prevent Materialize's default transform */
+            /* color: white ;  */
+            color: #2b96ad;
+            /* background-color: rgba(0, 0, 0, 0.7) ; */
+        }
     </style>
 </head>
 <body>
@@ -587,27 +612,37 @@
                       </div>
                     </div>
                     <label for="textarea1" class="hidden">Text Sample</label><br>
-                    <div class="mb-4">
+                    <form id="questionForm" enctype="multipart/form-data">
+                      <div class="mb-4">
                         <h2 class="font-semibold">Question Title:</h2>
                         <input id="questiontitle" type="text" class="p-2 border rounded" placeholder="Enter question title">
                     </div>
                     <div class="mb-4 flex">
                         <div class="w-2/3 pr-2">
                             <h2 class="font-semibold">Question Text</h2>
-                            <textarea id="questiontext" class="w-full p-2 border rounded" rows="4" placeholder="Enter question text"></textarea>
+                            <textarea id="questiontext" name="text" class="w-full p-2 border rounded" rows="4" placeholder="Enter question text"></textarea>
                         </div>
                         <div class="w-1/3 pl-2">
                             <h2 class="font-semibold">Image 1</h2>
                             <div class="border rounded p-4 flex items-center justify-center">
                                 <div class="upload-container">
                                     <label for="file-upload">+ Add Image</label>
-                                    <input type="file" id="file-upload" class="hidden" />
+                                    <input name="questionImage" type="file" id="file-upload" class="hidden" />
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="mb-4">
+                      <h2 class="font-semibold">Question Course Code:</h2>
+                        <input id="courseCodetitle" name="course-code" type="text" class="p-2 border rounded" placeholder="Enter question course code">
+                    </div>
 
-                    <div class="optioncontainer">
+                    <div class="mb-4">
+                      <h2 class="font-semibold">Question Difficulty:</h2>
+                        <input id="difficultytitle" name="difficulty" type="text" class="p-2 border rounded" placeholder="Enter question diffiulty...Easy, Intermediate, Hard">
+                    </div>
+
+                    <!-- <div class="optioncontainer">
                         <label for="option1" class="label">Option 1:</label>
                         <div class="input-container">
                             <input type="text" id="option1" class="text-input">
@@ -618,16 +653,18 @@
                                 </div>
                             </button>
                         </div>
-                    </div>
+                    </div> -->
 
+                    <div id="optionsContainer"></div>
                     <div class="flex-container">
-                        <button class="add-btn">
+                        <button class="add-btn" id="addOption" type="button">
                             <span>+</span>
                             Add Answer Options
                         </button>
                     </div>
                     
-                    <div class="correctcontainer">
+                    <!-- This was for if there was a seperate correct answer -->
+                    <!-- <div class="correctcontainer">
                         <label for="correctanswer" class="label">Correct Answer</label>
                         <div class="input-container">
                             <input type="text" id="correctanswer" class="text-input">
@@ -638,16 +675,29 @@
                                 </div>
                             </button>
                         </div>
-                    </div>
+                    </div> -->
+
                     <button id="tagbutton" class="text-white py-1 px-4 rounded">Add Tags</button>
-                    <button id="savebutton" class="text-white py-1 px-4 rounded">Save</button>
+                    <button type="submit" id="savebutton" class="text-white py-1 px-4 rounded">Save</button>
+                    </form>
+
                     </div>
                 </div>
             </main>
         </div>
     </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
+        M.AutoInit();
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              {% for message in messages %}
+              M.toast({html: '{{message}}'})
+              {% endfor %}
+          {% endif %}
+        {% endwith %}
+
         const toggleNav = document.getElementById('toggleNav');
         const sideNav = document.getElementById('sideNav');
         let isNavOpen = true;
@@ -667,6 +717,93 @@
                 mainContent.style.marginRight = '2rem';
             }
         });
+        const optionsContainer = document.getElementById('optionsContainer');
+        const addOptionButton = document.getElementById('addOption');
+        const questionForm = document.getElementById('questionForm');
+
+        let optionCount = 0;
+
+        function createOptionInput() {
+          const optionDiv = document.createElement('div');
+          const optionId = `optionBody${optionCount}`; // Declare optionId
+          const fileUploadId = `file-upload-option-${optionCount}`;
+          optionDiv.innerHTML = 
+          `
+                <div class="optioncontainer">
+                    <label for="optionBody${optionCount}" class="label">Option ${optionCount + 1}:</label>
+                    <div class="input-container">
+                        <input type="text" id="${optionId}" name="optionBody${optionCount}" class="text-input">
+                        <button class="upload-btn">
+                            <div class="upload-container">
+                                <label for="${fileUploadId}">+ Add Image</label>
+                                <input type="file" id="${fileUploadId}"  name="optionImage${optionCount}" class="hidden" />
+                            </div>
+                        </button>
+                        </div>
+                    <label for="optionCorrect${optionCount}">Is Correct:</label>
+                    <input type="checkbox" id="optionCorrect${optionCount}" name="optionCorrect${optionCount}"><br><br>
+                    </div>
+                    </div>
+                </div>
+              
+          `;
+          optionsContainer.appendChild(optionDiv); // Append to the container!
+          const newOptionInput = document.getElementById(optionId);
+          if (newOptionInput) {
+              newOptionInput.style.width = '50%';
+              newOptionInput.style.border = '2px solid #d1d5db';
+          }
+          optionCount++;
+              
+}
+
+addOptionButton.addEventListener('click', createOptionInput);
+
+        questionForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(questionForm); // Use FormData
+
+            const options = [];
+            for (let i = 0; i < optionCount; i++) {
+                options.push({
+                    body: formData.get(`optionBody${i}`),
+                    image: formData.get(`optionImage${i}`),
+                    is_correct: formData.get(`optionCorrect${i}`) === 'on',
+                });
+            }
+
+            // Remove individual option fields from formData
+            for (let i = 0; i < optionCount; i++) {
+                formData.delete(`optionBody${i}`);
+                formData.delete(`optionImage${i}`);
+                formData.delete(`optionCorrect${i}`);
+            }
+
+            formData.append('options', JSON.stringify(options)); // append the options as a json string.
+
+            try {
+                const response = await fetch('/questions', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) { // Check if the response was successful
+                    console.log('Success: Question created!');
+                    window.location.href = '/createQuestion'; // Redirect to a success page or home page
+                } else {
+                    const errorData = await response.json();
+                    console.error('Error:', errorData);
+                    // Handle error, display error message to the user
+                }
+              } catch (error) {
+                  console.error('Error:', error);
+                  // Handle network errors, display error message to the user
+              }
+
+        });
+
+        createOptionInput(); // Create the first option input on page load
     </script>
 </body>
 </html>
