@@ -24,6 +24,10 @@ def save_image(file):
 Page/Action Routes
 '''    
 
+@auth_views.route('/displayQuestion',methods=['GET'])
+def displayQuestionPage():
+    return render_template('display_question.html')
+
 @auth_views.route('/createQuestion',methods=['GET'])
 def createQuestionPage():
     return render_template('create_question.html')
@@ -137,26 +141,42 @@ def signup_action():
 def signup_action_data():
   data = request.form
   response = None
-  if data['radio'] == 'admin':
-    newUser = create_admin(data['first_name'], data['last_name'], data['username'],data['pwd'], data['email'])
-    response = redirect(url_for('auth_views.home_page'))
-  elif data['radio'] == 'teacher':
-    newUser = create_teacher(data['first_name'], data['last_name'], data['username'],data['pwd'], data['email'])
-    response = redirect(url_for('auth_views.home_page'))
-  else:
-    newUser = create_user(data['first_name'], data['last_name'], data['username'],data['pwd'], data['email'])
-    response = redirect(url_for('auth_views.home_page'))
-    try:
-      db.session.add(newUser)
-      db.session.commit()
-      token = login_user(data['username'], data['password'])
-      set_access_cookies(response, token)
-      flash('Account created!')
-    except Exception:
-      db.session.rollback()
-      app.logger.error(f"Error occurredd: {e}")
-      flash("username or email already exists")  
-      response = redirect(url_for('login'))
+  email = data['email']
+  username = data['username']
+  # Check if email already exists
+  existing_user = User.query.filter_by(email=email).first()
+  if existing_user:
+    flash("Email address already exists. Please use a different email.")
+    return redirect(url_for('auth_views.signup_action_data'))
+
+  existing_username = User.query.filter_by(username=username).first()
+  if existing_username:
+    flash("Username already exists. Please use a different username.")
+    return redirect(url_for('auth_views.signup_action_data'))
+  
+  try:
+    if data['radio'] == 'admin':
+        new_user = create_admin(data['first_name'], data['last_name'], data['username'], data['pwd'], email)
+    elif data['radio'] == 'teacher':
+        new_user = create_teacher(data['first_name'], data['last_name'], data['username'], data['pwd'], email)
+    else:
+        new_user = create_user(data['first_name'], data['last_name'], data['username'], data['pwd'], email)
+
+    db.session.add(new_user)
+    db.session.commit()
+
+        # Assuming login_user is defined elsewhere and works correctly
+    login_user(new_user, remember=True)
+
+    flash('Account created!')
+    response = redirect(url_for('index_views.index_page'))
+
+  except Exception as e:
+    db.session.rollback()
+    app.logger.error(f"Error occurred: {e}")
+    flash("An error occurred during signup. Please try again.")
+    response = redirect(url_for('auth_views.signup_action_data')) #redirect to signup page.
+
   return response
 
 '''
