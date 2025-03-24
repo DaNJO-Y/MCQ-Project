@@ -1,13 +1,13 @@
 from App.models import Exam
 from App.database import db
 from flask import send_file
-from fpdf import FPDF
+#from fpdf2 import FPDF
 import os
 import random
 
-def get_exams(teacher_id, page=1, per_page=10):
-    paginated_exams = Exam.query.filter_by(teacher_id=teacher_id).paginate(page=page, per_page=per_page, error_out=False)
-    
+def get_exams(user, page=1, per_page=10):
+    paginated_exams = Exam.query.filter_by(teacher_id=user.id).paginate(page=page, per_page=per_page, error_out=False)
+
     if paginated_exams.items:
         return {
             "exams": [exam.get_json() for exam in paginated_exams.items],  
