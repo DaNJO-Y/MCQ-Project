@@ -1,6 +1,7 @@
 from flask import Flask, Blueprint, render_template, jsonify, request, flash, send_from_directory, flash, redirect, url_for
 from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, set_access_cookies, create_access_token, JWTManager
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
 from flask_login import login_user, login_required, logout_user, current_user
 from App.models import *
 import os
@@ -12,12 +13,20 @@ from App.controllers import *
 
 auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
 
+app = Flask(__name__)  # Replace with your actual app initialization
+app.config['UPLOAD_FOLDER'] = 'uploads'  # Set your upload folder
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
 def save_image(file):
     if file:
-        filename = f"{uuid.uuid4()}{os.path.splitext(file.filename)[1]}"
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
-        return filename
+        try:
+            filename = f"{uuid.uuid4()}{os.path.splitext(file.filename)[1]}"
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+            return filename
+        except Exception as e:
+            print(f"Error saving image: {e}")
+            return None
     return None
 
 '''
@@ -44,25 +53,33 @@ def create_question():
     course_code = request.form.get('course-code')
     difficulty = request.form.get('difficulty') 
     options_data = request.form.get('options')
+    # question_image = request.files.get('questionImage')
     question_image = request.files.get('questionImage')
+    
 
     if not teacher_id or not difficulty or not course_code or not options_data:
         return jsonify({"error": "Missing required fields"}), 400
 
+    question_image_filename = None
     if question_image:
-      image_filename = save_image(question_image)
-    image_filename = None
+        question_image_filename = save_image(question_image)
+
+    try:
+        options_d = json.loads(options_data)  # Parse the JSON string
+    except json.JSONDecodeError:
+        return jsonify({"error": "Invalid JSON format for options"}), 400
 
     options = []
-    # import json
-    for option_data in json.loads(options_data):
+    for option_data in options_d:
         body = option_data.get('body')
-        image = option_data.get('image')
+        image_input_name = option_data.get('image')  # Get the string name
+        image_filename = None
+        if image_input_name:
+            image_file = request.files.get(image_input_name)
+            if image_file:
+                image_filename = save_image(image_file)
         is_correct = option_data.get('is_correct', False)
-        # temp_image = 
-        if image:
-          image_filename = save_image(request.files.get(image.filename)) #get the file from the request files.
-        image_filename=None
+        
         option = Option(questionId=None, body=body, image=image_filename, is_correct=is_correct)
         options.append(option)
 
@@ -74,8 +91,8 @@ def create_question():
         options=options
     )
 
-    if image_filename:
-        question.image = image_filename
+    if question_image_filename:
+        question.image = question_image_filename
 
     db.session.add(question)
     db.session.commit()
@@ -83,6 +100,7 @@ def create_question():
     for option in options:
         option.questionId = question.id
     db.session.commit()
+
     print(question.get_json())
     flash('Question Successfully created!')
     return jsonify(question.get_json()), 201
