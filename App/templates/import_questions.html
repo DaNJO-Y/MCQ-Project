@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
+       :root {
             --primary-color: #2b96ad;
             --primary-dark: #207d91;
             --primary-light: #3cb3cc;
@@ -147,149 +147,33 @@
             transition: all 0.3s ease;
     
         }
-
-        .question-bank-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            color: #2b96ad;
+        #template{
+           text-align: center; 
         }
-        #questiontext{
-            padding-top:20px;
-            font-size:20px;
+        #maindiv {
+            width: 75%; /* Equivalent to w-3/4 */
+            padding: 1.5rem; /* Equivalent to p-6 */
+            text-align: center; /* Centers text inside the div */
         }
 
-        /*.filters-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            margin-left:10%;
+        #template {
+            margin-bottom: 1rem; /* Space below the instructions */
         }
 
-        .filter-button {
-            background-color: lightgrey;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            width:200px;
+        .upload-container {
+            border: 1px solid #ccc; /* Light border */
+            padding: 1rem; /* Padding around content */
+            border-radius: 8px; /* Rounded corners */
+            display: inline-block; /* Keeps it fitting its content */
         }
 
-        .searchbar {
-            width: 50%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            margin-right:10%;
-        }
-        table {
-          font-family: arial, sans-serif;
-          border-collapse: collapse;
-          width: 100%;
-        }
-        td, th {
-          border: 1px solid #dddddd;
-          text-align: left;
-          padding: 8px;
-          vertical-align: top;
-        }*/
-        #maindiv{
-            background-color: white;
-            padding:30px;
-        }
-        #questiontitle {
-            font-size:20px;
-        }
-        #option{
-          font-size: 18px;
-        }
-        .optioncontainer {
-          display: block;
-          position: relative;
-          padding-left: 35px;
-          margin-bottom: 12px;
-          cursor: pointer;
-          font-size: 18px;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
+        .upload-container label {
+            cursor: pointer;
+            color: #3b82f6; /* Equivalent to text-blue-500 */
+            text-decoration: underline;
+            display: block; /* Makes the label take up full width */
         }
 
-        /* Hide the browser's default radio button */
-        .optioncontainer input {
-          position: absolute;
-          opacity: 0;
-          cursor: pointer;
-        }
-
-        /* Create a custom radio button */
-        .checkmark {
-          position: absolute;
-          top: 0;
-          left: 0;
-          height: 20px;
-          width: 20px;
-          background-color: #eee;
-          border-radius: 50%;
-        }
-
-        /* On mouse-over, add a grey background color */
-        .optioncontainer:hover input ~ .checkmark {
-          background-color: #ccc;
-        }
-
-        /* When the radio button is checked, add a blue background */
-        .optioncontainer input:checked ~ .checkmark {
-          background-color: #2196F3;
-        }
-
-        /* Create the indicator (the dot/circle - hidden when not checked) */
-        .checkmark:after {
-          content: "";
-          position: absolute;
-          display: none;
-        }
-
-        /* Show the indicator (dot/circle) when checked */
-        .optioncontainer input:checked ~ .checkmark:after {
-          display: block;
-        }
-
-        /* Style the indicator (dot/circle) */
-        .optioncontainer .checkmark:after {
-            top: 6.2px;
-            left:6px;
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: white;
-        }
-
-        #editbutton{
-            background-color:#2b96ad;
-        }
-        #editbutton:hover {
-            background-color: #e5e7eb;
-        }
-        #rightnav {
-            background-color: rgba(255, 255, 255);
-            border-radius: 0.5rem;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
-            width: 15%;
-            height: calc(100vh - 8rem);
-            transition: all 0.3s ease;
-        }
-        .taginfo {
-            
-            width:100px;
-            background-color: #e5e7eb; /* Equivalent to bg-gray-200 */
-            padding: 8px; /* Equivalent to p-2 */
-            border-radius: 4px; /* Equivalent to rounded */
-            margin-right: 8px; /* Equivalent to mr-2 */
-            margin-bottom:4px;
-        }
-    
     </style>
 </head>
 <body>
@@ -327,81 +211,19 @@
             </nav>
 
             <main id="mainContent">
-                <h1 class="question-bank-title">
-                    Display Question
+                <h1 class="text-2xl font-bold mb-6 text-center text-[#2b96ad]">
+                    Import Questions
                 </h1>
-                <!-- Question Content -->
-                <div id="maindiv">
-                    <div class="mb-4">
-                        <h2 class="font-semibold">Question Title:</h2>
-                        <p id=questiontitle><u>Nutrition Therapy</u></p>
-                    </div>
-                    <div class="mb-4 flex">
-                        <div id="questiontext" class="w-2/3 pr-2">
-                            <h2 class="font-semibold">Question Text</h2>
-                            <p>In evaluating a client's response to nutrition therapy, which laboratory test would be of highest priority to examine?</p>
-                        </div>
-                        <!--<div class="w-1/3 pl-2">
-                            <h2 class="font-semibold">Image 1</h2>
-                            <div class="border rounded p-4 flex items-center justify-center">
-                                <svg class="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 5h18M9 3v2M15 3v2M4 7v13h16V7m-5 8h5M7 14H4m3 0v2m0-4v-2m0-4v-2m0 8v2"></path>
-                                </svg>
-                            </div>
-                        </div>-->
-                    </div>
-
-                    <div class="mb-4 grid grid-cols-2 gap-2">
-                        <label class="optioncontainer">Albumin level
-                          <input type="radio" checked="checked" name="radio">
-                          <span class="checkmark"></span>
-                        </label>
-                        <p id="option">Lymphocyte count</p>
-                        <p id="option">Serum potassium level</p>
-                        <p id="option">CBC differential</p>
-                        <!--<label class="optioncontainer">Lymphocyte count
-                          <input type="radio" checked="checked" name="radio">
-                          <span class="checkmark"></span>
-                        </label>
-                        <label class="optioncontainer">Serum potassium level
-                          <input type="radio" checked="checked" name="radio">
-                          <span class="checkmark"></span>
-                        </label>
-                        <label class="optioncontainer">CBC differential
-                          <input type="radio" checked="checked" name="radio">
-                          <span class="checkmark"></span>
-                        </label>-->
-                        
-                    </div>
-
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <span>Date created:12/09/2014 </span>
-                        </div>
-                        <button id="editbutton" class="text-white py-1 px-4 rounded">Edit</button>
+                <div id="maindiv" class="w-3/4 p-6">
+                    <p id="template" class="mb-4">
+                        Please ensure you have downloaded our <a href="#" class="text-blue-500 underline">question template</a> and have formatted your questions accordingly.
+                    </p>
+                    <div class="upload-container">
+                        <label for="file-upload">+ Add Your File</label>
+                        <input type="file" id="file-upload" class="hidden" />
                     </div>
                 </div>
             </main>
-            <aside id="rightnav" class="w-1/4 border-l pl-4">
-                <div class="mb-4">
-                    <h2 class="font-semibold">Tags</h2>
-                    <p class="taginfo">Metabolism</p>
-                    <p class="taginfo">Nutrition</p>
-                </div>
-                <div>
-                    <h2 class="font-semibold">Usage History:</h2>
-                    <ul>
-                        <li>Nutrition Therapy Exam 1 - January 15, 2024</li>
-                        <li>Metabolism Quiz 2 - February 10, 2024</li>
-                        <li>NUTR 1600 Final Exam - March 5, 2024</li>
-                    </ul>
-                    <br>
-                    <h2 class="font-semibold">Stats:</h2>
-                </div>
-            </aside>
-            
         </div>
     </div>
 
