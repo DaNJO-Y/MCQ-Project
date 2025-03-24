@@ -176,7 +176,9 @@
             <button id="toggleNav"><i class="fas fa-angle-left"></i></button>
             <nav id="sideNav">
                 <ul class="space-y-4">
-                    <li><button class="nav-button"><i class="fas fa-file-alt mr-2"></i><a href="MyQuestions.html">My Questions</a> </button></li>
+                    <button class="nav-button" onclick="window.location.href='{{ url_for('questions_views.my_questions_page') }}'">
+                        <i class="fas fa-file-alt mr-2"></i> My Questions
+                    </button>
                     <li><button class="nav-button"><i class="fas fa-file-alt mr-2"></i><a href="MyExams.html">My Exams</a></button></li>
                     <li><button class="nav-button"><i class="fas fa-file-upload mr-2"></i><a href="ImportQuestions.html">Import Questions</a></button></li>
                     <li><button class="nav-button"><i class="fas fa-question-circle mr-2"></i> <a href="Help.html">Help</a></button></li>
