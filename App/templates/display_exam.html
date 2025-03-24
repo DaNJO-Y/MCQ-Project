@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department of Preclinical Sciences MCQ Bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url(mcq.jpg);
+            background-repeat: no-repeat;
+            background-attachment: fixed; 
+            background-size: 100% 100%;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 1rem;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+        .profile-button {
+            display: flex;
+            align-items: center;
+            color: white;
+            transition: color 0.3s;
+        }
+        .profile-button:hover {
+            color: grey;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            margin-top: 0.5rem;
+            width: 12rem;
+            background-color: white;
+            border-radius: 0.375rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.25rem;
+        }
+        .button {
+            background-color: white;
+            color: #2b96ad;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            transition: opacity 0.3s;
+            font-size: 1.125rem;
+        }
+        .button:hover {
+            background-color: #e5e7eb;
+        }
+        .nav-button {
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s;
+            font-size: 1.125rem;
+        }
+        .nav-button:hover {
+            background-color: #e5e7eb;
+        }
+        #toggleNav {
+            position: fixed;
+            top: 5rem;
+            left: 1rem;
+            z-index: 10;
+            background-color: rgba(255, 255, 255,0.9);
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            color: #2b96ad;
+            transition: background-color 0.3s;
+        }
+        #toggleNav:hover {
+            background-color: lightgrey;
+        }
+        #sideNav {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0.5rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            width: 50%;
+            height: calc(100vh - 8rem);
+            transition: all 0.3s ease;
+        }
+        #mainContent {
+            flex: 1;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0.5rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-left: 10px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+        .filters-container {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+                margin-left:10%;
+            }
+
+            .filter-button {
+                background-color: lightgrey;
+                padding: 0.5rem 1rem;
+                border-radius: 0.5rem;
+                width:100px;
+            }
+
+            .searchbar {
+                width: 50%;
+                padding: 12px;
+                border: 1px solid darkgrey;
+                border-radius: 0.375rem;
+                margin-right:10%;
+            }
+            table {
+              font-family: arial, sans-serif;
+              border-collapse: collapse;
+              width: 100%;
+            }
+            td, th {
+              border: 1px solid #dddddd;
+              text-align: left;
+              padding: 8px;
+              vertical-align: top;
+            }
+
+           .check-container {
+              position: relative;
+              padding-left: 35px;
+              margin-bottom: 12px;
+              cursor: pointer;
+              font-size: 22px;
+              /*-webkit-user-select: none;
+              -moz-user-select: none;
+              -ms-user-select: none;
+              user-select: none;*/
+            }
+
+            /* Hide the browser's default checkbox */
+            .check-container input {
+              position: absolute;
+              opacity: 0;
+              cursor: pointer;
+              height: 0;
+              width: 0;
+            }
+
+            /* Create a custom checkbox */
+            .checkmark {
+              position: absolute;
+              top: 0;
+              left: 0;
+              height: 25px;
+              width: 25px;
+              background-color: #eee;
+            }
+
+            /* On mouse-over, add a grey background color */
+            .check-container:hover input ~ .checkmark {
+              background-color: #ccc;
+            }
+
+            /* When the checkbox is checked, add a blue background */
+            .check-container input:checked ~ .checkmark {
+              background-color: #2196F3;
+            }
+
+            /* Create the checkmark/indicator (hidden when not checked) */
+            .checkmark:after {
+              content: "";
+              position: absolute;
+              display: none;
+            }
+
+            /* Show the checkmark when checked */
+            .check-container input:checked ~ .checkmark:after {
+              display: block;
+            }
+
+            /* Style the checkmark/indicator */
+            .check-container .checkmark:after {
+              left: 9px;
+              top: 5px;
+              width: 5px;
+              height: 10px;
+              border: solid white;
+              border-width: 0 3px 3px 0;
+              -webkit-transform: rotate(45deg);
+              -ms-transform: rotate(45deg);
+              transform: rotate(45deg);
+            }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="text-2xl font-bold">
+                <a href="homepage.html" class="text-white hover:text-gray-500 transition duration-300">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+            <button class="button">New Question</button>
+            <button class="button">New Exam</button>
+            <div class="relative">
+                <button id="profileButton" class="profile-button">
+                    <i class="fas fa-user-circle text-3xl"></i>
+                    <span class="ml-2">Your Profile</span>
+                </button>
+                <div id="profileDropdown" class="dropdown-menu">
+                    <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex">
+            <button id="toggleNav"><i class="fasfa-angle-left"></i></button>
+            <nav id="sideNav">
+                <main id="mainContent">
+                    <div class="filters-container">
+                        <button id="filter" class="filter-button">Filters</button>
+                        <input id="searchbar" type="text" placeholder="Search Questions" class="searchbar">
+
+                    </div>
+                    <div id="question-table" class="bg-white rounded shadow">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-200">
+                                    <th class="p-2 text-left">Question</th>
+                                    <th class="p-2 text-left">Author/Uploader</th>
+                                    <th class="p-2 text-left">Tag</th>
+                                    <th class="p-2 text-left">Last used</th>
+                                    <th class="p-2 text-left">Options</th>
+                                    <th class="p-2 text-left">Answer</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-2"><label class="check-container" style="display:flex">Nutrition Therapy
+                                      <input type="checkbox" checked="checked">
+                                      <span class="checkmark"></span>
+                                    </label> 
+                                        
+                                    </td>
+                                    <td class="p-2">John Smith</td>
+                                    <td class="p-2">Matabolism <br> Nutrition</td>
+                                    <td class="p-2">12/12/2015</td>
+                                    <td class="p-2">Albumin level<br>Lymphocyte count<br>Serum potassium level<br>CBC differential</td>
+                                    <td class="p-2">Albumin level</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </main>
+            </nav>
+
+            <main id="mainContent">
+                <h1 class="text-2xl font-bold mb-6 text-center text-[#2b96ad]">
+                    Welcome To the Department of Preclinical Sciences MCQ Bank
+                </h1>
+                <p class="text-[#2b96ad] text-center">
+                    Access and manage your exams and questions here. Use the navigation menu on the left to get started.
+                </p>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const toggleNav = document.getElementById('toggleNav');
+        const sideNav = document.getElementById('sideNav');
+        let isNavOpen = true;
+
+        toggleNav.addEventListener('click', () => {
+            isNavOpen = !isNavOpen;
+
+            if (isNavOpen) {
+                sideNav.style.marginLeft = '0';
+                sideNav.style.width = '50%';
+                mainContent.style.marginLeft = '20px';
+                mainContent.style.marginRight = '2rem';
+            } else {
+                sideNav.style.marginLeft = '-55%';
+                sideNav.style.width = '0';
+                mainContent.style.marginLeft = '22rem';
+                mainContent.style.marginRight = '12rem';
+            }
+        });
+    </script>
+</body>
+</html>
