@@ -37,11 +37,11 @@ def login_action():
     user = get_user_by_username(username)
     if potential_teacher and check_password_hash(potential_teacher.password,password):
         login_user(potential_teacher,remember=True)
-        flash(f'Login Successful! Welcome {user.firstName}')
+        flash(f'Login Successful! Welcome {potential_teacher.firstName}')
         return redirect(url_for('auth_views.homePage'))
     elif potential_admin and check_password_hash(potential_admin.password,password):
         login_user(potential_admin,remember=True)
-        flash(f'Login Successful! Welcome {user.firstName}')
+        flash(f'Login Successful! Welcome {potential_admin.firstName}')
         return redirect(url_for('auth_views.homePage'))
     elif user and check_password_hash(user.password,password):
         login_user(user,remember=True)
