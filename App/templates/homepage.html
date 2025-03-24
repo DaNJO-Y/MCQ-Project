@@ -170,16 +170,7 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     {% with messages = get_flashed_messages() %}
-        //         {% if messages %}
-        //             {% for message in messages %}
-        //                 M.toast({html: '{{message}}'});
-        //             {% endfor %}
-        //         {% endif %}
-        //     {% endwith %}
-        // });
-
+        
         M.AutoInit();
 
         {% with messages = get_flashed_messages() %}
@@ -189,17 +180,6 @@
               {% endfor %}
           {% endif %}
         {% endwith %}
-
-
-        // M.AutoInit();
-
-        // {% with messages = get_flashed_messages() %}
-        //   {% if messages %}
-        //       {% for message in messages %}
-        //       M.toast({html: '{{message}}'})
-        //       {% endfor %}
-        //   {% endif %}
-        // {% endwith %}
 
         const toggleNav = document.getElementById('toggleNav');
         const sideNav = document.getElementById('sideNav');
