@@ -6,44 +6,18 @@
     <title>Department of Preclinical Sciences MCQ Bank</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"> -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
-    
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
-    
     <style>
-         :root {
-            --primary-color: #2b96ad;
-            --primary-dark: #207d91;
-            --primary-light: #3cb3cc;
-            --text-color: #2d3748;
-            --bg-opacity: 0.95;
-        }
         body {
-            background-image: url("{{ url_for('static', filename='Images/mcq.jpg') }}");
+            background-image: url(mcq.jpg);
             background-repeat: no-repeat;
             background-attachment: fixed; 
             background-size: 100% 100%;
             min-height: 100vh;
         }
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3));
-            z-index: 0;
-        }
         .container {
             max-width: 1200px;
             margin: auto;
             padding: 1rem;
-            position: relative;
-            z-index: 1;
         }
         header {
             display: flex;
@@ -71,28 +45,16 @@
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             padding: 0.25rem;
         }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .button {
             background-color: white;
             color: #2b96ad;
             padding: 0.75rem 1rem;
             border-radius: 0.375rem;
-            transition: all 0.3s ease;
             transition: opacity 0.3s;
             font-size: 1.125rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .button:hover {
             background-color: #e5e7eb;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         .nav-button {
             width: 100%;
@@ -101,34 +63,23 @@
             border-radius: 0.375rem;
             transition: background-color 0.3s;
             font-size: 1.125rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            background-color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 0.5rem;
         }
         .nav-button:hover {
-            background-color: rgba(43, 150, 173, 0.1);
-            color: var(--primary-color);
-            transform: translateX(5px);
+            background-color: #e5e7eb;
         }
         #toggleNav {
             position: fixed;
             top: 5rem;
             left: 1rem;
             z-index: 10;
-            background-color: var(--primary-color);
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            color: white;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border: none;
+            background-color: rgba(255, 255, 255,0.9);
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            color: #2b96ad;
+            transition: background-color 0.3s;
         }
         #toggleNav:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            background-color: lightgrey;
         }
         #sideNav {
             background-color: rgba(255, 255, 255, 0.9);
@@ -138,10 +89,6 @@
             width: 20%;
             height: calc(100vh - 8rem);
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(43, 150, 173, 0.2);
-            backdrop-filter: blur(10px);
         }
         #mainContent {
             flex: 1;
@@ -152,30 +99,16 @@
             margin-left: 2rem;
             margin-right: 2rem;
             transition: all 0.3s ease;
-    
-        }
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            bottom: auto; /* Override Materialize's bottom positioning */
-            left: auto; /* Override Materialize's left positioning */
-            transform: none !important; /* Prevent Materialize's default transform */
-            /* color: white ;  */
-            color: #2b96ad;
-            /* background-color: rgba(0, 0, 0, 0.7) ; */
         }
     </style>
-  
 </head>
 <body>
     <div class="container">
         <header>
             <div class="text-2xl font-bold">
-
-                <a class="text-white hover:text-gray-500 transition duration-300" onclick="window.location.href='{{ url_for('auth_views.homePage') }}'">
-                    <i class="fas fa-home"></i>HomePage
-                       </a>
+                <a href="homepage.html" class="text-white hover:text-gray-500 transition duration-300">
+                    <i class="fas fa-home"></i> Home
+                </a>
             </div>
             <button class="button">New Question</button>
             <button class="button">New Exam</button>
@@ -187,6 +120,7 @@
                 <div id="profileDropdown" class="dropdown-menu">
                     <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        <!-- omgggg just trying to push everything correctly -->
                     </a>
                 </div>
                
@@ -216,39 +150,25 @@
             </main>
         </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
     <script>
-        
-        M.AutoInit();
-
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-              {% for message in messages %}
-              M.toast({html: '{{message}}'})
-              {% endfor %}
-          {% endif %}
-        {% endwith %}
-
         const toggleNav = document.getElementById('toggleNav');
         const sideNav = document.getElementById('sideNav');
-        const mainContent = document.getElementById('mainContent');
         let isNavOpen = true;
 
         toggleNav.addEventListener('click', () => {
             isNavOpen = !isNavOpen;
 
             if (isNavOpen) {
+                sideNav.style.marginLeft = '0';
                 sideNav.style.width = '20%';
-                sideNav.style.opacity = '1';
-                sideNav.style.visibility = 'visible';
-                mainContent.style.marginLeft = '2rem';
-                toggleNav.innerHTML = '<i class="fas fa-angle-left"></i>';
+                mainContent.style.marginLeft = '20px';
+                mainContent.style.marginRight = '2rem';
             } else {
+                sideNav.style.marginLeft = '-20%';
                 sideNav.style.width = '0';
-                sideNav.style.opacity = '0';
-                sideNav.style.visibility = 'hidden';
-                mainContent.style.marginLeft = '10px';
-                toggleNav.innerHTML = '<i class="fas fa-angle-right"></i>';
+                mainContent.style.marginLeft = '22rem';
+                mainContent.style.marginRight = '2rem';
             }
         });
 
@@ -264,29 +184,6 @@
             document.addEventListener('click', (event) => {
                 if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
                     profileDropdown.style.display = 'none';
-                }
-            });
-
-            // Handle mobile navigation
-            if (window.innerWidth <= 1024) {
-                isNavOpen = false;
-                sideNav.style.width = '0';
-                sideNav.style.opacity = '0';
-                sideNav.style.visibility = 'hidden';
-                mainContent.style.marginLeft = '0';
-            }
-
-            window.addEventListener('resize', () => {
-                if (window.innerWidth <= 1024) {
-                    sideNav.style.width = '0';
-                    sideNav.style.opacity = '0';
-                    sideNav.style.visibility = 'hidden';
-                    mainContent.style.marginLeft = '0';
-                } else if (isNavOpen) {
-                    sideNav.style.width = '20%';
-                    sideNav.style.opacity = '1';
-                    sideNav.style.visibility = 'visible';
-                    mainContent.style.marginLeft = '2rem';
                 }
             });
         });
