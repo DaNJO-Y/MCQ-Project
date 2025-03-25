@@ -13,9 +13,9 @@ from App.controllers import *
 
 auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
 
-app = Flask(__name__)  # Replace with your actual app initialization
-app.config['UPLOAD_FOLDER'] = 'uploads'  # Set your upload folder
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+# app = Flask(__name__)  # Replace with your actual app initialization
+# app.config['UPLOAD_FOLDER'] = 'uploads'  # Set your upload folder
+# os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 def save_image(file):
     if file:
@@ -33,77 +33,77 @@ def save_image(file):
 Page/Action Routes
 '''    
 
-@auth_views.route('/displayQuestion',methods=['GET'])
-def displayQuestionPage():
-    return render_template('display_question.html')
+# @auth_views.route('/displayQuestion',methods=['GET'])
+# def displayQuestionPage():
+#     return render_template('display_question.html')
 
-@auth_views.route('/createQuestion',methods=['GET'])
-def createQuestionPage():
-    return render_template('create_question.html')
+# @auth_views.route('/createQuestion',methods=['GET'])
+# def createQuestionPage():
+#     return render_template('create_question.html')
 
 @auth_views.route('/homePage',methods=['GET'])
 def homePage():
     return render_template('homepage.html')
 
-@auth_views.route('/questions', methods=['POST'])
-def create_question():
-    teacher = current_user
-    teacher_id = teacher.id
-    text = request.form.get('text')
-    course_code = request.form.get('course-code')
-    difficulty = request.form.get('difficulty') 
-    options_data = request.form.get('options')
-    # question_image = request.files.get('questionImage')
-    question_image = request.files.get('questionImage')
+# @auth_views.route('/questions', methods=['POST'])
+# def create_question():
+#     teacher = current_user
+#     teacher_id = teacher.id
+#     text = request.form.get('text')
+#     course_code = request.form.get('course-code')
+#     difficulty = request.form.get('difficulty') 
+#     options_data = request.form.get('options')
+#     # question_image = request.files.get('questionImage')
+#     question_image = request.files.get('questionImage')
     
 
-    if not teacher_id or not difficulty or not course_code or not options_data:
-        return jsonify({"error": "Missing required fields"}), 400
+#     if not teacher_id or not difficulty or not course_code or not options_data:
+#         return jsonify({"error": "Missing required fields"}), 400
 
-    question_image_filename = None
-    if question_image:
-        question_image_filename = save_image(question_image)
+#     question_image_filename = None
+#     if question_image:
+#         question_image_filename = save_image(question_image)
 
-    try:
-        options_d = json.loads(options_data)  # Parse the JSON string
-    except json.JSONDecodeError:
-        return jsonify({"error": "Invalid JSON format for options"}), 400
+#     try:
+#         options_d = json.loads(options_data)  # Parse the JSON string
+#     except json.JSONDecodeError:
+#         return jsonify({"error": "Invalid JSON format for options"}), 400
 
-    options = []
-    for option_data in options_d:
-        body = option_data.get('body')
-        image_input_name = option_data.get('image')  # Get the string name
-        image_filename = None
-        if image_input_name:
-            image_file = request.files.get(image_input_name)
-            if image_file:
-                image_filename = save_image(image_file)
-        is_correct = option_data.get('is_correct', False)
+#     options = []
+#     for option_data in options_d:
+#         body = option_data.get('body')
+#         image_input_name = option_data.get('image')  # Get the string name
+#         image_filename = None
+#         if image_input_name:
+#             image_file = request.files.get(image_input_name)
+#             if image_file:
+#                 image_filename = save_image(image_file)
+#         is_correct = option_data.get('is_correct', False)
         
-        option = Option(questionId=None, body=body, image=image_filename, is_correct=is_correct)
-        options.append(option)
+#         option = Option(questionId=None, body=body, image=image_filename, is_correct=is_correct)
+#         options.append(option)
 
-    question = Question(
-        teacherId=teacher_id,
-        text=text,
-        difficulty=difficulty,
-        courseCode=course_code,
-        options=options
-    )
+#     question = Question(
+#         teacherId=teacher_id,
+#         text=text,
+#         difficulty=difficulty,
+#         courseCode=course_code,
+#         options=options
+#     )
 
-    if question_image_filename:
-        question.image = question_image_filename
+#     if question_image_filename:
+#         question.image = question_image_filename
 
-    db.session.add(question)
-    db.session.commit()
+#     db.session.add(question)
+#     db.session.commit()
 
-    for option in options:
-        option.questionId = question.id
-    db.session.commit()
+#     for option in options:
+#         option.questionId = question.id
+#     db.session.commit()
 
-    print(question.get_json())
-    flash('Question Successfully created!')
-    return jsonify(question.get_json()), 201
+#     print(question.get_json())
+#     flash('Question Successfully created!')
+#     return jsonify(question.get_json()), 201
 
 @auth_views.route('/identify', methods=['GET'])
 # @jwt_required()
