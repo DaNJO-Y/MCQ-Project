@@ -48,8 +48,14 @@ def update_teacher(id, username, email):
 def createExam(title, questions, createdBy, dateCreated, courseCode):
     pass
 
-def createQuestion(correctAnswer, options, createdBy, tag, courseCode):
-    pass
+def createQuestion(text, options, createdBy, tag, courseCode):
+    teacher = get_teacher(id)
+    if teacher:
+      new_Question = Question(teacher.id,text, difficulty, courseCode, options)
+      db.session.add(new_Question)
+      return db.session.commit()
+    return None  
+    
 
 def myExams(id):
     teacher = get_teacher(id)
