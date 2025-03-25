@@ -8,7 +8,7 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     teacherId = db.Column(db.Integer, db.ForeignKey('teacher.id'))
     examId = db.Column(db.Integer, db.ForeignKey('exam.id'))
-    text = db.Column(db.String(500))
+    text = db.Column(db.String, nullable=False)
     # correctOption = db.relationship('Option', backref=db.backref('question_correct_option', lazy='joined'))#where is question_correct_option?
     image = db.Column(db.String(300))
     difficulty = db.Column(db.String(200))
