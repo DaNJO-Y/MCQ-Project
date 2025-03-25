@@ -21,6 +21,7 @@ class Option(db.Model):
             "id":self.id,
             "questionId":self.questionId,
             "body":self.body,
+            "image":self.image,
             "is_correct": self.is_correct
         }
     def toggle(self):

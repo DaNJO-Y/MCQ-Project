@@ -690,6 +690,8 @@
             </main>
         </div>
     </div>
+
+    <!-- <label for="${fileUploadId}">+ Add Image</label> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
         M.AutoInit();
@@ -739,8 +741,8 @@
                         <input type="text" id="${optionId}" name="optionBody${optionCount}" class="text-input">
                         <button class="upload-btn">
                             <div class="upload-container">
-                                <label for="${fileUploadId}">+ Add Image</label>
-                                <input type="file" id="${fileUploadId}"  name="optionImage${optionCount}" class="hidden" />
+                                
+                                <input type="file" id="${fileUploadId}"  name="optionImage${optionCount}" />
                             </div>
                         </button>
                         </div>
@@ -772,7 +774,7 @@ addOptionButton.addEventListener('click', createOptionInput);
             for (let i = 0; i < optionCount; i++) {
                 options.push({
                     body: formData.get(`optionBody${i}`),
-                    image: formData.get(`optionImage${i}`),
+                    image: `optionImage${i}`,
                     is_correct: formData.get(`optionCorrect${i}`) === 'on',
                 });
             }
@@ -780,7 +782,7 @@ addOptionButton.addEventListener('click', createOptionInput);
             // Remove individual option fields from formData
             for (let i = 0; i < optionCount; i++) {
                 formData.delete(`optionBody${i}`);
-                formData.delete(`optionImage${i}`);
+                // formData.delete(`optionImage${i}`);
                 formData.delete(`optionCorrect${i}`);
             }
 
