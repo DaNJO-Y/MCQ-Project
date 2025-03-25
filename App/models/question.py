@@ -4,12 +4,11 @@ from .associations import Question_Tag_Bridge
 from App.database import db
 
 class Question(db.Model):
-    __tablename__ = 'question'   
+    __tablename__ = 'question'
     id = db.Column(db.Integer, primary_key=True)
     teacherId = db.Column(db.Integer, db.ForeignKey('teacher.id'))
     examId = db.Column(db.Integer, db.ForeignKey('exam.id'))
     text = db.Column(db.String, nullable=False)
-    # correctOption = db.relationship('Option', backref=db.backref('question_correct_option', lazy='joined'))#where is question_correct_option?
     image = db.Column(db.String(300))
     difficulty = db.Column(db.String(200))
     tag = db.relationship('Tag', secondary='question_tag_bridge', back_populates='question')
@@ -21,7 +20,6 @@ class Question(db.Model):
 
     def __init__(self, teacherId, text, difficulty, courseCode, options):
         self.teacherId = teacherId
-        # self.correctOption = correctOption
         self.text = text
         self.difficulty = difficulty
         self.courseCode = courseCode
@@ -30,10 +28,12 @@ class Question(db.Model):
     def get_json(self):
         return {
             "id": self.id,
-            "teacherid": self.teacherId,
+            "teacherId": self.teacherId,  # Corrected key to match model
             "text": self.text,
-            # "correct option": self.correctOption,
             "difficulty": self.difficulty,
-            "course code": self.courseCode,
-            "options": [op.get_json() for op in self.options]
+            "courseCode": self.courseCode,
+            "options": [op.get_json() for op in self.options] if self.options else [], # added check for empty options.
         }
+
+    def __repr__(self):
+        return f"<Question(id={self.id}, text='{self.text[:20]}...', courseCode='{self.courseCode}')>"

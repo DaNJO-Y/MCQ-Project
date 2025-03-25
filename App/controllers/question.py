@@ -45,8 +45,8 @@ def update_last_used(id, new_last_used):
 def get_question(id):
    return Question.query.get(id) 
 
-def get_all_my_questions(user):
-    return Question.query.filter_by(teacherId=user.id).all()  # Fetch all questions for the teacher
+def get_all_my_questions(user_id):
+    return Question.query.filter_by(teacherId=user_id).all()  # Fetch all questions for the teacher
 
 
 def add_image(id,image):
