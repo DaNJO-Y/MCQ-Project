@@ -1,7 +1,5 @@
 import os
 
-UPLOAD_FOLDER = 'uploads'  # Directory to store uploaded images
-
 def load_config(app, overrides):
     if os.path.exists(os.path.join('./App', 'custom_config.py')):
         app.config.from_object('App.custom_config')
@@ -17,9 +15,8 @@ def load_config(app, overrides):
     app.config["JWT_COOKIE_SECURE"] = True
     app.config["JWT_COOKIE_CSRF_PROTECT"] = False
     app.config['FLASK_ADMIN_SWATCH'] = 'darkly'
-    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+   
     for key in overrides:
         app.config[key] = overrides[key]
 
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)  # Create the directory if it doesn't exist
+
