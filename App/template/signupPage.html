@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<head>
+    <style>
+        * {
+            /*background-color: #2b96ad;*/
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+        }
+
+        #img {
+            width:55%;  /* Larger Image */
+            height: 100%;  /* Maintain Aspect Ratio */
+            height: 100vh; /* Image will now fill 100% of the viewport's height */
+            object-fit: cover; /* Maintain aspect ratio while covering the entire area */
+            border-radius: 10px;
+            margin-right: 20px; /* Space between image and form */
+        }
+
+        #signup-content {
+            flex: 1;
+            text-align: left;
+            padding: 10px;
+        }
+
+        #signupheader, #bankname {
+            font-size: 45px;
+            text-align: center;
+            color: black;
+            font-family: 'Whitney Semibold', sans-serif;
+            margin-bottom: 10px;
+            margin-top:5px;
+        }
+        #signupheader{
+            text-decoration: underline;
+        }
+
+        input[type=password],
+        input[type=username] {
+            width: 80%;
+            height: 60px;
+            padding: 20px 20px;
+            margin: 30px 50px 30px;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            color: black;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type=submit] {
+            width: 30%;
+            background-color: black;
+            color: white;
+            padding: 14px;
+            border: black;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: fantasy;
+            font-size: 18px;
+        }
+
+        label {
+            font-family: 'Whitney Book', sans-serif;
+            font-size: 25px;
+            margin: 30px 50px 30px;
+        }
+
+        .links-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        a {
+            font-family: 'Whitney Book', sans-serif;
+            color: black;
+            text-decoration: underline;
+            font-size:20px;
+        }
+        .flex {
+            display: flex;
+            justify-content: space-between; /* Pushes items apart */
+            align-items: center;
+            margin-top: 20px;
+            margin-left:50px;
+        }
+
+        .signup-btn {
+            margin-left: auto; /* Pushes SIGNUP button to the right */
+            margin-right: 70px;
+        }
+    </style>
+</head>
+
+<body>   
+
+
+        <!-- Left Side: Image -->
+        <img id="img" src="{{ url_for('static', filename='Images/mcq.jpg') }}" alt="MCQ Image")>
+
+        <!-- Right Side: Form -->
+        <div id="signup-content">
+            <h3 id="bankname" class="center">Multiple Choice Question Bank</h3>
+            <h4 id="signupheader" class="center">Signup</h4>
+            <form id="signupForm" method="POST" action="/signup">
+                <label for="username">Username</label>
+                <input placeholder="Enter your username" name="username" type="username" class="validate">
+
+                <label for="password">Password</label>
+                <input placeholder="Enter your password" name="password" type="password" class="validate">
+
+
+                <div class="flex">
+                    <a href="login.html" class="text-[#2b96ad] hover:text-gray-200 transition duration-300">
+                        Login &rarr;
+                    </a>
+                    <input type="submit" value="SIGNUP" class="signup-btn bg-[#2b96ad] text-white py-3 px-4 rounded-md hover:opacity-90 transition duration-300 text-lg">
+                </div>
+
+            </form>
+
+
+        </div>
+
+
+</body>
+
+</html>
