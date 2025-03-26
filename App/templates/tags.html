@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department of Preclinical Sciences MCQ Bank - Choose or Create Tag</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url(mcq.jpg);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content horizontally */
+            justify-content: flex-start; /* Align content to the top */
+            padding-top: 2rem; /* Add some top padding */
+            box-sizing: border-box; /* Include padding in element's total width and height */
+        }
+        .container {
+            max-width: 1200px;
+            width: 90%; /* Adjust width as needed */
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0.5rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem; /* Add some space below the main content */
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+        .profile-button {
+            display: flex;
+            align-items: center;
+            color: white;
+            transition: color 0.3s;
+        }
+        .profile-button:hover {
+            color: grey;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            margin-top: 0.5rem;
+            width: 12rem;
+            background-color: white;
+            border-radius: 0.375rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.25rem;
+        }
+        .button {
+            background-color: white;
+            color: #2b96ad;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            transition: opacity 0.3s;
+            font-size: 1.125rem;
+        }
+        .button:hover {
+            background-color: #e5e7eb;
+        }
+        .nav-button {
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s;
+            font-size: 1.125rem;
+        }
+        .nav-button:hover {
+            background-color: lightgrey;
+        }
+        #toggleNav {
+            position: fixed;
+            top: 5rem;
+            left: 1rem;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            color: #2b96ad;
+            transition: background-color 0.3s;
+        }
+        #toggleNav:hover {
+            background-color: #e5e7eb;
+        }
+        #sideNav {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0.5rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            width: 20%; /* Keep a consistent width for the nav */
+            height: calc(100vh - 8rem);
+            transition: all 0.3s ease;
+            position: fixed;
+            left: 0;
+            top: 8rem;
+            bottom: 0;
+            overflow-y: auto;
+        }
+        #mainContent {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0.5rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-left: 22%; /* Adjust margin to accommodate the fixed sidebar */
+            margin-right: 2rem;
+            transition: all 0.3s ease;
+            min-height: calc(100vh - 8rem);
+        }
+        #maindiv{
+            background-color: white;
+            overflow: hidden;
+        }
+
+        .question-bank-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #2b96ad;
+            width: 100%;
+        }
+        #savebutton{
+            background-color:#2b96ad;
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            transition: opacity 0.3s;
+            font-size: 1.125rem;
+            cursor: pointer;
+            opacity: 0.9;
+            margin-top: 1rem; /* Add some space above the save button */
+        }
+        #savebutton:hover {
+            opacity: 1;
+            background-color: #e5e7eb;
+            color: #2b96ad;
+        }
+
+        .tag-management-container {
+            display: flex;
+            flex-direction: column; /* Stack the create form and tag list */
+            width: 80%; /* Adjust width of the tag management area */
+            max-width: 600px; /* Set a maximum width if needed */
+            margin: 0 auto; /* Center the tag management container */
+            gap: 20px;
+            margin-bottom: 20px; /* Add space before the save button */
+        }
+
+        .create-tag-container {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 0.375rem;
+            background-color: #f9f9f9;
+        }
+
+        .create-tag-container h3 {
+            margin-top: 0;
+            color: #2b96ad;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .create-tag-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .create-tag-container input[type=text] {
+            width: calc(100% - 16px);
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            border-radius: 4px;
+        }
+
+        .create-tag-container button[type=submit] {
+            background-color: #2b96ad;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+            border-radius: 4px;
+        }
+
+        .create-tag-container button[type=submit]:hover {
+            opacity: 1;
+        }
+
+        .tag-list-container {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 0.375rem;
+            background-color: #f9f9f9;
+            overflow-y: auto;
+            max-height: 400px; /* Adjust max height as needed */
+        }
+
+        .tag-list-container h3 {
+            margin-top: 0;
+            color: #2b96ad;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .tag-item {
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #f9f9f9;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+
+        .tag-item:hover {
+            background-color: #eee;
+        }
+
+        .tag-item.selected {
+            background-color: #2b96ad;
+            color: white;
+            border-color: #2b96ad;
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            bottom: auto;
+            left: auto;
+            transform: none !important;
+            color: #2b96ad;
+        }
+        #mainContent {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content within mainContent */
+            margin-left: 2rem; /* Adjust to avoid overlap with fixed sidebar */
+            margin-right: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="text-2xl font-bold">
+                <a href="/homePage" class="text-white hover:text-gray-500 transition duration-300">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+            <button class="button"><a href="/createQuestion">New Question</a></button>
+            <button class="button">New Exam</button>
+            <div class="relative">
+                <button id="profileButton" class="profile-button">
+                    <i class="fas fa-user-circle text-3xl"></i>
+                    <span class="ml-2">Your Profile</span>
+                </button>
+                <div id="profileDropdown" class="dropdown-menu">
+                    <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex w-full">
+            <button id="toggleNav" class="md:hidden"><i class="fas fa-angle-left"></i></button>
+            <nav id="sideNav" class="hidden md:block">
+                <ul class="space-y-4">
+                    <li><button class="nav-button"><i class="fas fa-file-alt mr-2"></i> My Questions</button></li>
+                    <li><button class="nav-button"><i class="fas fa-file-alt mr-2"></i> My Exams</button></li>
+                    <li><button class="nav-button"><i class="fas fa-file-upload mr-2"></i> Import Questions</button></li>
+                    <li><button class="nav-button"><i class="fas fa-question-circle mr-2"></i> Help</button></li>
+                </ul>
+            </nav>
+
+            <main id="mainContent" class="flex-grow">
+                <h1 class="question-bank-title">
+                    Choose or Create Tag
+                </h1>
+                <div class="tag-management-container">
+                    <div class="create-tag-container">
+                        <h3>Create New Tag</h3>
+                        <form id="createTagForm">
+                            <label for="newTagName">Tag Name:</label>
+                            <input type="text" id="newTagName" name="newTagName" placeholder="Enter tag name" required>
+                            <button type="submit">Create Tag</button>
+                        </form>
+                    </div>
+                    <div class="tag-list-container">
+                        <h3>Available Tags</h3>
+                        <ul id="tagList">
+                            {% if tags %}
+                                {% for tag in tags %}
+                                    <li class="tag-item" data-tag-id="{{ tag.id }}">{{ tag.tag_text }}</li>
+                                {% endfor %}
+                            {% else %}
+                                <li>No tags available.</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+                <button id="savebutton" class="text-white py-2 px-6 rounded">Save Tags</button>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        M.AutoInit();
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                M.toast({html: '{{message}}'})
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        const toggleNav = document.getElementById('toggleNav');
+        const sideNav = document.getElementById('sideNav');
+        const mainContent = document.getElementById('mainContent');
+        let isNavOpen = true;
+
+        toggleNav.addEventListener('click', () => {
+            isNavOpen = !isNavOpen;
+
+            if (isNavOpen) {
+                sideNav.style.marginLeft = '0';
+                sideNav.style.width = '20%';
+                mainContent.style.marginLeft = '22%';
+            } else {
+                sideNav.style.marginLeft = '-20%';
+                sideNav.style.width = '0';
+                mainContent.style.marginLeft = '2rem';
+            }
+        });
+
+        var tagList = document.getElementById("tagList");
+        var createTagForm = document.getElementById("createTagForm");
+        var newTagNameInput = document.getElementById("newTagName");
+        var selectedTags = [];
+
+        // tagList.addEventListener('click', function(event) {
+        //     if (event.target && event.target.classList.contains('tag-item')) {
+        //         const tagName = event.target.textContent;
+        //         event.target.classList.toggle('selected');
+        //         if (selectedTags.includes(tagName)) {
+        //             selectedTags = selectedTags.filter(tag => tag !== tagName);
+        //         } else {
+        //             selectedTags.push(tagName);
+        //         }
+        //         console.log('Selected Tags:', selectedTags);
+        //         // You would typically update a hidden input or display the selected tags elsewhere
+        //     }
+        // });
+            tagList.addEventListener('click', function(event) {
+            if (event.target && event.target.classList.contains('tag-item')) {
+                const tagName = event.target.textContent;
+                const tagId = event.target.getAttribute('data-tag-id'); // Assuming you add this in your Jinja loop
+                event.target.classList.toggle('selected');
+                if (selectedTags.some(tag => tag.name === tagName)) {
+                    selectedTags = selectedTags.filter(tag => tag.name !== tagName);
+                } else {
+                    selectedTags.push({ name: tagName, id: tagId });
+                }
+                console.log('Selected Tags:', selectedTags);
+            }
+        });
+
+        createTagForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const newTagName = newTagNameInput.value.trim();
+            const questionId = new URLSearchParams(window.location.search).get('question_id');
+            if (newTagName && questionId) {
+                console.log('Creating tag:', newTagName);
+                // Instead of directly adding to the list, call the backend function
+                createTagOnBackend(newTagName, questionId);
+                newTagNameInput.value = ''; // Clear the input after submission
+            } else {
+                console.error('Question ID not found in the URL.');
+                // Optionally display an error message to the user
+            }
+        });
+
+        async function createTagOnBackend(tagText, questionId) {
+            console.log("Question ID being sent to createTag:", questionId);
+            try {
+                const response = await fetch('/create_tag', { // Replace '/create_tag' with your actual backend route
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        tag_text: tagText,
+                        question_id: questionId,
+                    }),
+                });
+
+                if (response.ok) {
+                    const newTagData = await response.json();
+                    console.log('Tag created:', newTagData);
+                    // window.location.href = `/tags?question_id=${questionId}`;
+                    fetchTags();
+                    // Optionally remove the 'selected' class from the newly created tag
+                } else {
+                    const errorData = await response.json();
+                    console.error('Error creating tag:', errorData);
+                    // Optionally display an error message to the user
+                }
+            } catch (error) {
+                console.error('Error creating tag:', error);
+                // Optionally display a network error message
+            }
+        }
+        async function fetchTags() {
+            const response = await fetch(`/tags?question_id=${new URLSearchParams(window.location.search).get('question_id') || ''}`);
+            if (response.ok) {
+                const html = await response.text();
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                const newTagList = tempDiv.querySelector('#tagList');
+                if (newTagList) {
+                    tagList.innerHTML = newTagList.innerHTML;
+                    // Re-attach the event listener if needed, or use event delegation properly
+                }
+            } else {
+                console.error('Error fetching tags');
+            }
+    }
+
+    const saveTagsButton = document.getElementById('savebutton');
+    if (saveTagsButton) {
+        saveTagsButton.addEventListener('click', associateSelectedTags);
+    }
+
+    async function associateSelectedTags() {
+        const questionId = new URLSearchParams(window.location.search).get('question_id');
+        const selectedTagIds = [];
+
+        const selectedTagElements = document.querySelectorAll('#tagList .tag-item.selected');
+        selectedTagElements.forEach(tagElement => {
+            const tagId = tagElement.getAttribute('data-tag-id');
+            if (tagId) {
+                selectedTagIds.push(parseInt(tagId));
+            } else {
+                console.warn("Tag ID not found for selected tag:", tagElement.textContent);
+                // If you don't have tag IDs on the frontend, you might need to send tag names
+                // and look them up on the backend, which is less efficient.
+            }
+        });
+
+        if (!questionId) {
+            console.error('Question ID not found.');
+            M.toast({ html: 'Error: Question ID not found.' });
+            return;
+        }
+
+        if (selectedTagIds.length === 0) {
+            M.toast({ html: 'No tags selected to associate.' });
+            return;
+        }
+
+        try {
+            const response = await fetch('/associate_tags', { // New backend route
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    question_id: questionId,
+                    tag_ids: selectedTagIds,
+                }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Tags associated successfully:', data);
+                M.toast({ html: 'Tags associated successfully!' });
+                // Optionally, you might want to unselect the tags after saving
+                selectedTagElements.forEach(el => el.classList.remove('selected'));
+                selectedTags = [];
+            } else {
+                const errorData = await response.json();
+                console.error('Error associating tags:', errorData);
+                M.toast({ html: `Error associating tags: ${errorData.error || 'Something went wrong.'}` });
+            }
+        } catch (error) {
+            console.error('Error associating tags:', error);
+            M.toast({ html: 'Network error while associating tags.' });
+        }
+    }
+    fetchTags();
+    </script>
+</body>
+</html>
