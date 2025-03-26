@@ -110,3 +110,21 @@ def create_question():
     flash('Question Successfully created!')
     return jsonify(question.get_json()), 201
 
+@questions_views.route('/delete/<int:question_id>', methods=['GET'])
+@login_required
+def delete_question(question_id):
+    question = Question.query.get_or_404(question_id)
+    if question.teacherId == current_user.id:  # Ensure the user owns the question
+        try:
+            # Delete associated options first (if necessary, depending on your database setup)
+            for option in question.options:
+                db.session.delete(option)
+            db.session.delete(question)
+            db.session.commit()
+            flash('Question deleted successfully!', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error deleting question: {e}', 'error')
+    else:
+        flash('You do not have permission to delete this question.', 'warning')
+    return redirect(url_for('questions_views.my_questions_page'))
