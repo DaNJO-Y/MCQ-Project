@@ -257,8 +257,6 @@
             display:inline-block;
             margin-left: 10px;
             margin-bottom: 10px;
-            cursor: pointer;
-            opacity: 0.8;
         }
         #tagbutton:hover {
             background-color: #e5e7eb;
@@ -502,158 +500,17 @@
             color: #2b96ad;
             /* background-color: rgba(0, 0, 0, 0.7) ; */
         }
-        
-         .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-        }
-
-      
-      .modal-content {
-        background-color: #fefefe;
-        margin: 10% auto; /* Adjust top margin as needed */
-        padding: 20px;
-        border: 1px solid #888;
-        width: 70%; /* Adjust width as needed */
-        display: flex; /* Enable flexbox for side-by-side layout */
-        border-radius: 8px;
-        overflow: hidden; /* Clip any overflowing content within modal-content */
-      }
-
-      /* Left side - Tag List */
-      .tag-list-container {
-        flex: 1; /* Takes up half the available width */
-        padding: 15px;
-        border-right: 1px solid #ccc;
-        overflow-y: auto; /* Enables vertical scrolling */
-        max-height: 400px; /* Adjust max height as needed */
-      }
-
-      .tag-list-container h3 {
-        margin-top: 0;
-        color: #2b96ad;
-        margin-bottom: 10px;
-      }
-
-      .tag-item {
-        padding: 8px 12px;
-        margin-bottom: 5px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        cursor: pointer;
-        background-color: #f9f9f9;
-        transition: background-color 0.3s;
-      }
-
-      .tag-item:hover {
-        background-color: #eee;
-      }
-
-      .tag-item.selected {
-        background-color: #2b96ad;
-        color: white;
-        border-color: #2b96ad;
-      }
-
-      /* Right side - Create Tag Form */
-      .create-tag-container {
-        flex: 1; /* Takes up half the available width */
-        padding: 15px;
-      }
-
-      .create-tag-container h3 {
-        margin-top: 0;
-        color: #2b96ad;
-        margin-bottom: 10px;
-      }
-
-      .create-tag-container label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-      }
-
-      .create-tag-container input[type=text] {
-        width: calc(100% - 12px);
-        padding: 8px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        box-sizing: border-box;
-        border-radius: 4px;
-      }
-
-      .create-tag-container button[type=submit] {
-        background-color: #2b96ad;
-        color: white;
-        padding: 10px 15px;
-        border: none;
-        cursor: pointer;
-        width: 100%;
-        opacity: 0.9;
-        border-radius: 4px;
-      }
-
-      .create-tag-container button[type=submit]:hover {
-        opacity: 1;
-      }
-
-      /* Style the close button */
-      .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-      }
-
-      .close:hover,
-      .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-      }
-
-      /* Modal Header (above the two halves) */
-      .modal-header {
-        background-color: #2b96ad;
-        color: white;
-        padding: 10px;
-        text-align: center;
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-      }
-      .modal-header h2 {
-        margin: 0;
-      }
-
-      /* Ensure close button is positioned correctly relative to modal-content */
-      .modal-content > .close {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        z-index: 2; /* Ensure it's above the content */
-      } 
-
-      
-        
-        
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <div class="text-2xl font-bold">
-                <a href="/homePage" class="text-white hover:text-gray-500 transition duration-300">
+                <a href="homepage.html" class="text-white hover:text-gray-500 transition duration-300">
                     <i class="fas fa-home"></i> Home
                 </a>
             </div>
-            <button class="button"><a href="/createQuestion">New Question</a></button>
+            <button class="button">New Question</button>
             <button class="button">New Exam</button>
             <div class="relative">
                 <button id="profileButton" class="profile-button">
@@ -687,7 +544,7 @@
                 </h1>
                 <!-- Question Content -->
                 <div id="maindiv">
-                    <!-- <div class="format" role="toolbar" aria-label="Text Formatting" aria-controls="textarea1">
+                    <div class="format" role="toolbar" aria-label="Text Formatting" aria-controls="textarea1">
                       <div class="group characteristics">
                         <button type="button" class="item bold popup" aria-pressed="false" value="bold" tabindex="0">
                           <span class="fas fa-bold" aria-hidden="true"></span>
@@ -755,13 +612,13 @@
                         <label class="input"><input id="checkbox" class="item nightmode" type="checkbox" tabindex="-1"> Night Mode</label>
                         <a id="link" class="item link" href="../help.html" tabindex="-1">Help</a>
                       </div>
-                    </div> -->
+                    </div>
                     <label for="textarea1" class="hidden">Text Sample</label><br>
                     <form id="questionForm" enctype="multipart/form-data">
-                      <!-- <div class="mb-4">
+                      <div class="mb-4">
                         <h2 class="font-semibold">Question Title:</h2>
                         <input id="questiontitle" type="text" class="p-2 border rounded" placeholder="Enter question title">
-                    </div> -->
+                    </div>
                     <div class="mb-4 flex">
                         <div class="w-2/3 pr-2">
                             <h2 class="font-semibold">Question Text</h2>
@@ -787,6 +644,19 @@
                         <input id="difficultytitle" name="difficulty" type="text" class="p-2 border rounded" placeholder="Enter question diffiulty...Easy, Intermediate, Hard">
                     </div>
 
+                    <!-- <div class="optioncontainer">
+                        <label for="option1" class="label">Option 1:</label>
+                        <div class="input-container">
+                            <input type="text" id="option1" class="text-input">
+                            <button class="upload-btn">
+                                <div class="upload-container">
+                                    <label for="file-upload">+ Add Image</label>
+                                    <input type="file" id="file-upload" class="hidden" />
+                                </div>
+                            </button>
+                        </div>
+                    </div> -->
+
                     <div id="optionsContainer"></div>
                     <div class="flex-container">
                         <button class="add-btn" id="addOption" type="button">
@@ -809,9 +679,7 @@
                         </div>
                     </div> -->
 
-                    <!-- <button id="tagbutton" class="text-white py-1 px-4 rounded" onclick="openForm()">Add Tags</button> -->
-                    
-                    <!-- <button id="tagbutton" class="text-white py-1 px-4 rounded" onclick="document.getElementById('tagModal').style.display='block'" >Open Modal</button>-->
+                    <button id="tagbutton" class="text-white py-1 px-4 rounded">Add Tags</button>
                     <button type="submit" id="savebutton" class="text-white py-1 px-4 rounded">Save</button>
                     </form>
 
@@ -919,7 +787,6 @@ addOptionButton.addEventListener('click', createOptionInput);
             formData.append('options', JSON.stringify(options)); // append the options as a json string.
 
             try {
-              // '/questions'
                 const response = await fetch('/questions', {
                     method: 'POST',
                     body: formData,
@@ -927,10 +794,7 @@ addOptionButton.addEventListener('click', createOptionInput);
 
                 if (response.ok) { // Check if the response was successful
                     console.log('Success: Question created!');
-                    const responseData = await response.json();
-                    const questionId = responseData.id;
-                    // '/createQuestion'
-                    window.location.href = `/tags?question_id=${questionId}`; // Redirect to a success page or home page
+                    window.location.href = '/createQuestion'; // Redirect to a success page or home page
                 } else {
                     const errorData = await response.json();
                     console.error('Error:', errorData);
@@ -944,7 +808,6 @@ addOptionButton.addEventListener('click', createOptionInput);
         });
 
         createOptionInput(); // Create the first option input on page load
-  
     </script>
 </body>
 </html>
