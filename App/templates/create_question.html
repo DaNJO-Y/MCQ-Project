@@ -248,6 +248,7 @@
             float:right;
             margin-right: 20px;
             margin-bottom: 10px;
+            font-size: 1.0rem;
         }
         #savebutton:hover {
             background-color: #e5e7eb;
@@ -812,7 +813,7 @@
                     <!-- <button id="tagbutton" class="text-white py-1 px-4 rounded" onclick="openForm()">Add Tags</button> -->
                     
                     <!-- <button id="tagbutton" class="text-white py-1 px-4 rounded" onclick="document.getElementById('tagModal').style.display='block'" >Open Modal</button>-->
-                    <button type="submit" id="savebutton" class="text-white py-1 px-4 rounded">Save</button>
+                    <button type="submit" id="savebutton" class="text-white py-1 px-4 rounded">Save and move to Tags</button>
                     </form>
 
                     </div>
@@ -858,11 +859,13 @@
         const questionForm = document.getElementById('questionForm');
 
         let optionCount = 0;
-
+        let optionIds = [];
         function createOptionInput() {
           const optionDiv = document.createElement('div');
           const optionId = `optionBody${optionCount}`; // Declare optionId
           const fileUploadId = `file-upload-option-${optionCount}`;
+          optionDiv.className = 'option-container'; // Add a class for easier selection
+          optionDiv.dataset.optionId = optionCount; // Store the ID in data attribute
           optionDiv.innerHTML = 
           `
                 <div class="optioncontainer">
@@ -871,19 +874,18 @@
                         <input type="text" id="${optionId}" name="optionBody${optionCount}" class="text-input">
                         <button class="upload-btn">
                             <div class="upload-container">
-                                
                                 <input type="file" id="${fileUploadId}"  name="optionImage${optionCount}" />
                             </div>
                         </button>
-                        </div>
+                    </div>
                     <label for="optionCorrect${optionCount}">Is Correct:</label>
                     <input type="checkbox" id="optionCorrect${optionCount}" name="optionCorrect${optionCount}"><br><br>
-                    </div>
-                    </div>
+                    <button type="button" class="remove-btn" onclick="removeOption(this)">Remove</button>
                 </div>
               
           `;
           optionsContainer.appendChild(optionDiv); // Append to the container!
+          optionIds.push(optionCount);
           const newOptionInput = document.getElementById(optionId);
           if (newOptionInput) {
               newOptionInput.style.width = '50%';
@@ -891,7 +893,57 @@
           }
           optionCount++;
               
-}
+        }
+        function removeOption(button) {
+            const optionDiv = button.closest('.option-container');
+            const optionId = parseInt(optionDiv.dataset.optionId);
+            
+            // Remove from DOM
+            optionDiv.remove();
+            optionCount--;
+            // Remove from tracking array
+            optionIds = optionIds.filter(id => id !== optionId);
+            
+            // Re-index the remaining options
+            const remainingOptions = optionsContainer.querySelectorAll('.option-container');
+            remainingOptions.forEach((container, index) => {
+                const newId = optionIds[index];
+                container.dataset.optionId = newId;
+                
+                // Update all the IDs and names in this container
+                const label = container.querySelector('.label');
+                const textInput = container.querySelector('.text-input');
+                const fileInput = container.querySelector('input[type="file"]');
+                const checkbox = container.querySelector('input[type="checkbox"]');
+                
+                if (label) {
+                    label.textContent = `Option ${index + 1}:`;
+                    label.setAttribute('for', `optionBody${newId}`);
+                }
+                if (textInput) {
+                    textInput.id = `optionBody${newId}`;
+                    textInput.name = `optionBody${newId}`;
+                }
+                if (fileInput) {
+                    fileInput.id = `file-upload-option-${newId}`;
+                    fileInput.name = `optionImage${newId}`;
+                    // Update the associated label's 'for' attribute
+                    const fileLabel = container.querySelector(`label[for="file-upload-option-${optionId}"]`);
+                    if (fileLabel) {
+                        fileLabel.setAttribute('for', `file-upload-option-${newId}`);
+                    }
+                }
+                if (checkbox) {
+                    checkbox.id = `optionCorrect${newId}`;
+                    checkbox.name = `optionCorrect${newId}`;
+                    // Update the associated label's 'for' attribute
+                    const checkboxLabel = container.querySelector(`label[for="optionCorrect${optionId}"]`);
+                    if (checkboxLabel) {
+                        checkboxLabel.setAttribute('for', `optionCorrect${newId}`);
+                    }
+                }
+            });
+        }
 
 addOptionButton.addEventListener('click', createOptionInput);
 
