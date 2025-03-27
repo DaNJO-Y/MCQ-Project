@@ -187,7 +187,7 @@ def signup_action_data():
     login_user(new_user, remember=True)
 
     flash('Account created!')
-    response = redirect(url_for('index_views.index_page'))
+    response = render_template('login.html')
 
   except Exception as e:
     db.session.rollback()
