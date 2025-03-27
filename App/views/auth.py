@@ -149,7 +149,7 @@ def logout_action():
 
 @auth_views.route('/signup')
 def signup_action():
-    return render_template('signup.html')
+    return render_template('signupPage.html')
 
 @auth_views.route('/signupadmin')
 #def signup_admin():
