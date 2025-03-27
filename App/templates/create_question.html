@@ -654,8 +654,9 @@
                    </a>
             </div>
             <button class="button"><a href="/createQuestion">New Question</a></button>
-            <button class="button">New Exam</button>
-            <div class="relative">
+            <button class="button"><a href="/new_exam">New Exam</a></button>
+            <div class="flex items-center space-x-4">
+              <div class="relative">
                 <button id="profileButton" class="profile-button">
                     <i class="fas fa-user-circle text-3xl"></i>
                     <span class="ml-2">Your Profile</span>
@@ -665,7 +666,8 @@
                         <i class="fas fa-sign-out-alt mr-2"></i>Logout
                     </a>
                 </div>
-            </div>
+             </div>
+          </div>
         </header>
 
         <div class="flex">
@@ -674,10 +676,12 @@
                 <ul class="space-y-4">
                   <button class="nav-button" onclick="window.location.href='{{ url_for('questions_views.my_questions_page') }}'">
                     <i class="fas fa-file-alt mr-2"></i> My Questions
-                </button>
-                    <li><button class="nav-button"><i class="fas fa-file-alt mr-2"></i> My Exams</button></li>
-                    <li><button class="nav-button"><i class="fas fa-file-upload mr-2"></i> Import Questions</button></li>
-                    <li><button class="nav-button"><i class="fas fa-question-circle mr-2"></i> Help</button></li>
+                  </button>
+                  <button class="nav-button" onclick="window.location.href='{{ url_for('exams_views.my_exams_page') }}'">
+                    <i class="fas fa-file-alt mr-2"></i> My Exams
+                  </button>
+                  <li><button class="nav-button"><i class="fas fa-file-upload mr-2"></i> Import Questions</button></li>
+                  <li><button class="nav-button"><i class="fas fa-question-circle mr-2"></i> Help</button></li>
                 </ul>
             </nav>
 
@@ -853,6 +857,25 @@
                 mainContent.style.marginRight = '2rem';
             }
         });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // ... profile dropdown logic ...
+            const profileButton = document.getElementById('profileButton');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            profileButton.addEventListener('click', () => {
+                profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+            });
+
+        });
+
+            // Close the dropdown if clicked outside
+            document.addEventListener('click', (event) => {
+                if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                    profileDropdown.style.display = 'none';
+                }
+            });
+
         const optionsContainer = document.getElementById('optionsContainer');
         const addOptionButton = document.getElementById('addOption');
         const questionForm = document.getElementById('questionForm');
