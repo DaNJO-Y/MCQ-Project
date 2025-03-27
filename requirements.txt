@@ -19,3 +19,4 @@ mysqlclient==2.1.1
 Flask-Admin==1.6.1
 sqlalchemy-serializer==1.4.12
 Flask-Login==0.6.3
+alembic==1.13.1
