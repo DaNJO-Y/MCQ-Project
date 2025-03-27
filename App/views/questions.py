@@ -51,6 +51,7 @@ def createQuestionPage():
     return render_template('create_question.html')
 
 @questions_views.route('/questions', methods=['POST'])
+@login_required
 def create_question():
     teacher = current_user
     teacher_id = teacher.id
@@ -105,8 +106,15 @@ def create_question():
     for option in options:
         option.questionId = question.id
     db.session.commit()
+    user = current_user
+    if teacher_id == user.id:
+        teacher = get_teacher(teacher_id)
+        # print(teacher)
+        teacher.questions.append(question)
+        db.session.commit()
 
     print(question.get_json())
+    # print(teacher.questions)
     flash('Question Successfully created!')
     return jsonify(question.get_json()), 201
 

@@ -30,3 +30,11 @@ def my_exams_page():
 
     return render_template('MyExams.html', exams=response["exams"])
 
+@exams_views.route('/new_exam')
+def newExamPage():
+    return render_template('create_exam.html')
+
+@exams_views.route('/create_exams')
+@login_required
+def create_an_exam():
+    user = current_user
