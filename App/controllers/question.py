@@ -2,20 +2,29 @@ from App.models import Question
 from App.database import db
 from App.utils import shuffle
 
-def save_question(teacherId, correctOption, difficulty, courseCode, options):
-    newquestion = Question(teacherId=teacherId, correctOption=correctOption, difficulty=difficulty,courseCode=courseCode, options=options)
+def save_question(teacherId, text, difficulty, courseCode, options):
+    newquestion = Question(teacherId=teacherId, text=text, difficulty=difficulty,courseCode=courseCode, options=options)
     db.session.add(newquestion)
     db.session.commit()
     return newquestion
 
-def edit_question(id,correctOption, difficulty,courseCode):
+def edit_question(id, text, difficulty, courseCode):
     question = get_question(id)
     if question:
-        question.correctOption = correctOption
-        question.difficulty = difficulty
-        question.courseCode = courseCode
+        if text != None:
+            question.text = text
+        if difficulty != None:
+            question.difficulty = difficulty
+        if courseCode != None:
+            question.courseCode = courseCode
         db.session.add(question)
-        return db.session.commit()
+        try:
+            db.session.commit()
+            return question  # Return the updated question object
+        except Exception as e:
+            db.session.rollback() #rollback the session if there is an error.
+            print(f"Error editing question: {e}")
+            return None  # Indicate failure
     return None
 
 def delete_question(id):

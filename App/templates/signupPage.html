@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Signup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+        }
+
+        #img {
+            width: 50%; /* Half the page */
+            height: 100vh;
+            object-fit: cover;
+            border-radius: 0; /* Remove border radius for full page section */
+            margin-right: 0; /* No margin between sections */
+        }
+
+        #signup-content {
+            width: 50%; /* Half the page */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center form content horizontally */
+            justify-content: center; /* Center form content vertically */
+            text-align: center; /* Center text within the form */
+            padding: 20px; /* Add some padding around the form content */
+        }
+
+        #signupheader, #bankname {
+            font-size: 36px; /* Adjusted font size */
+            color: black;
+            font-family: 'Whitney Semibold', sans-serif;
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        #signupheader {
+            text-decoration: underline;
+        }
+
+        label {
+            font-family: 'Whitney Book', sans-serif;
+            font-size: 18px;
+            display: block;
+            margin-bottom: 8px;
+            text-align: left; /* Align labels to the left within the form */
+            width: 80%; /* Control label width */
+        }
+
+        input[type=password],
+        input[type=text],
+        input[type=email] {
+            width: 80%;
+            height: 45px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            color: black;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
+
+        input[type=submit] {
+            background-color: black;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: fantasy;
+            font-size: 16px;
+            width: auto;
+        }
+
+        .links-container {
+            margin-top: 15px;
+        }
+
+        a {
+            font-family: 'Whitney Book', sans-serif;
+            color: black;
+            text-decoration: underline;
+            font-size: 16px;
+        }
+
+        .flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            width: 80%; /* Control width of the link and button container */
+        }
+
+        .signup-btn {
+            margin-left: auto;
+        }
+
+        /* Radio button styles */
+        .radio-group {
+            display: flex;
+            justify-content: center; /* Center radio buttons */
+            width: 80%;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: block;
+            position: relative;
+            padding-left: 30px;
+            margin-right: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #eee;
+            border-radius: 50%;
+        }
+
+        .container:hover input ~ .checkmark {
+            background-color: #ccc;
+        }
+
+        .container input:checked ~ .checkmark {
+            background-color: black;
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .container input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        .container .checkmark:after {
+            top: 6px;
+            left: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: white;
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            bottom: auto; /* Override Materialize's bottom positioning */
+            left: auto; /* Override Materialize's left positioning */
+            transform: none !important; /* Prevent Materialize's default transform */
+            color: white ; 
+            background-color: rgba(0, 0, 0, 0.7) ;
+        }
+    </style>
+</head>
+
+<body>
+    <img id="img" src="{{ url_for('static', filename='Images/mcq.jpg') }}" alt="MCQ Image">
+
+    <div id="signup-content">
+        <h3 id="bankname">Multiple Choice Question Bank</h3>
+        <h4 id="signupheader">Signup</h4>
+        <form id="signupForm" method="POST" action="/signup">
+            <label for="first-name">Your First Name</label>
+            <input type="text" name="first_name" id="first_name" value="{{ request.form['first-name'] }}" class="form-control" required>
+
+            <label for="last-name">Your Last Name</label>
+            <input type="text" name="last_name" id="last_name" value="{{ request.form['last-name'] }}" class="form-control" required>
+
+            <label for="username">Your Username</label>
+            <input type="text" name="username" id="username" value="{{ request.form['username'] }}" class="form-control" required>
+
+            <label for="email">Enter your email:</label>
+            <input type="email" id="email" name="email" value="{{ request.form['email'] }}">
+
+            <label for="pwd">Password:</label><br>
+            <input type="password" id="pwd" name="pwd">
+
+            <div class="radio-group">
+                <label class="container">Admin
+                    <input type="radio" checked="checked" name="radio" value="admin">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container">Teacher
+                    <input type="radio" name="radio" value="teacher">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <!-- <div class="flex">
+                <a href="login.html" class="text-[#2b96ad] hover:text-gray-200 transition duration-300">
+                    Login &rarr;
+                </a> -->
+                <input type="submit" value="SIGNUP" class="signup-btn bg-[#2b96ad] text-white py-3 px-4 rounded-md hover:opacity-90 transition duration-300 text-lg">
+            </div>
+        </form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+       M.AutoInit();
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              {% for message in messages %}
+              M.toast({html: '{{message}}'})
+              {% endfor %}
+          {% endif %}
+        {% endwith %}
+       
+    </script>
+</body>
+</html>
