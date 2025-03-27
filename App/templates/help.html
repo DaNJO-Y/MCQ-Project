@@ -157,8 +157,8 @@
                     <i class="fas fa-home"></i>HomePage
                        </a>
             </div>
-            <button class="button">New Question</button>
-            <button class="button">New Exam</button>
+            <button class="button"><a href="/createQuestion">New Question</a></button>
+            <button class="button"><a href="/new_exam">New Exam</a></button>
             <div class="relative">
                 <button id="profileButton" class="profile-button">
                     <i class="fas fa-user-circle text-3xl"></i>
@@ -188,12 +188,134 @@
             </nav>
 
             <main id="mainContent">
+                <header>
                 <h1 class="text-2xl font-bold mb-6 text-center text-[#2b96ad]">
                     Need help?
                 </h1>
-                <!--<p class="text-[#2b96ad] text-center">
-                    Access and manage your exams and questions here. Use the navigation menu on the left to get started.
-                </p>-->
+                <nav>
+                    <ul>
+                        <li><u><a href="#getting-started">&#x2022;Getting Started</a></u></li>
+                        <li><u><a href="#creating-questions">&#x2022;Creating Questions</a></u></li>
+                        <li><u><a href="#creating-exams">&#x2022;Creating Exams</a></u></li>
+                        <li><u><a href="#managing-exams">&#x2022;Managing Exams</a></u></li>
+                         <li><u><a href="#managing-questions">&#x2022;Managing Questions</a></u></li>
+                        <li><u><a href="#faq">&#x2022;FAQs</a></u></li>
+                    </ul>
+                </nav>
+                </header>
+                <section id="getting-started">
+                  <h2><b>Getting Started</b></h2>
+                  <p>Welcome to the MCQ Bank! This platform helps teachers create and manage multiple-choice questions efficiently.</p>
+                  <br>
+                  <ul>
+                      <li><strong>Navigation:</strong></li>
+                      <li>&#x2022; Access the question bank by selecting 'My Questions'.</li>
+                      <li>&#x2022; Access your created exams by selecting 'My Exams'.</li>
+                      <li>&#x2022; Import questions using the given format by clicking 'ImportQuestions'.</li>
+                      <li>&#x2022; Access this help page by clicking 'Help'.</li>
+                  </ul>
+                  <br>
+              </section>
+          
+              <!-- Creating Questions -->
+              <section id="creating-questions">
+                  <h2><b>Creating Questions</b></h2>
+                  <p>Follow these steps to add a question:</p>
+                  <ul>
+                      <li>&#x2022;Click 'New Question' at the top of any page.</li>
+                      <li>&#x2022;Enter the question text, question course code and question difficulty.</li>
+                      <li>&#x2022;Upload a main image if necessary.</li>
+                      <li>&#x2022;Upload an image (optional) and enter answer choices.</li>
+                      <li>&#x2022;More answer choices can be added when you select '+ Add Answer Options'.</li>
+                      <li>&#x2022;Mark the correct answer and save.</li>
+                      <li>&#x2022;You can view and manage your questions by selecting the 'My Questions' button.</li>
+                  </ul>
+                  <br>
+              </section>
+              
+              <!-- Creating Exams -->
+              <section id="creating-exams">
+                  <h2><b>Creating Exams</b></h2>
+                  <p>To create an exam, follow these steps:</p>
+                  <ul>
+                      <li>&#x2022;Click 'New Question' at the top of any page.</li>
+                      <li>&#x2022;Enter the Exam Title on the right, in the Exam Builder.</li>
+                      <li>&#x2022;Select questions from the question bank to be added to the exam.</li>
+                      <li>&#x2022;Use the search or filter function to find relevant questions.</li>
+                      <li>&#x2022;Questions can be unselected if no longer wanted.</li>
+                      <li>&#x2022;Select 'Shuffle answer' if you want the answers in a different order.</li>
+                      <li>&#x2022;Click and hold the drag handle (☰) next to a question. to reorder the questions.</li>
+                      <li>&#x2022;Click 'Save' to store the exam to the 'My Exams' page, where you can view and manage your exams.</li>
+                      <li>&#x2022; Select 'Download' to have the exam downloaded to your device.</li>
+                  </ul>
+                  <br>
+              </section>
+          
+              <!-- Managing Exams -->
+              <section id="managing-exams">
+                <h2><b>Managing Exams</b></h2>
+                <p>To manage your exams, go to the <a href="/my-exams">My Exams</a> page where you can:</p>
+                <ul>
+                    <li><i>&#x2022;View an exam:</i> Select the exam title to view its details.</li>
+                    <li><i>&#x2022;Edit an exam:</i> Open the exam in an editing page, similar to the new exam creation page, to make changes.</li>
+                    <li><i>&#x2022;Delete an exam:</i> Delete any exam you no longer need.</li>
+                    <li><i>&#x2022;Download an exam:</i> Download the exam as a PDF to your device.</li>
+                    <li><i>&#x2022;Search for exams:</i> Use the search bar to find exams by title or keyword.</li>
+                    <li><i>&#x2022;Filter exams:</i> Filter exams using tags or course codes to easily find relevant exams.</li>
+                </ul>
+                <br>
+            </section>
+            
+            <section id="managing-questions">
+              <h2><b>Managing Questions</b></h2>
+              <p>To manage your questions, go to the <a href="/my-questions">My Questions</a> page where you can:</p>
+              <ul>
+                  <li><i>&#x2022;View a question's details:</i> Select the question title to view more details, including answer options, correct answers, and usage history.</li>
+                  <li><i>&#x2022;Edit a question:</i> Open the question in an editing page to make changes to the text, answer options, or tags.</li>
+                  <li><i>&#x2022;Delete a question:</i> Delete any question you no longer need. You will not be allowed to delete any questions that have been used in an exam.</li>
+                  <li><i>&#x2022;Search for questions:</i> Use the search bar to find questions by title, keyword, or tags.</li>
+                  <li><i>&#x2022;Filter questions:</i> Filter questions by tags, course codes, or other relevant criteria to find the questions you need more easily.</li>
+              </ul>
+              <br>
+          </section>
+                    
+              <!-- FAQ Section -->
+              <section id="faq">
+                  <h2><b>Frequently Asked Questions</b></h2>
+                  <div class="faq-item">
+                      <button class="faq-question">&#x2022;Can I add images to my questions?</button>
+                      <div class="faq-answer">Yes! When creating a question, use the "Upload Image" option.</div>
+                  </div>
+                  <br>
+                  <div class="faq-item">
+                      <button class="faq-question">&#x2022;How do I allow multiple correct answers?</button>
+                      <div class="faq-answer">Check the '"Multiple Correct Answers" 'Is Correct' box for each correct answer when adding choices.</div>
+                  </div>
+                  <br>
+                  <div class="faq-item">
+                      <button class="faq-question">&#x2022;Can I add images to questions?</button>
+                      <div class="faq-answer"><p>Yes, you can add images to your questions. Here's how:</p>
+                      <ul>
+                        <li>1. When creating or editing a question, you'll find an option to attach an image. Click on the "Add Image" button.</li>
+                        <li>2. Select the image file from your device.</li>
+                        <li>3. The image will appear as part of your question text, or you can use images as answer options instead of text if desired.</li>
+                      </ul></div>
+                  </div>
+                  <br>
+                  <div class="faq-item">
+                      <button class="faq-question">&#x2022;How do I add or remove questions from an existing exam?</button>
+                      <div class="faq-answer"><p>You can easily add or remove questions from an existing exam by following these steps:</p>
+                      <ul>
+                        <li>1.Go to the "My Exams" page and select the exam you want to edit.</li>
+                        <li>2. Click on the "Edit Exam" button to open the exam in editing mode.</li>
+                        <li>3. Add Questions: Select from your question bank wich appears on the left of the Exam Builder. You can filter or search for questions to find the ones you want.</li>
+                        <li>4. Remove Questions: If you wish to remove a question, simply click the "Remove" icon next to the question in the exam.</li>
+                        <li>5. After adding or removing questions, click "Save Changes" to update the exam.</li>
+                      </ul></div>
+                  </div>
+              </section>
+        
+
             </main>
         </div>
     </div>
