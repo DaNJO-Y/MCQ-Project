@@ -128,8 +128,8 @@
             background-color: rgba(255, 255, 255, 0.9);
             border-radius: 0.5rem;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            width: 20%;
+            padding: 5px;
+            width: 50%;
             height: calc(100vh - 8rem);
             transition: all 0.3s ease;
             position: relative;
@@ -138,17 +138,33 @@
             backdrop-filter: blur(10px);
             /* margin-left: 0; */
         }
+        #sideNav table {
+            font-size: 0.75em; /* Adjust the value as needed */
+        }
+
+        #sideNav th,
+        #sideNav td {
+            padding: 4px; /* Reduce padding to compensate for smaller text */
+        }
         #mainContent {
             flex: 1;
+            flex-grow:1;
             background-color: rgba(255, 255, 255, 0.9);
             border-radius: 0.5rem;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            margin-left: 2rem;
-            margin-right: 2rem;
+            padding: 10px;
+            margin-left: 10px;
+            margin-right: 10px;
             transition: all 0.3s ease;
-    
+            min-width: 0;
+            width:calc(100% - 2rem);
         }
+        
+        .bg-gray-100 {
+            width: 100%; /* Take up full width of the parent */
+            padding: 1rem; /* Add some padding if needed */
+            }
+           
         .filters-container {
                 display: flex;
                 justify-content: space-between;
@@ -161,19 +177,22 @@
                 padding: 0.5rem 1rem;
                 border-radius: 0.5rem;
                 width:100px;
+                margin-left:10px;
             }
 
             .searchbar {
-                width: 50%;
+                width: 230%;
                 padding: 12px;
                 border: 1px solid darkgrey;
                 border-radius: 0.375rem;
                 margin-right:10%;
+                margin-left: 10px;
+                margin-top: 10px;
             }
             table {
               font-family: arial, sans-serif;
               border-collapse: collapse;
-              width: 100%;
+              width: 50%;
             }
             td, th {
               border: 1px solid #dddddd;
@@ -284,66 +303,58 @@
         <div class="flex">
             <button id="toggleNav"><i class="fas fa-angle-left"></i></button>
             <nav id="sideNav">
-                <ul class="space-y-4">
-                    <button class="nav-button" onclick="window.location.href='{{ url_for('questions_views.my_questions_page') }}'">
-                        <i class="fas fa-file-alt mr-2"></i> My Questions
-                    </button>
-                    <li><button class="nav-button"><i class="fas fa-file-alt mr-2"></i> My Exams</button></li>
-                    <li><button class="nav-button"><i class="fas fa-file-upload mr-2"></i> Import Questions</button></li>
-                    <li><button class="nav-button"><i class="fas fa-question-circle mr-2"></i> Help</button></li>
-                </ul>
-            </nav>
-
-            <main id="mainContent" class="bg-white rounded shadow p-4">
-                <div class="flex w-full">
-                    <div class="w-1/2 pr-4">
-                        <div class="flex justify-between items-center mb-4">
-                            <button id="filter" class="filter-button">Filters</button>
-                            <div class="relative">
-                                <input id="searchbar" type="text" placeholder="Search Questions" class="searchbar">
-                                <button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div id="question-bank-container">
-                            <table class="w-full">
-                                <thead>
-                                    <tr class="bg-gray-200">
-                                        <th class="p-2 text-left">Select</th>
-                                        <th class="p-2 text-left">Question</th>
-                                        <th class="p-2 text-left">Author/Uploader</th>
-                                        <th class="p-2 text-left">Tag</th>
-                                        <th class="p-2 text-left">Last used</th>
-                                        <th class="p-2 text-left">Options</th>
-                                        <th class="p-2 text-left">Answer</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="question-bank-body">
-                                    <tr data-question-id="1" data-question-text="What is the powerhouse of the cell?" data-question-tag="Biology">
-                                        <td class="p-2"><input type="checkbox" class="select-question"></td>
-                                        <td class="p-2">What is the powerhouse of the cell?</td>
-                                        <td class="p-2">John</td>
-                                        <td class="p-2">Biology</td>
-                                        <td class="p-2">2025, Sem 1</td>
-                                        <td class="p-2">Mitochondria...</td>
-                                        <td class="p-2">Mitochondria</td>
-                                    </tr>
-                                    <tr data-question-id="2" data-question-text="H2O is the chemical formula for?" data-question-tag="Chemistry">
-                                        <td class="p-2"><input type="checkbox" class="select-question"></td>
-                                        <td class="p-2">H2O is the chemical formula for?</td>
-                                        <td class="p-2">Jane</td>
-                                        <td class="p-2">Chemistry</td>
-                                        <td class="p-2">Never</td>
-                                        <td class="p-2">Water...</td>
-                                        <td class="p-2">Water</td>
-                                    </tr>
-                                    </tbody>
-                            </table>
+                <div class=" w-1/2">
+                    <div class="flex justify-between items-center mb-4 w-full">
+                        <button id="filter" class="filter-button">Filters</button>
+                        <div class="relative">
+                            <input id="searchbar" type="text" placeholder="Search Questions" class="searchbar">
+                            <button class="absolute right-[-13rem] top-1/2 transform -translate-y-1/2 text-gray-500">
+                                <i class="fas fa-search"></i>
+                            </button>
                         </div>
                     </div>
+                    <div id="question-bank-container">
+                        <table class="w-1/2">
+                            <thead>
+                                <tr class="bg-gray-200">
+                                    <th class="p-2 text-left">Select</th>
+                                    <th class="p-2 text-left">Question</th>
+                                    <th class="p-2 text-left">Author/Uploader</th>
+                                    <th class="p-2 text-left">Tag</th>
+                                    <th class="p-2 text-left">Last used</th>
+                                    <th class="p-2 text-left">Options</th>
+                                    <th class="p-2 text-left">Answer</th>
+                                </tr>
+                            </thead>
+                            <tbody id="question-bank-body">
+                                <tr data-question-id="1" data-question-text="What is the powerhouse of the cell?" data-question-tag="Biology">
+                                    <td class="p-2"><input type="checkbox" class="select-question"></td>
+                                    <td class="p-2">What is the powerhouse of the cell?</td>
+                                    <td class="p-2">John</td>
+                                    <td class="p-2">Biology</td>
+                                    <td class="p-2">2025, Sem 1</td>
+                                    <td class="p-2">Mitochondria...</td>
+                                    <td class="p-2">Mitochondria</td>
+                                </tr>
+                                <tr data-question-id="2" data-question-text="H2O is the chemical formula for?" data-question-tag="Chemistry">
+                                    <td class="p-2"><input type="checkbox" class="select-question"></td>
+                                    <td class="p-2">H2O is the chemical formula for?</td>
+                                    <td class="p-2">Jane</td>
+                                    <td class="p-2">Chemistry</td>
+                                    <td class="p-2">Never</td>
+                                    <td class="p-2">Water...</td>
+                                    <td class="p-2">Water</td>
+                                </tr>
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </nav>
 
-                    <div class="w-1/2 pl-4">
+            <main id="mainContent" class="bg-white rounded shadow">
+                
+                    
+                    <!--<div class=" pl-4">-->
                         <div class="bg-gray-100 rounded p-4">
                             <div class="flex justify-between items-center mb-2">
                                 <h2 class="text-xl font-semibold text-[#2b96ad]">Exam Builder</h2>
@@ -373,8 +384,8 @@
                                 <button id="download-exam-button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Download</button>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    <!--</div>-->
+                
             </main>
         </div>
     </div>
@@ -394,10 +405,10 @@
             isNavOpen = !isNavOpen;
             // updateNavAndContent();
             if (isNavOpen) {
-                sideNav.style.width = '20%';
+                sideNav.style.width = '50%';
                 sideNav.style.opacity = '1';
                 sideNav.style.visibility = 'visible';
-                mainContent.style.marginLeft = '2rem';
+                mainContent.style.marginLeft = '10px';
                 toggleNav.innerHTML = '<i class="fas fa-angle-left"></i>';
             } else {
                 sideNav.style.width = '0';
@@ -522,6 +533,7 @@
 
             examQuestionCount.textContent = count;
             examQuestionsEmpty.style.display = count === 0 ? 'block' : 'none';
+
         }
 
         document.getElementById('save-exam-button').addEventListener('click', () => {
