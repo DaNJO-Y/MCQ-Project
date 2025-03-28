@@ -3,6 +3,7 @@
 - Please Ensure that the spacing between each question is one line.
 - Below is an example of the expected format.
 - The uploaded file can either be a Word document or txt file.
+- Use the empty version  at the bottom, feel free to add more options
 
 CourseCode: BIOL2345
 Difficulty: EASY
@@ -34,3 +35,13 @@ C: 5
 D: 6
 E: 7
 Correct: B
+
+CourseCode: 
+Difficulty: 
+Question: 
+Tags: 
+A: 
+B: 
+C: 
+D: 
+Correct: 
