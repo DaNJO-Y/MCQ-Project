@@ -278,13 +278,19 @@
 
         <div class="flex w-full">
             <button id="toggleNav" class="md:hidden"><i class="fas fa-angle-left"></i></button>
-            <nav id="sideNav" class="hidden md:block">
+            <nav id="sideNav">
                 <ul class="space-y-4">
-                    <li><button class="nav-button"><i class="fas fa-file-alt mr-2"></i> My Questions</button></li>
-                    <li><button class="nav-button"><i class="fas fa-file-alt mr-2"></i> My Exams</button></li>
+                    <button class="nav-button" onclick="window.location.href='{{ url_for('questions_views.my_questions_page') }}'">
+                      <i class="fas fa-file-alt mr-2"></i> My Questions
+                    </button>
+                    <button class="nav-button" onclick="window.location.href='{{ url_for('exams_views.my_exams_page') }}'">
+                      <i class="fas fa-file-alt mr-2"></i> My Exams
+                    </button>
                     <li><button class="nav-button"><i class="fas fa-file-upload mr-2"></i> Import Questions</button></li>
-                    <li><button class="nav-button"><i class="fas fa-question-circle mr-2"></i> Help</button></li>
-                </ul>
+                    <button class="nav-button" onclick="window.location.href='{{ url_for('help_views.help_page') }}'">
+                      <i class="fas fa-file-alt mr-2"></i> Help
+                  </button>
+                  </ul>
             </nav>
 
             <main id="mainContent" class="flex-grow">
@@ -490,6 +496,9 @@
                 const data = await response.json();
                 console.log('Tags associated successfully:', data);
                 M.toast({ html: 'Tags associated successfully!' });
+                setTimeout(() => {
+                    window.location.href = '/myQuestions';
+                }, 1500);
                 // Optionally, you might want to unselect the tags after saving
                 selectedTagElements.forEach(el => el.classList.remove('selected'));
                 selectedTags = [];

@@ -253,6 +253,17 @@
         #savebutton:hover {
             background-color: #e5e7eb;
         }
+        #removebutton{
+            background-color:#2b96ad;
+            /* display:inline-block; */
+            float: right;
+            margin-right: 20px;
+            /* margin-bottom: 20px; */
+            font-size: 1.0rem;
+        }
+        #removebutton:hover {
+            background-color: #e5e7eb;
+        }
         #tagbutton{
             background-color:#2b96ad;
             display:inline-block;
@@ -895,6 +906,7 @@
           `
                 <div class="optioncontainer">
                     <label for="optionBody${optionCount}" class="label">Option ${optionCount + 1}:</label>
+                    <button type="button" id="removebutton" class="text-white py-1 px-4 rounded" onclick="removeOption(this)">Remove</button>
                     <div class="input-container">
                         <input type="text" id="${optionId}" name="optionBody${optionCount}" class="text-input">
                         <button class="upload-btn">
@@ -905,7 +917,7 @@
                     </div>
                     <label for="optionCorrect${optionCount}">Is Correct:</label>
                     <input type="checkbox" id="optionCorrect${optionCount}" name="optionCorrect${optionCount}"><br><br>
-                    <button type="button" class="remove-btn" onclick="removeOption(this)">Remove</button>
+                    
                 </div>
               
           `;
