@@ -349,7 +349,7 @@
                                         <td class="p-2">
                                             {% if question.tag %}
                                                 {% for tag in question.tag %}
-                                                    {{ tag.name }}<br>
+                                                    <li>{{ tag.tag_text }}</li>
                                                 {% endfor %}
                                             {% endif %}
                                         </td>
