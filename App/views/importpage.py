@@ -33,7 +33,7 @@ def extract_questions_from_text(text):
         line = line.strip()
         if not line:
             continue
-        print(f"Processing line: '{line}'")
+        # print(f"Processing line: '{line}'")
 
         if line.startswith("CourseCode:"):
             current_question['courseCode'] = line.split(":")[1].strip()

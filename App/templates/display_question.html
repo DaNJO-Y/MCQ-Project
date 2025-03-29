@@ -291,6 +291,38 @@
             margin-right: 8px; /* Equivalent to mr-2 */
             margin-bottom:4px;
         }
+        .imagecontainer  {
+            border: 1px solid #ccc;
+            border-radius: 0.25rem;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Optional: Space between image wrappers */
+        }
+
+        .image-wrapper {
+            width: 170px;
+            height: 180px;
+            overflow: hidden; /* Important to clip overflowing content */
+        }
+
+        .image-wrapper img {
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+        #backbutton{
+            background-color:#2b96ad;
+            display:inline-block;
+            float:left;
+            margin-right: 20px;
+            margin-bottom: 10px;
+            font-size: 1.0rem;
+        }
+        #backbutton:hover {
+            background-color: #e5e7eb;
+        }
     
     </style>
 </head>
@@ -333,22 +365,28 @@
             </nav>
 
             <main id="mainContent">
+                <button id="backbutton" class="text-white py-1 px-4 rounded">
+                    <a href="/myQuestions">
+                        Back To My Questions
+                    </a>
+                </button>
                 <h1 class="question-bank-title">
                     Display Question
                 </h1>
                 <!-- Question Content -->
                 <div id="maindiv">
-                    <div class="mb-4">
+                    <!-- <div class="mb-4">
                         <h2 class="font-semibold">Question Title:</h2>
                         <p id=questiontitle><u>Nutrition Therapy</u></p>
-                    </div>
+                    </div> -->
                     <div class="mb-4 flex">
                         <div id="questiontext" class="w-2/3 pr-2">
                             <h2 class="font-semibold">Question Text</h2>
-                            <p>In evaluating a client's response to nutrition therapy, which laboratory test would be of highest priority to examine?</p>
+                            <p>{{question.text}}</p>
                         </div>
-                        <!--<div class="w-1/3 pl-2">
-                            <h2 class="font-semibold">Image 1</h2>
+                        <div class="w-1/3 pl-2">
+                            <h2 class="font-semibold">Image</h2>
+                            {% if question.image == None %}
                             <div class="border rounded p-4 flex items-center justify-center">
                                 <svg class="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -356,17 +394,47 @@
                                         d="M3 5h18M9 3v2M15 3v2M4 7v13h16V7m-5 8h5M7 14H4m3 0v2m0-4v-2m0-4v-2m0 8v2"></path>
                                 </svg>
                             </div>
-                        </div>-->
+                            {% elif question.image != None%}
+                            <div class="border rounded p-4 flex items-center justify-center">
+                                <!-- /workspace/MCQ-Project/uploads -->
+                                <img src="{{ url_for('static', filename='uploads/' + question.image) }}" alt="Question image">
+                                <!-- print({{question.image}}) -->
+                            </div>
+                            {% endif %}
+                            
+                        </div>
                     </div>
 
                     <div class="mb-4 grid grid-cols-2 gap-2">
-                        <label class="optioncontainer">Albumin level
+                        <!-- <label class="optioncontainer">Albumin level
                           <input type="radio" checked="checked" name="radio">
                           <span class="checkmark"></span>
                         </label>
                         <p id="option">Lymphocyte count</p>
                         <p id="option">Serum potassium level</p>
-                        <p id="option">CBC differential</p>
+                        <p id="option">CBC differential</p> -->
+                        {% for option in question.options %}
+                            <!-- <label class="optioncontainer">
+                                <p id="option">Option: {{option.body}}</p>
+                            </label> -->
+                            {% if option.image == None %}
+                            <label class="optioncontainer">
+                                <p id="option">Option: {{option.body}}</p>
+                            </label>
+                            {% elif option.image != None%}
+                            
+                            <label class="optioncontainer">
+                                <p id="option">Option: {{option.body}}</p>
+                                <div class="imagecontainer">
+                                    <div class="image-wrapper">
+                                        <img src="{{ url_for('static', filename='uploads/' + option.image) }}" alt="Option image">
+                                    </div> 
+                                </div>
+                            </label>
+
+
+                            {% endif %}
+                        {% endfor %}
                         <!--<label class="optioncontainer">Lymphocyte count
                           <input type="radio" checked="checked" name="radio">
                           <span class="checkmark"></span>
@@ -381,10 +449,21 @@
                         </label>-->
                         
                     </div>
+                    <div>
+                        {% for option in question.options %}
+                            {% if option.is_correct == True %}
+                                <div>
+                                    <span>Correct Option: {{option.body}} </span>
+                                </div>
+                            {% endif %}     
+                        {% endfor %}
+                    </div>
 
                     <div class="flex justify-between items-center">
+                        
+                       
                         <div>
-                            <span>Date created:12/09/2014 </span>
+                            <span>Date created: {{question.dateCreated}}</span>
                         </div>
                         <button id="editbutton" class="text-white py-1 px-4 rounded">Edit</button>
                     </div>
@@ -393,8 +472,11 @@
             <aside id="rightnav" class="w-1/4 border-l pl-4">
                 <div class="mb-4">
                     <h2 class="font-semibold">Tags</h2>
-                    <p class="taginfo">Metabolism</p>
-                    <p class="taginfo">Nutrition</p>
+                    <!-- <p class="taginfo">Metabolism</p>
+                    <p class="taginfo">Nutrition</p> -->
+                    {% for tag in question.tag %}
+                        <p class="taginfo">{{tag.tag_text}}</p>
+                    {% endfor %}
                 </div>
                 <div>
                     <h2 class="font-semibold">Usage History:</h2>

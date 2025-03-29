@@ -18,6 +18,7 @@ class Question(db.Model):
     statistics = db.relationship('QuestionStatistics', backref=db.backref('question_statistics', lazy='joined'))
     options = db.relationship('Option', back_populates='question')
     lastUsed = db.Column(db.Date, nullable=True)
+    dateCreated = db.Column(db.Date, nullable= True)
 
     def __init__(self, teacherId, text, difficulty, courseCode, options):
         self.teacherId = teacherId
