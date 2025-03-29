@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-       :root {
+        :root {
             --primary-color: #2b96ad;
             --primary-dark: #207d91;
             --primary-light: #3cb3cc;
@@ -17,7 +17,7 @@
         body {
             background-image: url("{{ url_for('static', filename='Images/mcq.jpg') }}");
             background-repeat: no-repeat;
-            background-attachment: fixed; 
+            background-attachment: fixed;
             background-size: 100% 100%;
             min-height: 100vh;
         }
@@ -145,15 +145,16 @@
             margin-left: 2rem;
             margin-right: 2rem;
             transition: all 0.3s ease;
-    
+
         }
         #template{
-           text-align: center; 
+            text-align: center;
         }
         #maindiv {
             width: 75%; /* Equivalent to w-3/4 */
             padding: 1.5rem; /* Equivalent to p-6 */
             text-align: center; /* Centers text inside the div */
+            margin: 0 auto;
         }
 
         #template {
@@ -174,6 +175,37 @@
             display: block; /* Makes the label take up full width */
         }
 
+        #file-upload-button {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        #file-upload-button:hover {
+            background-color: #45a049;
+        }
+
+        #upload-status {
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            bottom: auto; /* Override Materialize's bottom positioning */
+            left: auto; /* Override Materialize's left positioning */
+            transform: none !important; /* Prevent Materialize's default transform */
+            color: white ; 
+            /* color: #2b96ad; */
+            /* background-color: rgba(0, 0, 0, 0.7) ; */
+        }
     </style>
 </head>
 <body>
@@ -182,7 +214,7 @@
             <div class="text-2xl font-bold">
                 <a class="text-white hover:text-gray-500 transition duration-300" onclick="window.location.href='{{ url_for('auth_views.homePage') }}'">
                     <i class="fas fa-home"></i>HomePage
-                       </a>
+                </a>
             </div>
             <button class="button">New Question</button>
             <button class="button">New Exam</button>
@@ -191,11 +223,7 @@
                     <i class="fas fa-user-circle text-3xl"></i>
                     <span class="ml-2">Your Profile</span>
                 </button>
-                <div id="profileDropdown" class="dropdown-menu">
-                    <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                    </a>
-                </div>
+                
             </div>
         </header>
 
@@ -209,7 +237,12 @@
                     <button class="nav-button" onclick="window.location.href='{{ url_for('exams_views.my_exams_page') }}'">
                         <i class="fas fa-file-alt mr-2"></i> My Exams
                     </button>
-                    <li><button class="nav-button"><i class="fas fa-file-upload mr-2"></i><a href="ImportQuestions.html">Import Questions</a></button></li>
+                    <li>
+                        <button class="nav-button">
+                            <i class="fas fa-file-upload mr-2"></i>
+                            <a href="{{ url_for('import_page_views.import_page') }}">Import Questions</a>
+                        </button>
+                    </li>
                     <button class="nav-button" onclick="window.location.href='{{ url_for('help_views.help_page') }}'">
                         <i class="fas fa-file-alt mr-2"></i> Help
                     </button>
@@ -222,26 +255,42 @@
                 </h1>
                 <div id="maindiv" class="w-3/4 p-6">
                     <p id="template" class="mb-4">
-                        Please ensure you have downloaded our <a href="#" class="text-blue-500 underline">question template</a> and have formatted your questions accordingly.
+                        Please ensure you have downloaded our <a href="{{ url_for('static', filename='templates/question_template.txt') }}" class="text-blue-500 underline" download="question_template.txt">question template</a> and have formatted your questions accordingly.
                     </p>
                     <div class="upload-container">
                         <label for="file-upload">+ Add Your File</label>
-                        <input type="file" id="file-upload" class="hidden" />
+                        <input type="file" id="file-upload" class="hidden" accept=".txt" onchange="handleFileChange(this.files)">
                     </div>
+                    <button id="file-upload-button" onclick="uploadFile()" disabled>Upload Questions</button>
+                    <div id="upload-status"></div>
                 </div>
             </main>
         </div>
     </div>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
+        
+        M.AutoInit();
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              {% for message in messages %}
+              M.toast({html: '{{message}}'})
+              {% endfor %}
+          {% endif %}
+        {% endwith %}
+    
         const toggleNav = document.getElementById('toggleNav');
         const sideNav = document.getElementById('sideNav');
         const mainContent = document.getElementById('mainContent');
+        const fileUpload = document.getElementById('file-upload');
+        const fileUploadButton = document.getElementById('file-upload-button');
+        const uploadStatus = document.getElementById('upload-status');
         let isNavOpen = true;
+        let selectedFile = null;
 
         toggleNav.addEventListener('click', () => {
             isNavOpen = !isNavOpen;
-
             if (isNavOpen) {
                 sideNav.style.width = '20%';
                 sideNav.style.opacity = '1';
@@ -265,14 +314,12 @@
                 profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
             });
 
-            // Close the dropdown if clicked outside
             document.addEventListener('click', (event) => {
                 if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
                     profileDropdown.style.display = 'none';
                 }
             });
 
-            // Handle mobile navigation
             if (window.innerWidth <= 1024) {
                 isNavOpen = false;
                 sideNav.style.width = '0';
@@ -295,6 +342,47 @@
                 }
             });
         });
+
+        function handleFileChange(files) {
+            if (files.length > 0) {
+                selectedFile = files[0];
+                fileUploadButton.disabled = false;
+                uploadStatus.textContent = `Selected file: ${selectedFile.name}`;
+            } else {
+                selectedFile = null;
+                fileUploadButton.disabled = true;
+                uploadStatus.textContent = '';
+            }
+        }
+
+        function uploadFile() {
+            if (!selectedFile) {
+                uploadStatus.textContent = 'Please select a file.';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            fetch('{{ url_for('import_page_views.upload_text_tags') }}', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.text())
+            .then(data => {
+                uploadStatus.textContent = data;
+                if (data.includes('successfully')) {
+                    // Optionally redirect the user or provide further feedback
+                    setTimeout(() => {
+                        window.location.href = '{{ url_for('questions_views.my_questions_page') }}';
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                console.error('Error uploading file:', error);
+                uploadStatus.textContent = 'Error uploading file.';
+            });
+        }
     </script>
 </body>
 </html>

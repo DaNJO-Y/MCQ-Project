@@ -1,0 +1,47 @@
+- Please Ensure that the spacing within each question is 1.0 to ensure retrieval of questions are not duplicated.
+- Please Ensure that the for each question the text are aligned to the left.
+- Please Ensure that the spacing between each question is one line.
+- Below is an example of the expected format.
+- The uploaded file can either be a Word document or txt file.
+- Use the empty version  at the bottom, feel free to add more options
+
+CourseCode: BIOL2345
+Difficulty: EASY
+Question: What is the capital of France?
+Tags: Cities, Capitals
+A: London
+B: Paris
+C: Berlin
+D: Rome
+Correct: B
+
+CourseCode: BIOL2345
+Difficulty: EASY 
+Question: Which planet is known as the "Red Planet"?
+Tags: Planets
+A: Venus
+B: Mars
+C: Jupiter
+D: Saturn
+Correct: B
+
+CourseCode: BIOL2345
+Difficulty: EASY
+Question: What is 2 + 2?
+Tags: Arithmetic
+A: 3
+B: 4
+C: 5
+D: 6
+E: 7
+Correct: B
+
+CourseCode: 
+Difficulty: 
+Question: 
+Tags: 
+A: 
+B: 
+C: 
+D: 
+Correct: 
