@@ -110,7 +110,15 @@ def create_questions_with_tags():
     # teacher_id = 1 # Replace with the actual logged-in teacher's ID
     user = current_user
     for q_data in questions_data:
-        question = Question(
+        # question = Question(
+        #     teacherId=user.id,
+        #     text=q_data['text'],
+        #     difficulty=q_data.get('difficulty'),
+        #     courseCode=q_data.get('courseCode'),
+        #     options=[]
+        # )
+
+        question = save_question(
             teacherId=user.id,
             text=q_data['text'],
             difficulty=q_data.get('difficulty'),
@@ -128,17 +136,21 @@ def create_questions_with_tags():
                 question.tag.append(tag)
 
         db.session.add(question)
-        db.session.commit()
+        # db.session.commit()
 
         for option_key, option_text in q_data['options'].items():
             is_correct = (option_key == q_data.get('correct_answer'))
-            option = Option(
-                questionId=question.id,
+            option = create_option(
+                question_id=question.id,
                 body=option_text,
                 image=None,
                 is_correct=is_correct
             )
+
             db.session.add(option)
+        # print(question.get_json())
+        # for t in question.tag:
+        #     print(t.get_json())
 
     db.session.commit()
     
