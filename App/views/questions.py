@@ -39,7 +39,7 @@ Page/Action Routes
 @questions_views.route('/myQuestions')
 def my_questions_page():
     if not current_user.is_authenticated:
-        return redirect(url_for('auth_views.login'))  # Redirect to login if not logged in
+        return redirect(url_for('auth_views.login_action'))  # Redirect to login if not logged in
 
     questions = get_all_my_questions(current_user)  # Fetch only the logged-in teacher's questions
     return render_template('MyQuestions.html', questions=questions)

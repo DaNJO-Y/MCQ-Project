@@ -36,7 +36,7 @@ def create_app(overrides={}):
     add_views(app)
     init_db(app)
     login_manager = LoginManager()
-    login_manager.login_view = 'auth.login'
+    login_manager.login_view = "auth_views.login_action"
     login_manager.init_app(app)
     @login_manager.user_loader
     def load_user(user_id):
