@@ -29,6 +29,10 @@ def create_app(overrides={}):
     add_auth_context(app)
     photos = UploadSet('photos', TEXT + DOCUMENTS + IMAGES)
     configure_uploads(app, photos)
+    upload_folder = os.path.join(app.root_path, 'static', 'uploads')
+    app.config['UPLOAD_FOLDER'] = upload_folder
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    # print(f"UPLOAD_FOLDER in create_app: {app.config['UPLOAD_FOLDER']}")
     add_views(app)
     init_db(app)
     login_manager = LoginManager()

@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, render_template, jsonify, request, flash, send_from_directory, flash, redirect, url_for
+from flask import Flask, Blueprint, render_template, jsonify, request, flash, send_from_directory, flash, redirect, url_for, current_app
 from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, set_access_cookies, create_access_token, JWTManager
 from werkzeug.security import check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
@@ -14,16 +14,18 @@ from.index import index_views
 from .auth import auth_views
 
 questions_views = Blueprint('questions_views', __name__, template_folder='../templates')
-app = Flask(__name__)  # Replace with your actual app initialization
-app.config['UPLOAD_FOLDER'] = 'uploads'  # Set your upload folder
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+# app = Flask(__name__)  # Replace with your actual app initialization
+# app.config['UPLOAD_FOLDER'] = 'UPLOADS'  # Set your upload folder
+# os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 def save_image(file):
     if file:
         try:
             filename = f"{uuid.uuid4()}{os.path.splitext(file.filename)[1]}"
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            # print(f"Attempting to save to: {file_path}")
             file.save(file_path)
+            # print(f"Image saved successfully as: {filename}")
             return filename
         except Exception as e:
             print(f"Error saving image: {e}")
@@ -42,9 +44,30 @@ def my_questions_page():
     questions = get_all_my_questions(current_user)  # Fetch only the logged-in teacher's questions
     return render_template('MyQuestions.html', questions=questions)
 
-@questions_views.route('/displayQuestion',methods=['GET'])
-def displayQuestionPage():
-    return render_template('display_question.html')
+@questions_views.route('/displayQuestion/<int:question_id>',methods=['GET'])
+@login_required
+def displayQuestionPage(question_id):
+    question = get_question(question_id)
+    if not question:
+        flash('Question not found')
+        return jsonify({"error": "No question data"}), 400
+    user = current_user
+    teacher = get_teacher(user.id)
+    app = Flask(__name__)
+    # app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads')
+    if not teacher:
+        flash('Teacher is not logged in.')
+        return jsonify({"error": "Not teacher data"}), 400
+        # for 
+        # print(teacher)
+    chosenQuestion = ""
+    for q in teacher.questions:
+        if q.id == question.id:
+            chosenQuestion = q
+    print(chosenQuestion.get_json()) 
+    print(f"app.root_path: {app.root_path}")
+    # print(f"UPLOAD_FOLDER: {app.config['UPLOAD_FOLDER']}")
+    return render_template('display_question.html', question=chosenQuestion)
 
 @questions_views.route('/createQuestion',methods=['GET'])
 def createQuestionPage():
@@ -61,7 +84,7 @@ def create_question():
     options_data = request.form.get('options')
     # question_image = request.files.get('questionImage')
     question_image = request.files.get('questionImage')
-    
+    print(f"Received question_image: {question_image}")
 
     if not teacher_id or not difficulty or not course_code or not options_data:
         return jsonify({"error": "Missing required fields"}), 400
@@ -69,6 +92,7 @@ def create_question():
     question_image_filename = None
     if question_image:
         question_image_filename = save_image(question_image)
+        # print(f"Saved filename: {question_image_filename}")
 
     try:
         options_d = json.loads(options_data)  # Parse the JSON string
@@ -86,10 +110,18 @@ def create_question():
                 image_filename = save_image(image_file)
         is_correct = option_data.get('is_correct', False)
         
-        option = Option(questionId=None, body=body, image=image_filename, is_correct=is_correct)
+        # option = Option(questionId=None, body=body, image=image_filename, is_correct=is_correct)
+        option = create_option(question_id=None, body=body, image=image_filename, is_correct=is_correct)
         options.append(option)
 
-    question = Question(
+    # question = Question(
+    #     teacherId=teacher_id,
+    #     text=text,
+    #     difficulty=difficulty,
+    #     courseCode=course_code,
+    #     options=options
+    # )
+    question = save_question(
         teacherId=teacher_id,
         text=text,
         difficulty=difficulty,
@@ -103,7 +135,7 @@ def create_question():
     db.session.add(question)
     db.session.commit()
 
-    for option in options:
+    for option in question.options:
         option.questionId = question.id
     db.session.commit()
     user = current_user

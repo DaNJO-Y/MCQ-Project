@@ -1,8 +1,8 @@
 from App.models import Option
 from App.database import db
 
-def create_option(question_id):
-    new_option = Option(questionId = question_id)
+def create_option(question_id, body, image, is_correct):
+    new_option = Option(questionId=question_id, body=body, image=image, is_correct=is_correct)
     db.session.add(new_option)
     db.session.commit()
     return new_option

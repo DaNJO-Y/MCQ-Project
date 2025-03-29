@@ -1,9 +1,11 @@
 from App.models import Question
 from App.database import db
 from App.utils import shuffle
+from datetime import date
 
 def save_question(teacherId, text, difficulty, courseCode, options):
     newquestion = Question(teacherId=teacherId, text=text, difficulty=difficulty,courseCode=courseCode, options=options)
+    newquestion.dateCreated = date.today()
     db.session.add(newquestion)
     db.session.commit()
     return newquestion
