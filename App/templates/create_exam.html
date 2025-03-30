@@ -82,6 +82,20 @@
             gap: 0.5rem;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+        #viewbutton{
+            background-color: #2b96ad;
+            color: white;
+            padding: 5px;
+            border-radius: 0.375rem;
+            transition: all 0.3s ease;
+            transition: opacity 0.3s;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin:auto;
+        }
         .button:hover {
             background-color: #e5e7eb;
             transform: translateY(-2px);
@@ -125,6 +139,7 @@
         }
         
         #sideNav {
+            display: flex;
             background-color: rgba(255, 255, 255, 0.9);
             border-radius: 0.5rem;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -137,14 +152,24 @@
             border: 1px solid rgba(43, 150, 173, 0.2);
             backdrop-filter: blur(10px);
             /* margin-left: 0; */
+
         }
         #sideNav table {
-            font-size: 0.75em; /* Adjust the value as needed */
+            font-size: 0.85em; /* Adjust the value as needed */
         }
 
         #sideNav th,
         #sideNav td {
             padding: 4px; /* Reduce padding to compensate for smaller text */
+        }
+        #question-table{
+            margin-left: auto;
+            margin-right: auto;
+            flex:1;
+            flex-grow: 1;
+            min-width: 0;
+            width:calc(100% - 2rem);
+
         }
         #mainContent {
             flex: 1;
@@ -181,13 +206,12 @@
             }
 
             .searchbar {
-                width: 230%;
+                width: 200%;
                 padding: 12px;
                 border: 1px solid darkgrey;
                 border-radius: 0.375rem;
-                margin-right:10%;
-                margin-left: 10px;
-                margin-top: 10px;
+                margin-left: 20px;
+                left:30%;
             }
             table {
               font-family: arial, sans-serif;
@@ -303,17 +327,17 @@
         <div class="flex">
             <button id="toggleNav"><i class="fas fa-angle-left"></i></button>
             <nav id="sideNav">
-                <div class=" w-1/2">
-                    <div class="flex justify-between items-center mb-4 w-full">
+                <div class=" w-full">
+                    <div class="flex  mb-4 w-full">
                         <button id="filter" class="filter-button">Filters</button>
                         <div class="relative">
                             <input id="searchbar" type="text" placeholder="Search Questions" class="searchbar">
-                            <button class="absolute right-[-13rem] top-1/2 transform -translate-y-1/2 text-gray-500">
+                            <button class="absolute right-[-15rem] top-1/2 transform -translate-y-1/2 text-gray-500">
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
                     </div>
-                    <div id="question-bank-container">
+                    <!--<div id="question-bank-container">
                         <table class="w-1/2">
                             <thead>
                                 <tr class="bg-gray-200">
@@ -347,7 +371,77 @@
                                 </tr>
                                 </tbody>
                         </table>
-                    </div>
+                    </div>-->
+                    <!--<div id="question-table" class="bg-white rounded shadow">-->
+                        <table id="question-bank-container" class="w-full">
+                            <thead>
+                                <tr class="bg-gray-200">
+                                    <th class="p-2 text-left">Select</th>
+                                    <th class="p-2 text-left">Question</th>
+                                    <th class="p-2 text-left">Tag</th>
+                                    <th class="p-2 text-left">Last used</th>
+                                    <th class="p-2 text-left">Options</th>
+                                    <th class="p-2 text-left">Answer</th>
+                                    <th class="p-2 text-left">Actions</th> 
+                                </tr>
+                            </thead>
+    
+                            <tbody id="question-bank-body" class="bg-white rounded shadow">
+                                {% if questions %}
+                                    {% for question in questions %}
+                                    <tr data-question-id="{{ question.id }}" data-question-text="{{ question.text }}" data-question-tag="{{ question.tag}}">
+                                            <td class="p-2"><input type="checkbox" class="select-question"></td>
+                                            <td class="p-2">
+                                                {{ question.text }}
+                                            </td>
+                                            <td class="p-2">
+                                                {% if question.tag %}
+                                                    {% for tag in question.tag %}
+                                                        <li>{{ tag.tag_text }}</li>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </td>
+                                            <td class="p-2">{{ question.lastUsed }}</td>
+                                            <ul>
+                                            <td class="p-2">
+                                                {% if question.options %}
+                                                    
+                                                        {% for option in question.options %}
+                                                            <li>{{ option.body }}</li>
+                                                        {% endfor %}
+                                                
+                                                {% endif %}
+                                            </ul>
+                                            </td>
+                                            <ul>
+                                            <td class="p-2">
+                                                {% if question.options %}
+                                                    
+                                                        {% for option in question.options %}
+                                                            {% if option.is_correct %}
+                                                                <li>{{ option.body }}</li>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                {% endif %}
+                                            </td>
+                                            </ul>
+                                          <td class="p-1">
+                                            <div>
+                                                <button id="viewbutton" class="text-blue py-1 px-4 rounded">
+                                                    <a href="/displayQuestion/{{question.id}}">
+                                                        View Question
+                                                    </a>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr><td class="p-4 text-center" colspan="6">No questions found.</td></tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    <!--</div>-->
                 </div>
             </nav>
 
@@ -513,7 +607,7 @@
             for (const id in selectedQuestions) {
                 const question = selectedQuestions[id];
                 const listItem = document.createElement('li');
-                listItem.textContent = `${question.text} (${question.tag})`;
+                listItem.textContent = `${question.text}`;
 
                 const removeButton = document.createElement('button');
                 removeButton.textContent = 'Remove';
