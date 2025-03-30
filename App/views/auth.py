@@ -137,11 +137,15 @@ def login_action():
         flash('Bad username or password given')
         return render_template('login.html'), 401
 
+@auth_views.route('/login', methods=['GET'])
+def login_page():
+    return render_template('login.html')
+
 @auth_views.route('/logout', methods=['GET'])
 # @jwt_required()
 @login_required
 def logout_action():
-    response = redirect(url_for('auth_views.home_page')) 
+    response = redirect(url_for('auth_views.login_page')) 
     flash("Logged Out!")
     unset_jwt_cookies(response)
     logout_user()
