@@ -458,7 +458,12 @@
                         <div>
                             <span>Date created: {{question.dateCreated}}</span>
                         </div>
-                        <button id="editbutton" class="text-white py-1 px-4 rounded">Edit</button>
+                        <button id="editbutton" class="text-white py-1 px-4 rounded">
+                            <a href="/editQuestionPage/{{question.id}}">
+                                Edit
+                            </a>
+                        </button>
+                        <!-- <button id="editbutton" class="text-white py-1 px-4 rounded">Edit</button> -->
                     </div>
                 </div>
             </main>

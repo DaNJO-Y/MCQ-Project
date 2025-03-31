@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department of Preclinical Sciences MCQ Bank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+          background-image: url("{{ url_for('static', filename='Images/mcq.jpg') }}");
+            background-repeat: no-repeat;
+            background-attachment: fixed; 
+            background-size: 100% 100%;
+            min-height: 100vh;
+           
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 1rem;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+        .profile-button {
+            display: flex;
+            align-items: center;
+            color: white;
+            transition: color 0.3s;
+        }
+        .profile-button:hover {
+            color: grey;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            margin-top: 0.5rem;
+            width: 12rem;
+            background-color: white;
+            border-radius: 0.375rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 0.25rem;
+        }
+        .button {
+            background-color: white;
+            color: #2b96ad;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            transition: opacity 0.3s;
+            font-size: 1.125rem;
+        }
+        .button:hover {
+            background-color: #e5e7eb;
+        }
+        .nav-button {
+            width: 100%;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s;
+            font-size: 1.125rem;
+        }
+        .nav-button:hover {
+            background-color: lightgrey;
+        }
+        #toggleNav {
+            position: fixed;
+            top: 5rem;
+            left: 1rem;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            color: #2b96ad;
+            transition: background-color 0.3s;
+        }
+        #toggleNav:hover {
+            background-color: #e5e7eb;
+        }
+        #sideNav {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0.5rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            width: 20%;
+            height: calc(100vh - 8rem);
+            transition: all 0.3s ease;
+        }
+        #mainContent {
+            flex: 1;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0.5rem;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-left: 2rem;
+            margin-right: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .question-bank-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #2b96ad;
+        }
+
+        /*.filters-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            margin-left:10%;
+        }
+
+        .filter-button {
+            background-color: lightgrey;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            width:200px;
+        }
+
+        .searchbar {
+            width: 50%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            margin-right:10%;
+        }
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+          vertical-align: top;
+        }*/
+        #maindiv{
+            background-color: white;
+            overflow: hidden;
+        }
+        #questiontitle {
+            width: 50%;
+            padding: 0.5rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.375rem;
+            margin-right:10%;
+        }
+        #questiontext {
+            border: 2px solid #d1d5db;
+            border-radius: 0.375rem;
+        }
+        #difficultytitle {
+            width: 50%;
+            padding: 0.5rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.375rem;
+            margin-right:10%;
+        }
+        #courseCodetitle {
+            width: 50%;
+            padding: 0.5rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.375rem;
+            margin-right:10%;
+        }
+        .upload-container {
+            padding: 1rem; /* Padding around content */
+            border-radius: 8px; /* Rounded corners */
+            display: inline-block; /* Keeps it fitting its content */
+        }
+
+        .upload-container label {
+            cursor: pointer;
+            color: #3b82f6; /* Equivalent to text-blue-500 */
+            text-decoration: underline;
+            display: block; /* Makes the label take up full width */
+        }
+        .optioncontainer {
+            margin-bottom: 10px; /* mb-5 */
+            margin-left:10px;
+        }
+
+        .label {
+            display: block;
+            font-weight: 600; /* font-semibold */
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #D1D5DB; /* border-gray-300 */
+            border-radius: 0.25rem;
+            margin-top: 0.25rem; /* mt-1 */
+        }
+
+        .upload-btn {
+            margin-left: 0.5rem; /* ml-2 */
+        }
+
+        .flex-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.25rem; /* mb-5 */
+        }
+
+        .add-btn {
+            color: #3B82F6; /* text-blue-500 */
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+
+        .add-btn span {
+            font-size: 1.5rem; /* text-2xl */
+            margin-right: 0.25rem; /* mr-1 */
+        }
+        #option1{
+            width:50%;
+            border: 2px solid #d1d5db;
+        }
+        #correctanswer{
+            width:50%;
+            border: 2px solid #d1d5db;
+        }
+        .correctcontainer {
+            margin-bottom: 10px; /* mb-5 */
+            margin-left:10px;
+        }
+        .mb-4{
+            margin-left:10px;
+        }
+        #savebutton{
+            background-color:#2b96ad;
+            display:inline-block;
+            float:right;
+            margin-right: 20px;
+            margin-bottom: 10px;
+            font-size: 1.0rem;
+        }
+        #savebutton:hover {
+            background-color: #e5e7eb;
+        }
+        #removebutton{
+            background-color:#2b96ad;
+            /* display:inline-block; */
+            float: right;
+            margin-right: 20px;
+            /* margin-bottom: 20px; */
+            font-size: 1.0rem;
+        }
+        #removebutton:hover {
+            background-color: #e5e7eb;
+        }
+        #tagbutton{
+            background-color:#2b96ad;
+            display:inline-block;
+            margin-left: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+        #tagbutton:hover {
+            background-color: #e5e7eb;
+        }
+
+        /*editor toolbar*/
+        [role="toolbar"] .menu-popup {
+          position: relative;
+        }
+
+        [role="toolbar"] .menu-popup [role="menu"] {
+          padding: 0;
+          width: 9.5em;
+          border: 2px solid #ddd;
+          border-radius: 5px;
+          background-color: white;
+          display: none;
+          position: absolute;
+          margin: 0;
+          z-index: 1;
+        }
+
+        [role="toolbar"] .menu-popup [role="menu"].focus {
+          border-color: #005a9c;
+        }
+
+        [role="toolbar"] .menu-popup [role="menu"] li {
+          padding: 0;
+          margin: 0;
+          display: block;
+          text-align: left;
+          list-style: none;
+        }
+
+        [role="toolbar"] .menu-popup [role="menu"] [role="menuitemradio"] {
+          padding: 1px 2px;
+          outline: 0;
+          border: none;
+          border-radius: 0;
+        }
+
+        [role="toolbar"] .menu-popup [role="menu"] [role="menuitemradio"]::before {
+          content: url("../images/menuitemradio-unchecked.svg");
+        }
+
+        [role="toolbar"]
+          .menu-popup
+          [role="menu"]
+          [role="menuitemradio"][aria-checked="true"]::before {
+          content: url("../images/menuitemradio-checked.svg");
+        }
+
+        [role="toolbar"] .menu-popup [role="menu"] [role="menuitemradio"]:focus,
+        [role="toolbar"] .menu-popup [role="menu"] [role="menuitemradio"]:hover {
+          background: rgb(226 239 255);
+          border-top: 1px solid #005a9c;
+          border-bottom: 1px solid #005a9c;
+          padding-top: 0;
+          padding-bottom: 0;
+        }
+
+        [role="toolbar"] .menu-popup [role="menu"] [role="menuitemradio"]:focus {
+          border-color: #005a9c;
+        }
+        [role="toolbar"] {
+          border: 2px solid transparent;
+          border-radius: 5px;
+          padding: 6px;
+          height: 55px;
+          width: 1050px;
+          background-color: lightgrey;
+        }
+
+        [role="toolbar"].focus {
+          border-color: #005a9c;
+          border-width: 3px;
+          padding: 5px;
+        }
+
+        [role="toolbar"] .group {
+          padding: 0.25em;
+          display: block;
+          float: left;
+        }
+
+        [role="toolbar"] .group:not(:first-child) {
+          margin-left: 0.75em;
+        }
+
+        [role="toolbar"] button,
+        [role="toolbar"] [role="radio"],
+        [role="toolbar"] label,
+        [role="toolbar"] .spinbutton,
+        [role="toolbar"] a,
+        [role="toolbar"] .input {
+          border: 1px solid rgb(255 255 255);
+          outline: none;
+          display: inline-block;
+          padding: 6px 12px;
+          border-radius: 5px;
+          text-align: center;
+          background: rgb(255 255 255);
+          color: #222428;
+          font-size: 14px;
+          line-height: 1.5em;
+          margin-right: 0.25em;
+        }
+
+        [role="toolbar"] button.popup {
+          position: relative;
+        }
+
+        [role="toolbar"] button .popup-label {
+          display: block;
+          width: initial;
+          border: 1px solid white;
+          padding: 2px 4px;
+          border-radius: 5px;
+          position: absolute;
+          top: -30000em;
+          background-color: black;
+          color: white;
+          font-weight: normal;
+        }
+
+        [role="toolbar"] button .popup-label.show {
+          text-align: center;
+          top: -2.5em;
+        }
+
+        [role="toolbar"] button .popup-label::after,
+        [role="toolbar"] button .popup-label::before {
+          top: 100%;
+          left: 50%;
+          border: solid transparent;
+          content: " ";
+          height: 0;
+          width: 0;
+          position: absolute;
+          pointer-events: none;
+        }
+
+        [role="toolbar"] button .popup-label::after {
+          border-color: rgb(0 0 0 / 0%);
+          border-top-color: #000;
+          border-width: 10px;
+          margin-left: -10px;
+        }
+
+        [role="toolbar"] button .popup-label::before {
+          border-color: rgb(255 255 255 / 0%);
+          border-top-color: #fff;
+          border-width: 12px;
+          margin-left: -12px;
+        }
+
+        [role="toolbar"] button[aria-pressed="true"],
+        [role="toolbar"] [role="radio"][aria-checked="true"] {
+          border-color: #555;
+          font-weight: bold;
+          background-color: #f4f4f4;
+        }
+
+        [role="toolbar"] button[aria-disabled="true"] {
+          color: #889;
+          cursor: not-allowed;
+        }
+
+        [role="toolbar"] button[aria-disabled="true"]:focus {
+          border-color: #005a9c;
+        }
+
+        [role="toolbar"] button::-moz-focus-inner {
+          border: 0;
+        }
+
+        [role="toolbar"] button:focus,
+        [role="toolbar"] [role="radio"]:focus,
+        [role="toolbar"] .spinbutton:focus,
+        [role="toolbar"] .focus,
+        [role="toolbar"] a:focus {
+          border-width: 2px;
+          border-color: #005a9c;
+          background: rgb(226 239 255);
+          padding: 5px 11px;
+        }
+
+        [role="toolbar"] button:hover,
+        [role="toolbar"] [role="radio"]:hover,
+        [role="toolbar"] .spinbutton:hover,
+        [role="toolbar"] label.input:hover,
+        [role="toolbar"] a:hover {
+          border-color: #005a9c;
+          background: rgb(226 239 255);
+        }
+
+        [role="toolbar"] [role="spinbutton"] .value,
+        [role="toolbar"] [role="spinbutton"] .increase,
+        [role="toolbar"] [role="spinbutton"] .decrease {
+          width: 60px;
+          display: inline-block;
+          padding: 0;
+          margin: 0;
+        }
+
+        [role="toolbar"] button[aria-haspopup] span {
+          float: right;
+        }
+
+        [role="toolbar"] button[aria-haspopup] span::after {
+          content: url("../images/pulldown-icon.svg");
+        }
+
+        [role="toolbar"] button[aria-haspopup]:focus span::after {
+          content: url("../images/pulldown-icon-focus.svg");
+        }
+
+        [role="toolbar"] [role="spinbutton"] .increase,
+        [role="toolbar"] [role="spinbutton"] .decrease {
+          width: 20px;
+          border: 1px solid #ececea;
+          border-radius: 3px;
+          background-color: #ececea;
+        }
+
+        [role="toolbar"] [role="spinbutton"] .increase:hover,
+        [role="toolbar"] [role="spinbutton"] .decrease:hover,
+        [role="toolbar"] [role="spinbutton"]:focus .increase,
+        [role="toolbar"] [role="spinbutton"]:focus .decrease {
+          fill: #005a9c;
+          border-color: #005a9c;
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            bottom: auto; /* Override Materialize's bottom positioning */
+            left: auto; /* Override Materialize's left positioning */
+            transform: none !important; /* Prevent Materialize's default transform */
+            /* color: white ;  */
+            color: #2b96ad;
+            /* background-color: rgba(0, 0, 0, 0.7) ; */
+        }
+        
+         .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+      
+      .modal-content {
+        background-color: #fefefe;
+        margin: 10% auto; /* Adjust top margin as needed */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 70%; /* Adjust width as needed */
+        display: flex; /* Enable flexbox for side-by-side layout */
+        border-radius: 8px;
+        overflow: hidden; /* Clip any overflowing content within modal-content */
+      }
+
+      /* Left side - Tag List */
+      .tag-list-container {
+        flex: 1; /* Takes up half the available width */
+        padding: 15px;
+        border-right: 1px solid #ccc;
+        overflow-y: auto; /* Enables vertical scrolling */
+        max-height: 400px; /* Adjust max height as needed */
+      }
+
+      .tag-list-container h3 {
+        margin-top: 0;
+        color: #2b96ad;
+        margin-bottom: 10px;
+      }
+
+      .tag-item {
+        padding: 8px 12px;
+        margin-bottom: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+        background-color: #f9f9f9;
+        transition: background-color 0.3s;
+      }
+
+      .tag-item:hover {
+        background-color: #eee;
+      }
+
+      .tag-item.selected {
+        background-color: #2b96ad;
+        color: white;
+        border-color: #2b96ad;
+      }
+
+      /* Right side - Create Tag Form */
+      .create-tag-container {
+        flex: 1; /* Takes up half the available width */
+        padding: 15px;
+      }
+
+      .create-tag-container h3 {
+        margin-top: 0;
+        color: #2b96ad;
+        margin-bottom: 10px;
+      }
+
+      .create-tag-container label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      .create-tag-container input[type=text] {
+        width: calc(100% - 12px);
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        border-radius: 4px;
+      }
+
+      .create-tag-container button[type=submit] {
+        background-color: #2b96ad;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        opacity: 0.9;
+        border-radius: 4px;
+      }
+
+      .create-tag-container button[type=submit]:hover {
+        opacity: 1;
+      }
+
+      /* Style the close button */
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      /* Modal Header (above the two halves) */
+      .modal-header {
+        background-color: #2b96ad;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      }
+      .modal-header h2 {
+        margin: 0;
+      }
+
+      /* Ensure close button is positioned correctly relative to modal-content */
+      .modal-content > .close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        z-index: 2; /* Ensure it's above the content */
+      } 
+
+      
+        
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="text-2xl font-bold">
+              <a class="text-white hover:text-gray-500 transition duration-300 cursor-pointer" onclick="window.location.href='{{ url_for('auth_views.homePage') }}'">
+                <i class="fas fa-home"></i>HomePage
+                   </a>
+            </div>
+            <button class="button"><a href="/createQuestion">New Question</a></button>
+            <button class="button"><a href="/new_exam">New Exam</a></button>
+            <div class="flex items-center space-x-4">
+              <div class="relative">
+                <button id="profileButton" class="profile-button">
+                    <i class="fas fa-user-circle text-3xl"></i>
+                    <span class="ml-2">Your Profile</span>
+                </button>
+                <div id="profileDropdown" class="dropdown-menu">
+                    <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+             </div>
+          </div>
+        </header>
+
+        <div class="flex">
+            <button id="toggleNav"><i class="fas fa-angle-left"></i></button>
+            <nav id="sideNav">
+                <ul class="space-y-4">
+                  <button class="nav-button" onclick="window.location.href='{{ url_for('questions_views.my_questions_page') }}'">
+                    <i class="fas fa-file-alt mr-2"></i> My Questions
+                  </button>
+                  <button class="nav-button" onclick="window.location.href='{{ url_for('exams_views.my_exams_page') }}'">
+                    <i class="fas fa-file-alt mr-2"></i> My Exams
+                  </button>
+                  <li><button class="nav-button"><i class="fas fa-file-upload mr-2"></i> Import Questions</button></li>
+                  <button class="nav-button" onclick="window.location.href='{{ url_for('help_views.help_page') }}'">
+                    <i class="fas fa-file-alt mr-2"></i> Help
+                </button>
+                </ul>
+            </nav>
+
+            <main id="mainContent">
+                <h1 class="question-bank-title">
+                    Edit Question : {{question.id}}
+                </h1>
+                <!-- Question Content -->
+                <div id="maindiv">
+                    
+                    <label for="textarea1" class="hidden">Text Sample</label><br>
+                    <form id="questionForm" enctype="multipart/form-data" action="/edit_question/{{question.id}}" method="POST">
+                      
+                    <div class="mb-4 flex">
+                        <div class="w-2/3 pr-2">
+                            <h2 class="font-semibold">Question Text</h2>
+                            <textarea id="questiontext" name="text" class="w-full p-2 border rounded" rows="4" placeholder="Enter question text">{{question.text}}</textarea>
+                        </div>
+                        <div class="w-1/3 pl-2">
+                            <h2 class="font-semibold">Image</h2>
+                            <div class="border rounded p-4 flex items-center justify-center">
+                                <div class="upload-container">
+                                  {% if question.image %}
+                                      <label for="file-upload" class="items-center justify-center">Replace Image</label>
+                                      <div>
+                                          <label>
+                                              <input type="checkbox" name="remove_image"> Remove Current Image
+                                          </label>
+                                      </div>
+                                      <img id="current-image" src="{{ url_for('static', filename='uploads/' + question.image) }}" alt="Current Question Image" class="max-w-md max-h-48 rounded border p-2 mb-2">
+                                      <input name="question_image" type="file" id="file-upload" class="hidden" />
+                                      <div id="new-image-preview"></div>
+                                  {% else %}
+                                      <label for="file-upload">+ Add Image</label>
+                                      <input name="question_image" type="file" id="file-upload" class="hidden" />
+                                      <div id="new-image-preview"></div>
+                                  {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                      <h2 class="font-semibold">Question Course Code:</h2>
+                        <input id="courseCodetitle" name="course-code" type="text" class="p-2 border rounded" placeholder="Enter question course code" value={{question.courseCode}}>
+                    </div>
+
+                    <div class="mb-4">
+                      <h2 class="font-semibold">Question Difficulty:</h2>
+                      <!-- <select id="difficultytitle" name="difficulty" class="p-2 border rounded">
+                        <option value="Easy" {% if question.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                        <option value="Intermediate" {% if question.difficulty == 'Intermediate' %}selected{% endif %}>Intermediate</option>
+                        <option value="Hard" {% if question.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                    </select> -->
+                    <input id="difficultytitle" name="difficulty" type="text" class="p-2 border rounded" placeholder="Enter question diffiulty...Easy, Intermediate, Hard" value="{{question.difficulty}}">
+                    </div>
+                    
+                    <div id="optionsContainer">
+                      {% for o in question.options %}
+                      <div class="option-container" data-option-id="{{ o.id }}">
+                        <input type="hidden" name="option_id_{{ loop.index }}" value="{{ o.id }}">
+                        <label class="label">Option {{ loop.index }}:</label>
+                        <button type="button" id="removebutton" class="remove-btn text-white py-1 px-4 rounded" onclick="removeOption(this)">Remove</button>
+                        <div class="input-container">
+                            <input type="text" id="optionBody{{ loop.index }}" name="option_body_{{ loop.index }}" class="text-input" value="{{ o.body }}">
+                            <div class="upload-container">
+                                {% if o.image %}
+                                    <label>
+                                        <input type="file" id="optionImage{{ loop.index }}" name="option_image_{{ loop.index }}">
+                                        Replace image
+                                    </label>
+                                    <div>
+                                        <label>
+                                            <input type="checkbox" name="remove_option_image_{{ loop.index }}"> Remove current image
+                                        </label>
+                                    </div>
+                                    <!-- <img src="{{ url_for('static', filename='uploads/' + o.image) }}" alt="Option Image" class="max-w-xs max-h-24 rounded border p-1 mb-1"> -->
+                                {% else %}
+                                    <label>
+                                        <input type="file" id="optionImage{{ loop.index }}" name="option_image_{{ loop.index }}">
+                                        Upload image
+                                    </label>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <label>
+                          Is Correct:
+                          <!-- <input type="checkbox" id="optionCorrect{{ loop.index }}" name="optionCorrect{{ loop.index }}" {% if o.is_correct %}checked{% endif %}> -->
+                          <input type="radio" name="correct_option" value="{{ o.id }}" {% if o.is_correct %}checked{% endif %}>
+                        </label>
+                        <br><br>
+                      </div>
+                      {% endfor %}
+                    </div>
+
+                    <div class="flex-container">
+                        <button class="add-btn" id="addOption" type="button">
+                            <span>+</span>
+                            Add Answer Options
+                        </button>
+                    </div>
+                    <!-- <script>
+                      // Initialize with existing options or 0
+                      let optionCount = {{ question.options|length if question.options else 0}};
+                      
+                      function createOptionInput(index) {
+                        const optionDiv = document.createElement('div');
+                          optionDiv.className = 'option-container';
+                          optionDiv.dataset.optionId = index;
+                          
+                          optionDiv.innerHTML = `
+                            <label class="label">Option ${index}:</label>
+                            <button type="button" id="removebutton" class="remove-btn text-white py-1 px-4 rounded" onclick="removeOption(this)">Remove</button>
+                            <div class="input-container">
+                              <input type="text" id="optionBody${index}" name="optionBody${index}" class="text-input">
+                              <div class="upload-container">
+                                <label>
+                                  <input type="file" id="optionImage${index}" name="optionImage${index}">
+                                  Upload Image
+                                </label>
+                              </div>
+                            </div>
+                            <label>
+                              Is Correct:
+                              <input type="checkbox" id="optionCorrect${index}" name="optionCorrect${index}">
+                            </label>
+                            <br><br>
+                          `;
+                          
+                          return optionDiv;
+                      }
+                      
+                      document.getElementById('addOption').addEventListener('click', function() {
+                        optionCount++;
+                        const newOption = createOptionInput(optionCount);
+                        document.getElementById('optionsContainer').appendChild(newOption);
+                      });
+                      
+                      function removeOption(button) {
+                        button.closest('.option-container').remove();
+                      }
+
+                      function removeOption(button) {
+                        const optionContainer = button.parentNode;
+                        optionContainer.remove();
+                        reIndexOptions();
+                      }
+
+                      function reIndexOptions() {
+                        const optionContainers = document.querySelectorAll('#optionsContainer .option-container');
+                        optionCount = optionContainers.length;
+                        optionContainers.forEach((container, index) => {
+                          const newIndex = index + 1;
+                          container.dataset.optionId = newIndex;
+                          container.querySelector('.label').textContent = `Option ${newIndex}:`;
+                          const bodyInput = container.querySelector('[id^="optionBody"]');
+                          if (bodyInput) {
+                            bodyInput.id = `optionBody${newIndex}`;
+                            bodyInput.name = `optionBody${newIndex}`;
+                          }
+                          const imageInput = container.querySelector('[id^="optionImage"]');
+                          if (imageInput) {
+                            imageInput.id = `optionImage${newIndex}`;
+                            imageInput.name = `optionImage${newIndex}`;
+                          }
+                          const correctCheckbox = container.querySelector('[id^="optionCorrect"]');
+                          if (correctCheckbox) {
+                            correctCheckbox.id = `optionCorrect${newIndex}`;
+                            correctCheckbox.name = `optionCorrect${newIndex}`;
+                          }
+                        });
+                      }
+                      </script> -->
+                    <script>
+                          // Close the dropdown if clicked outside
+                        
+                        let optionCount = {{ question.options|length if question.options else 0 }};
+                    let nextNewOptionId = 1000; // Starting ID for new options (not in database)
+                    
+                    // Function to create a new option input
+                    function createOptionInput() {
+                        optionCount++;
+                        const newOptionId = nextNewOptionId++;
+                        
+                        const optionDiv = document.createElement('div');
+                        optionDiv.className = 'option-container';
+                        optionDiv.dataset.optionId = newOptionId;
+                        
+                        optionDiv.innerHTML = `
+                            <input type="hidden" name="new_option" value="true">
+                            <label class="label">Option ${optionCount}:</label>
+                            <button type="button" id="removebutton" class="remove-btn text-white py-1 px-4 rounded" onclick="removeOption(this)">Remove</button>
+                            <div class="input-container">
+                                <input type="text" id="optionBody${optionCount}" name="option_body_new_${newOptionId}" class="text-input">
+                                <div class="upload-container">
+                                    <label>
+                                        <input type="file" id="optionImage${optionCount}" name="option_image_new_${newOptionId}">
+                                        Upload Image
+                                    </label>
+                                </div>
+                            </div>
+                            <label>
+                                Is Correct:
+                                <input type="radio" name="correct_option" value="new_${newOptionId}">
+                                
+                            </label>
+                            <br><br>
+                        `;
+                        //for checkbox instead of radio
+                        // <input type="checkbox" id="optionCorrect${optionCount}" name="optionCorrect${optionCount}" value="new_${newOptionId}">
+                        return optionDiv;
+                    }
+                    
+                    // Function to remove an option
+                    function removeOption(button) {
+                        const optionContainer = button.closest('.option-container');
+                        const optionId = optionContainer.dataset.optionId;
+                        
+                        // If this is an existing option (not new), mark it for deletion
+                        if (optionId < 1000) {
+                            const deleteInput = document.createElement('input');
+                            deleteInput.type = 'hidden';
+                            deleteInput.name = 'delete_option_' + optionId;
+                            deleteInput.value = 'true';
+                            optionContainer.appendChild(deleteInput);
+                            optionContainer.style.display = 'none'; // Hide instead of remove to keep in form
+                        } else {
+                            optionContainer.remove();
+                            optionCount--;
+                            
+                        }
+                        renumberOptions();
+                    }
+                    
+                    // Function to renumber options after deletion
+                    function renumberOptions() {
+                        const visibleOptions = document.querySelectorAll('#optionsContainer .option-container:not([style*="display: none"])');
+                        let visibleIndex = 1;
+                        
+                        visibleOptions.forEach(option => {
+                            const label = option.querySelector('.label');
+                            if (label) {
+                                label.textContent = `Option ${visibleIndex}:`;
+                            }
+                            visibleIndex++;
+                        });
+                        
+                        optionCount = visibleOptions.length;
+                    }
+                    
+                    // Add event listener for adding new options
+                    document.getElementById('addOption').addEventListener('click', function() {
+                        const newOption = createOptionInput();
+                        document.getElementById('optionsContainer').appendChild(newOption);
+                    });
+                    
+                    // Image preview functionality
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const fileUpload = document.getElementById('file-upload');
+                        const currentImage = document.getElementById('current-image');
+                        const newImagePreview = document.getElementById('new-image-preview');
+                        
+                        if (fileUpload && currentImage) {
+                            fileUpload.addEventListener('change', function() {
+                                if (this.files && this.files[0]) {
+                                    // Hide the current image
+                                    currentImage.style.display = 'none';
+                                    
+                                    // Display preview of the new image
+                                    const reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        newImagePreview.innerHTML = `<img src="${e.target.result}" alt="New Image Preview" style="max-width: 200px;">`;
+                                    }
+                                    reader.readAsDataURL(this.files[0]);
+                                } else {
+                                    // If no file is selected, show the current image again
+                                    currentImage.style.display = 'block';
+                                    newImagePreview.innerHTML = '';
+                                }
+                            });
+                        }
+                        
+                        // Similar functionality for option images
+                        document.querySelectorAll('input[type="file"][name^="option_image_"]').forEach(input => {
+                            input.addEventListener('change', function() {
+                                if (this.files && this.files[0]) {
+                                    const previewDiv = this.closest('.upload-container').querySelector('.image-preview');
+                                    if (!previewDiv) {
+                                        const newPreview = document.createElement('div');
+                                        newPreview.className = 'image-preview';
+                                        this.closest('.upload-container').appendChild(newPreview);
+                                    }
+                                    
+                                    const reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        this.closest('.upload-container').querySelector('.image-preview').innerHTML = 
+                                            `<img src="${e.target.result}" alt="Option Image Preview" style="max-width: 100px;">`;
+                                    }.bind(this);
+                                    reader.readAsDataURL(this.files[0]);
+                                }
+                            });
+                        });
+                    });
+                    
+                    // Form submission handling
+                    document.getElementById('questionForm').addEventListener('submit', function(e) {
+                        // Client-side validation can be added here if needed
+                        // The form will submit to the server which will handle the actual update
+                    });
+                    </script>
+                    <!-- <button id="tagbutton" class="text-white py-1 px-4 rounded" onclick="openForm()">Add Tags</button> -->
+                    
+                    <!-- <button id="tagbutton" class="text-white py-1 px-4 rounded" onclick="document.getElementById('tagModal').style.display='block'" >Open Modal</button>-->
+                    <button type="submit" id="savebutton" class="text-white py-1 px-4 rounded">Save and move to Tags</button>
+                    </form>
+
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- <label for="${fileUploadId}">+ Add Image</label> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        M.AutoInit();
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              {% for message in messages %}
+              M.toast({html: '{{message}}'})
+              {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        const toggleNav = document.getElementById('toggleNav');
+        const sideNav = document.getElementById('sideNav');
+        let isNavOpen = true;
+
+        toggleNav.addEventListener('click', () => {
+            isNavOpen = !isNavOpen;
+
+            if (isNavOpen) {
+                sideNav.style.marginLeft = '0';
+                sideNav.style.width = '25%';
+                mainContent.style.marginLeft = '20px';
+                mainContent.style.marginRight = '2rem';
+            } else {
+                sideNav.style.marginLeft = '-25%';
+                sideNav.style.width = '0';
+                mainContent.style.marginLeft = '22rem';
+                mainContent.style.marginRight = '2rem';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // ... profile dropdown logic ...
+            const profileButton = document.getElementById('profileButton');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            profileButton.addEventListener('click', () => {
+                profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+            });
+
+        });
+        document.addEventListener('click', (event) => {
+            if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.style.display = 'none';
+            }
+        });
+
+        
+
+    //     const optionsContainer = document.getElementById('optionsContainer');
+    //     const addOptionButton = document.getElementById('addOption');
+    //     const questionForm = document.getElementById('questionForm');
+
+    //     // let optionCount = {{ question.options|length if question.options else 0 }};
+    //     let optionIds = [];
+        
+
+    //     // function createOptionInput(index) {
+    //     //   const optionDiv = document.createElement('div');
+    //     //   optionDiv.className = 'option-container';
+    //     //   optionDiv.dataset.optionId = index;
+          
+    //     //   optionDiv.innerHTML = `
+    //     //     <label class="label">Option ${index}:</label>
+    //     //     <button type="button" id="removebutton" class="remove-btn text-white py-1 px-4 rounded" onclick="removeOption(this)">Remove</button>
+    //     //     <div class="input-container">
+    //     //       <input type="text" id="optionBody${index}" name="optionBody${index}" class="text-input">
+    //     //       <div class="upload-container">
+    //     //         <label>
+    //     //           <input type="file" 
+    //     //                 id="optionImage${index}" 
+    //     //                 name="optionImage${index}">
+    //     //           Upload Image
+    //     //         </label>
+    //     //       </div>
+    //     //     </div>
+    //     //     <label>
+    //     //       Is Correct:
+    //     //       <input type="checkbox" id="optionCorrect${index}" name="optionCorrect${index}">
+    //     //     </label>
+    //     //     <br><br>
+    //     //   `;
+          
+    //     //   return optionDiv;
+    //     // }
+    //     // function removeOption(button) {
+    //     //     const optionDiv = button.closest('.option-container');
+    //     //     const optionId = parseInt(optionDiv.dataset.optionId);
+            
+    //     //     // Remove from DOM
+    //     //     optionDiv.remove();
+    //     //     optionCount--;
+    //     //     // Remove from tracking array
+    //     //     optionIds = optionIds.filter(id => id !== optionId);
+            
+    //     //     // Re-index the remaining options
+    //     //     const remainingOptions = optionsContainer.querySelectorAll('.option-container');
+    //     //     remainingOptions.forEach((container, index) => {
+    //     //         const newId = optionIds[index];
+    //     //         container.dataset.optionId = newId;
+                
+    //     //         // Update all the IDs and names in this container
+    //     //         const label = container.querySelector('.label');
+    //     //         const textInput = container.querySelector('.text-input');
+    //     //         const fileInput = container.querySelector('input[type="file"]');
+    //     //         const checkbox = container.querySelector('input[type="checkbox"]');
+                
+    //     //         if (label) {
+    //     //             label.textContent = `Option ${index + 1}:`;
+    //     //             label.setAttribute('for', `optionBody${newId}`);
+    //     //         }
+    //     //         if (textInput) {
+    //     //             textInput.id = `optionBody${newId}`;
+    //     //             textInput.name = `optionBody${newId}`;
+    //     //         }
+    //     //         if (fileInput) {
+    //     //             fileInput.id = `file-upload-option-${newId}`;
+    //     //             fileInput.name = `optionImage${newId}`;
+    //     //             // Update the associated label's 'for' attribute
+    //     //             const fileLabel = container.querySelector(`label[for="file-upload-option-${optionId}"]`);
+    //     //             if (fileLabel) {
+    //     //                 fileLabel.setAttribute('for', `file-upload-option-${newId}`);
+    //     //             }
+    //     //         }
+    //     //         if (checkbox) {
+    //     //             checkbox.id = `optionCorrect${newId}`;
+    //     //             checkbox.name = `optionCorrect${newId}`;
+    //     //             // Update the associated label's 'for' attribute
+    //     //             const checkboxLabel = container.querySelector(`label[for="optionCorrect${optionId}"]`);
+    //     //             if (checkboxLabel) {
+    //     //                 checkboxLabel.setAttribute('for', `optionCorrect${newId}`);
+    //     //             }
+    //     //         }
+    //     //     });
+    //     // }
+
+    //     // addOptionButton.addEventListener('click', createOptionInput);
+
+    //     questionForm.addEventListener('submit', async (event) => {
+    //         event.preventDefault();
+
+    //         const formData = new FormData(questionForm); // Use FormData
+
+    //         const options = [];
+    //         for (let i = 0; i < optionCount; i++) {
+    //             options.push({
+    //                 body: formData.get(`optionBody${i}`),
+    //                 image: `optionImage${i}`,
+    //                 is_correct: formData.get(`optionCorrect${i}`) === 'on',
+    //             });
+    //         }
+
+    //         // Remove individual option fields from formData
+    //         for (let i = 0; i < optionCount; i++) {
+    //             formData.delete(`optionBody${i}`);
+    //             // formData.delete(`optionImage${i}`);
+    //             formData.delete(`optionCorrect${i}`);
+    //         }
+
+    //         formData.append('options', JSON.stringify(options)); // append the options as a json string.
+
+    //         try {
+    //           // '/questions'
+    //             const response = await fetch('/editQuestionPage/<int:question_id>', {
+    //                 method: 'POST',
+    //                 body: formData,
+    //             });
+
+    //             if (response.ok) { // Check if the response was successful
+    //                 console.log('Success: Question created!');
+    //                 const responseData = await response.json();
+    //                 const questionId = responseData.id;
+    //                 // '/createQuestion'
+    //                 window.location.href = `/tags?question_id=${questionId}`; // Redirect to a success page or home page
+    //             } else {
+    //                 const errorData = await response.json();
+    //                 console.error('Error:', errorData);
+    //                 // Handle error, display error message to the user
+    //             }
+    //           } catch (error) {
+    //               console.error('Error:', error);
+    //               // Handle network errors, display error message to the user
+    //           }
+
+    //     });
+
+    //     // createOptionInput(); // Create the first option input on page load
+        
+        
+    //     //For changing changing current image and previewing it
+    //     document.addEventListener('DOMContentLoaded', function() {
+    //     const fileUpload = document.getElementById('file-upload');
+    //     const currentImage = document.getElementById('current-image');
+    //     const newImagePreview = document.getElementById('new-image-preview');
+
+    //     if (fileUpload && currentImage) {
+    //         fileUpload.addEventListener('change', function() {
+    //             if (this.files && this.files[0]) {
+    //                 // Hide the current image
+    //                 currentImage.style.display = 'none';
+
+    //                 // Optionally, display a preview of the new image
+    //                 const reader = new FileReader();
+    //                 reader.onload = function(e) {
+    //                     newImagePreview.innerHTML = `<img src="${e.target.result}" alt="New Image Preview" style="max-width: 200px;">`;
+    //                 }
+    //                 reader.readAsDataURL(this.files[0]);
+    //             } else {
+    //                 // If no file is selected, show the current image again (optional)
+    //                 currentImage.style.display = 'block';
+    //                 newImagePreview.innerHTML = '';
+    //             }
+    //         });
+    //     } else if (fileUpload && newImagePreview) {
+    //         // If there was no existing image, just show the preview
+    //         fileUpload.addEventListener('change', function() {
+    //             if (this.files && this.files[0]) {
+    //                 const reader = new FileReader();
+    //                 reader.onload = function(e) {
+    //                     newImagePreview.innerHTML = `<img src="${e.target.result}" alt="New Image Preview" style="max-width: 200px;">`;
+    //                 }
+    //                 reader.readAsDataURL(this.files[0]);
+    //             } else {
+    //                 newImagePreview.innerHTML = '';
+    //             }
+    //         });
+    //     }
+    // });
+  
+    </script>
+</body>
+</html>

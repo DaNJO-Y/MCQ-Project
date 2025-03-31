@@ -32,6 +32,15 @@ def save_image(file):
             return None
     return None
 
+def delete_image_from_storage(filename):
+    filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    try:
+        if os.path.exists(filepath):
+            os.remove(filepath)
+            print(f"Deleted image: {filepath}")
+    except Exception as e:
+        print(f"Error deleting image {filepath}: {e}")
+
 '''
 Page/Action Routes
 '''    
@@ -53,20 +62,14 @@ def displayQuestionPage(question_id):
         return jsonify({"error": "No question data"}), 400
     user = current_user
     teacher = get_teacher(user.id)
-    app = Flask(__name__)
-    # app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads')
     if not teacher:
         flash('Teacher is not logged in.')
         return jsonify({"error": "Not teacher data"}), 400
-        # for 
-        # print(teacher)
     chosenQuestion = ""
     for q in teacher.questions:
         if q.id == question.id:
             chosenQuestion = q
     print(chosenQuestion.get_json()) 
-    print(f"app.root_path: {app.root_path}")
-    # print(f"UPLOAD_FOLDER: {app.config['UPLOAD_FOLDER']}")
     return render_template('display_question.html', question=chosenQuestion)
 
 @questions_views.route('/createQuestion',methods=['GET'])
@@ -168,3 +171,152 @@ def delete_question(question_id):
     else:
         flash('You do not have permission to delete this question.', 'warning')
     return redirect(url_for('questions_views.my_questions_page'))
+
+@questions_views.route('/editQuestionPage/<int:question_id>',methods=['GET'])
+@login_required
+def editQuestionsPage(question_id):
+    question = get_question(question_id)
+    if not question:
+        flash('Question not found')
+        return jsonify({"error": "No question data"}), 400
+    user = current_user
+    teacher = get_teacher(user.id)
+    if not teacher:
+        flash('Teacher is not logged in.')
+        return jsonify({"error": "Not teacher data"}), 400
+    chosenQuestion = ""
+    for q in teacher.questions:
+        if q.id == question.id:
+            chosenQuestion = q
+    print(chosenQuestion.get_json()) 
+    return render_template('editQuestion.html', question=chosenQuestion)
+
+
+
+@questions_views.route('/edit_question/<int:question_id>', methods=['GET', 'POST'])
+@login_required
+def edit_question(question_id):
+    potentialQuestion = get_question(question_id)
+    if not potentialQuestion:
+        flash('Question not found')
+        return jsonify({"error": "No question data"}), 400
+    user = current_user
+    teacher = get_teacher(user.id)
+    if not teacher:
+        flash('Teacher is not logged in.')
+        return jsonify({"error": "Not teacher data"}), 400
+    question = ""
+    for q in teacher.questions:
+        if q.id == potentialQuestion.id:
+            question = q
+
+    if request.method == 'GET':
+        return render_template('editQuestion.html', question=question)
+    
+    elif request.method == 'POST':
+        try:
+            # Process main question data
+            question.text = request.form.get('text')
+            question.courseCode = request.form.get('course-code')
+            question.difficulty = request.form.get('difficulty')
+
+            # Handle image removal
+            if request.form.get('remove_image'):
+                if question.image:
+                    delete_image_from_storage(question.image)
+                    question.image = None
+
+            # Handle new image upload
+            new_question_image = request.files.get('question_image')
+            if new_question_image and new_question_image.filename != '':
+                if question.image:
+                    delete_image_from_storage(question.image)
+                filename = save_image(new_question_image)
+                if filename:
+                    question.image = filename
+
+            correct_option_value = request.form.get('correct_option')
+
+            # Process existing options
+            existing_options = {}
+            for key, value in request.form.items():
+                if key.startswith('option_id_'):
+                    option_index = key.split('_')[-1]
+                    existing_options[option_index] = int(value)
+
+            # Update existing options
+            for index, option_id in existing_options.items():
+                option = Option.query.get(option_id)
+                if option:
+                    # Update option body
+                    body_key = f'option_body_{index}'
+                    if body_key in request.form:
+                        option.body = request.form[body_key]
+                    
+                    # Update correct status
+                    # correct_key = f'optionCorrect_{index}'
+                    # option.is_correct = correct_key in request.form
+                    option.is_correct = (str(option.id) == correct_option_value)
+                    
+                    # Handle image removal
+                    remove_key = f'remove_option_image_{index}'
+                    if remove_key in request.form and option.image:
+                        delete_image_from_storage(option.image)
+                        option.image = None
+                    
+                    # Handle image upload
+                    image_key = f'option_image_{index}'
+                    if image_key in request.files:
+                        image_file = request.files[image_key]
+                        if image_file and image_file.filename != '':
+                            if option.image:
+                                delete_image_from_storage(option.image)
+                            filename = save_image(image_file)
+                            if filename:
+                                option.image = filename
+
+            # Process new options
+            new_options = {}
+            for key in request.form:
+                if key.startswith('option_body_new_'):
+                    temp_id = key.split('_')[-1]
+                    new_options[temp_id] = {
+                        'body': request.form[key],
+                        # 'is_correct': f'optionCorrect_new_{temp_id}' in request.form,
+                        'is_correct': f'new_{temp_id}' == correct_option_value,
+                        'image': None
+                    }
+
+            # Handle images for new options
+            for key, file in request.files.items():
+                if key.startswith('option_image_new_'):
+                    temp_id = key.split('_')[-1]
+                    if temp_id in new_options and file.filename != '':
+                        filename = save_image(file)
+                        if filename:
+                            new_options[temp_id]['image'] = filename
+
+            # Create new options
+            for temp_id, option_data in new_options.items():
+                new_option = create_option(question_id=question.id, body=option_data['body'], image=option_data['image'], is_correct=option_data['is_correct'])
+                db.session.add(new_option)
+
+            # Handle deleted options
+            for key, value in request.form.items():
+                if key.startswith('delete_option_') and value == 'true':
+                    option_id = int(key.split('_')[-1])
+                    option = Option.query.get(option_id)
+                    if option:
+                        if option.image:
+                            delete_image_from_storage(option.image)
+                        db.session.delete(option)
+
+            db.session.commit()
+            flash('Question updated successfully!', 'success')
+            return redirect(url_for('tags_views.editTagsPage', question_id=question_id))
+
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating question: {str(e)}', 'error')
+            app.logger.error(f"Error updating question: {str(e)}")
+            return redirect(url_for('questions_views.edit_question', question_id=question_id))
