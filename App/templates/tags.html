@@ -7,27 +7,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
+         :root {
+            --primary-color: #2b96ad;
+            --primary-dark: #207d91;
+            --primary-light: #3cb3cc;
+            --text-color: #2d3748;
+            --bg-opacity: 0.95;
+        }
         body {
-            background-image: url(mcq.jpg);
+            background-image: url("{{ url_for('static', filename='Images/mcq.jpg') }}");
             background-repeat: no-repeat;
-            background-attachment: fixed;
+            background-attachment: fixed; 
             background-size: 100% 100%;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Center content horizontally */
-            justify-content: flex-start; /* Align content to the top */
-            padding-top: 2rem; /* Add some top padding */
-            box-sizing: border-box; /* Include padding in element's total width and height */
         }
         .container {
             max-width: 1200px;
-            width: 90%; /* Adjust width as needed */
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 0.5rem;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            margin-bottom: 2rem; /* Add some space below the main content */
+            margin: auto;
+            padding: 1rem;
+            position: relative;
+            z-index: 1;
         }
         header {
             display: flex;
@@ -55,16 +54,27 @@
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             padding: 0.25rem;
         }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         .button {
             background-color: white;
             color: #2b96ad;
             padding: 0.75rem 1rem;
             border-radius: 0.375rem;
+            transition: all 0.3s ease;
             transition: opacity 0.3s;
             font-size: 1.125rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .button:hover {
             background-color: #e5e7eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         .nav-button {
             width: 100%;
@@ -73,47 +83,58 @@
             border-radius: 0.375rem;
             transition: background-color 0.3s;
             font-size: 1.125rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.5rem;
         }
         .nav-button:hover {
-            background-color: lightgrey;
+            background-color: rgba(43, 150, 173, 0.1);
+            color: var(--primary-color);
+            transform: translateX(5px);
         }
         #toggleNav {
             position: fixed;
             top: 5rem;
             left: 1rem;
             z-index: 10;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-            color: #2b96ad;
-            transition: background-color 0.3s;
+            background-color: var(--primary-color);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: none;
         }
         #toggleNav:hover {
-            background-color: #e5e7eb;
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         #sideNav {
             background-color: rgba(255, 255, 255, 0.9);
             border-radius: 0.5rem;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             padding: 1.5rem;
-            width: 20%; /* Keep a consistent width for the nav */
+            width: 20%;
             height: calc(100vh - 8rem);
             transition: all 0.3s ease;
-            position: fixed;
-            left: 0;
-            top: 8rem;
-            bottom: 0;
-            overflow-y: auto;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(43, 150, 173, 0.2);
+            backdrop-filter: blur(10px);
         }
         #mainContent {
+            flex: 1;
             background-color: rgba(255, 255, 255, 0.9);
             border-radius: 0.5rem;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             padding: 1.5rem;
-            margin-left: 22%; /* Adjust margin to accommodate the fixed sidebar */
+            margin-left: 2rem;
             margin-right: 2rem;
             transition: all 0.3s ease;
-            min-height: calc(100vh - 8rem);
+    
         }
         #maindiv{
             background-color: white;
@@ -257,27 +278,29 @@
     <div class="container">
         <header>
             <div class="text-2xl font-bold">
-                <a href="/homePage" class="text-white hover:text-gray-500 transition duration-300">
-                    <i class="fas fa-home"></i> Home
-                </a>
+                <a class="text-white hover:text-gray-500 transition duration-300" onclick="window.location.href='{{ url_for('auth_views.homePage') }}'">
+                    <i class="fas fa-home"></i>HomePage
+                       </a>
             </div>
             <button class="button"><a href="/createQuestion">New Question</a></button>
-            <button class="button">New Exam</button>
+            <button class="button"><a href="/new_exam">New Exam</a></button>
             <div class="relative">
                 <button id="profileButton" class="profile-button">
                     <i class="fas fa-user-circle text-3xl"></i>
                     <span class="ml-2">Your Profile</span>
                 </button>
                 <div id="profileDropdown" class="dropdown-menu">
-                    <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                    </a>
+                    <form action="{{ url_for('auth_views.logout_action') }}" method="get">
+                        <button class="nav-button">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                        </button>
+                    </form>
                 </div>
             </div>
         </header>
 
         <div class="flex w-full">
-            <button id="toggleNav" class="md:hidden"><i class="fas fa-angle-left"></i></button>
+            <button id="toggleNav"><i class="fas fa-angle-left"></i></button>
             <nav id="sideNav">
                 <ul class="space-y-4">
                     <button class="nav-button" onclick="window.location.href='{{ url_for('questions_views.my_questions_page') }}'">
@@ -286,14 +309,16 @@
                     <button class="nav-button" onclick="window.location.href='{{ url_for('exams_views.my_exams_page') }}'">
                       <i class="fas fa-file-alt mr-2"></i> My Exams
                     </button>
-                    <li><button class="nav-button"><i class="fas fa-file-upload mr-2"></i> Import Questions</button></li>
+                    <button class="nav-button" onclick="window.location.href='{{ url_for('import_page_views.import_page') }}'">
+                        <i class="fas fa-file-upload mr-2"></i> Import Questions
+                    </button>
                     <button class="nav-button" onclick="window.location.href='{{ url_for('help_views.help_page') }}'">
                       <i class="fas fa-file-alt mr-2"></i> Help
                   </button>
                   </ul>
             </nav>
 
-            <main id="mainContent" class="flex-grow">
+            <main id="mainContent">
                 <h1 class="question-bank-title">
                     Choose or Create Tag
                 </h1>
@@ -345,15 +370,21 @@
             isNavOpen = !isNavOpen;
 
             if (isNavOpen) {
-                sideNav.style.marginLeft = '0';
                 sideNav.style.width = '20%';
-                mainContent.style.marginLeft = '22%';
-            } else {
-                sideNav.style.marginLeft = '-20%';
-                sideNav.style.width = '0';
+                sideNav.style.opacity = '1';
+                sideNav.style.visibility = 'visible';
                 mainContent.style.marginLeft = '2rem';
+                toggleNav.innerHTML = '<i class="fas fa-angle-left"></i>';
+            } else {
+                sideNav.style.width = '0';
+                sideNav.style.opacity = '0';
+                sideNav.style.visibility = 'hidden';
+                mainContent.style.marginLeft = '10px';
+                toggleNav.innerHTML = '<i class="fas fa-angle-right"></i>';
             }
         });
+        
+        
 
         var tagList = document.getElementById("tagList");
         var createTagForm = document.getElementById("createTagForm");
@@ -513,6 +544,22 @@
         }
     }
     fetchTags();
+
+    document.addEventListener('DOMContentLoaded', () => {
+            const profileButton = document.getElementById('profileButton');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            profileButton.addEventListener('click', () => {
+                profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Close the dropdown if clicked outside
+            document.addEventListener('click', (event) => {
+                if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                    profileDropdown.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 </html>
