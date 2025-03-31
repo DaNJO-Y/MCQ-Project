@@ -701,133 +701,310 @@
 
             <main id="mainContent">
                 <h1 class="question-bank-title">
-                    Create Question
+                    Edit Question : {{question.id}}
                 </h1>
                 <!-- Question Content -->
                 <div id="maindiv">
-                    <!-- <div class="format" role="toolbar" aria-label="Text Formatting" aria-controls="textarea1">
-                      <div class="group characteristics">
-                        <button type="button" class="item bold popup" aria-pressed="false" value="bold" tabindex="0">
-                          <span class="fas fa-bold" aria-hidden="true"></span>
-                          <span class="popup-label">Bold</span>
-                        </button>
-                        <button type="button" class="item italic popup" aria-pressed="false" value="italic" tabindex="-1">
-                          <span class="fas fa-italic" aria-hidden="true"></span>
-                          <span class="popup-label">Italic</span>
-                        </button>
-                        <button type="button" class="item underline popup" aria-pressed="false" value="underline" tabindex="-1">
-                          <span class="fas fa-underline" aria-hidden="true"></span>
-                          <span class="popup-label">Underline</span>
-                        </button>
-                      </div>
-                      <div class="group" role="radiogroup" aria-label="Text Alignment">
-                        <button type="button" role="radio" class="item align-left popup" aria-checked="true" tabindex="-1">
-                          <span class="fas fa-align-left" aria-hidden="true"></span>
-                          <span class="popup-label">Text Align Left</span>
-                        </button>
-                        <button type="button" role="radio" class="item align-center popup" aria-checked="false" tabindex="-1">
-                          <span class="fas fa-align-center" aria-hidden="true"></span>
-                          <span class="popup-label">Text Align Center</span>
-                        </button>
-                        <button type="button" role="radio" class="item align-right popup" aria-checked="false" tabindex="-1">
-                          <span class="fas fa-align-right" aria-hidden="true"></span>
-                          <span class="popup-label">Text Align Right</span>
-                        </button>
-                      </div>
-                      <div class="group">
-                        <button type="button" class="item copy" aria-disabled="true" tabindex="-1">Copy</button>
-                        <button type="button" class="item paste" aria-disabled="true" tabindex="-1">Paste</button>
-                        <button type="button" class="item cut" aria-disabled="true" tabindex="-1">Cut</button>
-                      </div>
-                      <div class="menu-popup group">
-                        <button type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menu1" class="item menu-button" tabindex="-1" aria-label="Font: Sans-serif" style="text-align: left; width: 140px; font-family: sans-serif">
-                          SANS-SERIF
-                          <span></span>
-                        </button>
-                        <ul role="menu" id="menu1" aria-label="Font Family">
-                          <li role="menuitemradio" aria-checked="true" style="font-family: sans-serif">Sans-serif</li>
-                          <li role="menuitemradio" aria-checked="false" style="font-family: serif">Serif</li>
-                          <li role="menuitemradio" aria-checked="false" style="font-family: monospace">Monospace</li>
-                          <li role="menuitemradio" aria-checked="false" style="font-family: fantasy">Fantasy</li>
-                          <li role="menuitemradio" aria-checked="false" style="font-family: cursive">Cursive</li>
-                        </ul>
-                      </div>
-
-                      <div class="group">
-                        <div class="item spinbutton" role="spinbutton" tabindex="-1" aria-valuenow="14" aria-valuetext="14pt" aria-valuemin="8" aria-valuemax="40" aria-label="Font size in points">
-                          <span class="value">14pt</span>
-                          <span class="increase">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12">
-                              <polygon class="increase" fill="#333" points="0,12 11,12 6,2"></polygon>
-                            </svg>
-                          </span>
-                          <span class="decrease">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12">
-                              <polygon class="decrease" fill="#333" points="0,2 11,2 6,12"></polygon>
-                            </svg>
-                          </span>
-                        </div>
-                      </div>
-
-                      <div class="group">
-                        <label class="input"><input id="checkbox" class="item nightmode" type="checkbox" tabindex="-1"> Night Mode</label>
-                        <a id="link" class="item link" href="../help.html" tabindex="-1">Help</a>
-                      </div>
-                    </div> -->
+                    
                     <label for="textarea1" class="hidden">Text Sample</label><br>
-                    <form id="questionForm" enctype="multipart/form-data">
-                      <!-- <div class="mb-4">
-                        <h2 class="font-semibold">Question Title:</h2>
-                        <input id="questiontitle" type="text" class="p-2 border rounded" placeholder="Enter question title">
-                    </div> -->
+                    <form id="questionForm" enctype="multipart/form-data" action="/edit_question/{{question.id}}" method="POST">
+                      
                     <div class="mb-4 flex">
                         <div class="w-2/3 pr-2">
                             <h2 class="font-semibold">Question Text</h2>
-                            <textarea id="questiontext" name="text" class="w-full p-2 border rounded" rows="4" placeholder="Enter question text"></textarea>
+                            <textarea id="questiontext" name="text" class="w-full p-2 border rounded" rows="4" placeholder="Enter question text">{{question.text}}</textarea>
                         </div>
                         <div class="w-1/3 pl-2">
-                            <h2 class="font-semibold">Image 1</h2>
+                            <h2 class="font-semibold">Image</h2>
                             <div class="border rounded p-4 flex items-center justify-center">
                                 <div class="upload-container">
-                                    <label for="file-upload">+ Add Image</label>
-                                    <input name="questionImage" type="file" id="file-upload" class="hidden" />
-                                    <!-- <div id="new-image-preview"></div> -->
+                                  {% if question.image %}
+                                      <label for="file-upload" class="items-center justify-center">Replace Image</label>
+                                      <div>
+                                          <label>
+                                              <input type="checkbox" name="remove_image"> Remove Current Image
+                                          </label>
+                                      </div>
+                                      <img id="current-image" src="{{ url_for('static', filename='uploads/' + question.image) }}" alt="Current Question Image" class="max-w-md max-h-48 rounded border p-2 mb-2">
+                                      <input name="question_image" type="file" id="file-upload" class="hidden" />
+                                      <div id="new-image-preview"></div>
+                                  {% else %}
+                                      <label for="file-upload">+ Add Image</label>
+                                      <input name="question_image" type="file" id="file-upload" class="hidden" />
+                                      <div id="new-image-preview"></div>
+                                  {% endif %}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="mb-4">
                       <h2 class="font-semibold">Question Course Code:</h2>
-                        <input id="courseCodetitle" name="course-code" type="text" class="p-2 border rounded" placeholder="Enter question course code">
+                        <input id="courseCodetitle" name="course-code" type="text" class="p-2 border rounded" placeholder="Enter question course code" value={{question.courseCode}}>
                     </div>
 
                     <div class="mb-4">
                       <h2 class="font-semibold">Question Difficulty:</h2>
-                        <input id="difficultytitle" name="difficulty" type="text" class="p-2 border rounded" placeholder="Enter question diffiulty...Easy, Intermediate, Hard">
+                      <!-- <select id="difficultytitle" name="difficulty" class="p-2 border rounded">
+                        <option value="Easy" {% if question.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                        <option value="Intermediate" {% if question.difficulty == 'Intermediate' %}selected{% endif %}>Intermediate</option>
+                        <option value="Hard" {% if question.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                    </select> -->
+                    <input id="difficultytitle" name="difficulty" type="text" class="p-2 border rounded" placeholder="Enter question diffiulty...Easy, Intermediate, Hard" value="{{question.difficulty}}">
+                    </div>
+                    
+                    <div id="optionsContainer">
+                      {% for o in question.options %}
+                      <div class="option-container" data-option-id="{{ o.id }}">
+                        <input type="hidden" name="option_id_{{ loop.index }}" value="{{ o.id }}">
+                        <label class="label">Option {{ loop.index }}:</label>
+                        <button type="button" id="removebutton" class="remove-btn text-white py-1 px-4 rounded" onclick="removeOption(this)">Remove</button>
+                        <div class="input-container">
+                            <input type="text" id="optionBody{{ loop.index }}" name="option_body_{{ loop.index }}" class="text-input" value="{{ o.body }}">
+                            <div class="upload-container">
+                                {% if o.image %}
+                                    <label>
+                                        <input type="file" id="optionImage{{ loop.index }}" name="option_image_{{ loop.index }}">
+                                        Replace image
+                                    </label>
+                                    <div>
+                                        <label>
+                                            <input type="checkbox" name="remove_option_image_{{ loop.index }}"> Remove current image
+                                        </label>
+                                    </div>
+                                    <!-- <img src="{{ url_for('static', filename='uploads/' + o.image) }}" alt="Option Image" class="max-w-xs max-h-24 rounded border p-1 mb-1"> -->
+                                {% else %}
+                                    <label>
+                                        <input type="file" id="optionImage{{ loop.index }}" name="option_image_{{ loop.index }}">
+                                        Upload image
+                                    </label>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <label>
+                          Is Correct:
+                          <!-- <input type="checkbox" id="optionCorrect{{ loop.index }}" name="optionCorrect{{ loop.index }}" {% if o.is_correct %}checked{% endif %}> -->
+                          <input type="radio" name="correct_option" value="{{ o.id }}" {% if o.is_correct %}checked{% endif %}>
+                        </label>
+                        <br><br>
+                      </div>
+                      {% endfor %}
                     </div>
 
-                    <div id="optionsContainer"></div>
                     <div class="flex-container">
                         <button class="add-btn" id="addOption" type="button">
                             <span>+</span>
                             Add Answer Options
                         </button>
                     </div>
-                    
-                    <!-- This was for if there was a seperate correct answer -->
-                    <!-- <div class="correctcontainer">
-                        <label for="correctanswer" class="label">Correct Answer</label>
-                        <div class="input-container">
-                            <input type="text" id="correctanswer" class="text-input">
-                            <button class="upload-btn">
-                                <div class="upload-container">
-                                    <label for="file-upload">+ Add Image</label>
-                                    <input type="file" id="file-upload" class="hidden" />
-                                </div>
-                            </button>
-                        </div>
-                    </div> -->
+                    <!-- <script>
+                      // Initialize with existing options or 0
+                      let optionCount = {{ question.options|length if question.options else 0}};
+                      
+                      function createOptionInput(index) {
+                        const optionDiv = document.createElement('div');
+                          optionDiv.className = 'option-container';
+                          optionDiv.dataset.optionId = index;
+                          
+                          optionDiv.innerHTML = `
+                            <label class="label">Option ${index}:</label>
+                            <button type="button" id="removebutton" class="remove-btn text-white py-1 px-4 rounded" onclick="removeOption(this)">Remove</button>
+                            <div class="input-container">
+                              <input type="text" id="optionBody${index}" name="optionBody${index}" class="text-input">
+                              <div class="upload-container">
+                                <label>
+                                  <input type="file" id="optionImage${index}" name="optionImage${index}">
+                                  Upload Image
+                                </label>
+                              </div>
+                            </div>
+                            <label>
+                              Is Correct:
+                              <input type="checkbox" id="optionCorrect${index}" name="optionCorrect${index}">
+                            </label>
+                            <br><br>
+                          `;
+                          
+                          return optionDiv;
+                      }
+                      
+                      document.getElementById('addOption').addEventListener('click', function() {
+                        optionCount++;
+                        const newOption = createOptionInput(optionCount);
+                        document.getElementById('optionsContainer').appendChild(newOption);
+                      });
+                      
+                      function removeOption(button) {
+                        button.closest('.option-container').remove();
+                      }
 
+                      function removeOption(button) {
+                        const optionContainer = button.parentNode;
+                        optionContainer.remove();
+                        reIndexOptions();
+                      }
+
+                      function reIndexOptions() {
+                        const optionContainers = document.querySelectorAll('#optionsContainer .option-container');
+                        optionCount = optionContainers.length;
+                        optionContainers.forEach((container, index) => {
+                          const newIndex = index + 1;
+                          container.dataset.optionId = newIndex;
+                          container.querySelector('.label').textContent = `Option ${newIndex}:`;
+                          const bodyInput = container.querySelector('[id^="optionBody"]');
+                          if (bodyInput) {
+                            bodyInput.id = `optionBody${newIndex}`;
+                            bodyInput.name = `optionBody${newIndex}`;
+                          }
+                          const imageInput = container.querySelector('[id^="optionImage"]');
+                          if (imageInput) {
+                            imageInput.id = `optionImage${newIndex}`;
+                            imageInput.name = `optionImage${newIndex}`;
+                          }
+                          const correctCheckbox = container.querySelector('[id^="optionCorrect"]');
+                          if (correctCheckbox) {
+                            correctCheckbox.id = `optionCorrect${newIndex}`;
+                            correctCheckbox.name = `optionCorrect${newIndex}`;
+                          }
+                        });
+                      }
+                      </script> -->
+                    <script>
+                          // Close the dropdown if clicked outside
+                        
+                        let optionCount = {{ question.options|length if question.options else 0 }};
+                    let nextNewOptionId = 1000; // Starting ID for new options (not in database)
+                    
+                    // Function to create a new option input
+                    function createOptionInput() {
+                        optionCount++;
+                        const newOptionId = nextNewOptionId++;
+                        
+                        const optionDiv = document.createElement('div');
+                        optionDiv.className = 'option-container';
+                        optionDiv.dataset.optionId = newOptionId;
+                        
+                        optionDiv.innerHTML = `
+                            <input type="hidden" name="new_option" value="true">
+                            <label class="label">Option ${optionCount}:</label>
+                            <button type="button" id="removebutton" class="remove-btn text-white py-1 px-4 rounded" onclick="removeOption(this)">Remove</button>
+                            <div class="input-container">
+                                <input type="text" id="optionBody${optionCount}" name="option_body_new_${newOptionId}" class="text-input">
+                                <div class="upload-container">
+                                    <label>
+                                        <input type="file" id="optionImage${optionCount}" name="option_image_new_${newOptionId}">
+                                        Upload Image
+                                    </label>
+                                </div>
+                            </div>
+                            <label>
+                                Is Correct:
+                                <input type="radio" name="correct_option" value="new_${newOptionId}">
+                                
+                            </label>
+                            <br><br>
+                        `;
+                        //for checkbox instead of radio
+                        // <input type="checkbox" id="optionCorrect${optionCount}" name="optionCorrect${optionCount}" value="new_${newOptionId}">
+                        return optionDiv;
+                    }
+                    
+                    // Function to remove an option
+                    function removeOption(button) {
+                        const optionContainer = button.closest('.option-container');
+                        const optionId = optionContainer.dataset.optionId;
+                        
+                        // If this is an existing option (not new), mark it for deletion
+                        if (optionId < 1000) {
+                            const deleteInput = document.createElement('input');
+                            deleteInput.type = 'hidden';
+                            deleteInput.name = 'delete_option_' + optionId;
+                            deleteInput.value = 'true';
+                            optionContainer.appendChild(deleteInput);
+                            optionContainer.style.display = 'none'; // Hide instead of remove to keep in form
+                        } else {
+                            optionContainer.remove();
+                            optionCount--;
+                            
+                        }
+                        renumberOptions();
+                    }
+                    
+                    // Function to renumber options after deletion
+                    function renumberOptions() {
+                        const visibleOptions = document.querySelectorAll('#optionsContainer .option-container:not([style*="display: none"])');
+                        let visibleIndex = 1;
+                        
+                        visibleOptions.forEach(option => {
+                            const label = option.querySelector('.label');
+                            if (label) {
+                                label.textContent = `Option ${visibleIndex}:`;
+                            }
+                            visibleIndex++;
+                        });
+                        
+                        optionCount = visibleOptions.length;
+                    }
+                    
+                    // Add event listener for adding new options
+                    document.getElementById('addOption').addEventListener('click', function() {
+                        const newOption = createOptionInput();
+                        document.getElementById('optionsContainer').appendChild(newOption);
+                    });
+                    
+                    // Image preview functionality
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const fileUpload = document.getElementById('file-upload');
+                        const currentImage = document.getElementById('current-image');
+                        const newImagePreview = document.getElementById('new-image-preview');
+                        
+                        if (fileUpload && currentImage) {
+                            fileUpload.addEventListener('change', function() {
+                                if (this.files && this.files[0]) {
+                                    // Hide the current image
+                                    currentImage.style.display = 'none';
+                                    
+                                    // Display preview of the new image
+                                    const reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        newImagePreview.innerHTML = `<img src="${e.target.result}" alt="New Image Preview" style="max-width: 200px;">`;
+                                    }
+                                    reader.readAsDataURL(this.files[0]);
+                                } else {
+                                    // If no file is selected, show the current image again
+                                    currentImage.style.display = 'block';
+                                    newImagePreview.innerHTML = '';
+                                }
+                            });
+                        }
+                        
+                        // Similar functionality for option images
+                        document.querySelectorAll('input[type="file"][name^="option_image_"]').forEach(input => {
+                            input.addEventListener('change', function() {
+                                if (this.files && this.files[0]) {
+                                    const previewDiv = this.closest('.upload-container').querySelector('.image-preview');
+                                    if (!previewDiv) {
+                                        const newPreview = document.createElement('div');
+                                        newPreview.className = 'image-preview';
+                                        this.closest('.upload-container').appendChild(newPreview);
+                                    }
+                                    
+                                    const reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        this.closest('.upload-container').querySelector('.image-preview').innerHTML = 
+                                            `<img src="${e.target.result}" alt="Option Image Preview" style="max-width: 100px;">`;
+                                    }.bind(this);
+                                    reader.readAsDataURL(this.files[0]);
+                                }
+                            });
+                        });
+                    });
+                    
+                    // Form submission handling
+                    document.getElementById('questionForm').addEventListener('submit', function(e) {
+                        // Client-side validation can be added here if needed
+                        // The form will submit to the server which will handle the actual update
+                    });
+                    </script>
                     <!-- <button id="tagbutton" class="text-white py-1 px-4 rounded" onclick="openForm()">Add Tags</button> -->
                     
                     <!-- <button id="tagbutton" class="text-white py-1 px-4 rounded" onclick="document.getElementById('tagModal').style.display='block'" >Open Modal</button>-->
@@ -883,164 +1060,179 @@
             });
 
         });
-
-            // Close the dropdown if clicked outside
-            document.addEventListener('click', (event) => {
-                if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
-                    profileDropdown.style.display = 'none';
-                }
-            });
-
-        const optionsContainer = document.getElementById('optionsContainer');
-        const addOptionButton = document.getElementById('addOption');
-        const questionForm = document.getElementById('questionForm');
-
-        let optionCount = 0;
-        let optionIds = [];
-        function createOptionInput() {
-          const optionDiv = document.createElement('div');
-          const optionId = `optionBody${optionCount}`; // Declare optionId
-          const fileUploadId = `file-upload-option-${optionCount}`;
-          optionDiv.className = 'option-container'; // Add a class for easier selection
-          optionDiv.dataset.optionId = optionCount; // Store the ID in data attribute
-          optionDiv.innerHTML = 
-          `
-                <div class="optioncontainer">
-                    <label for="optionBody${optionCount}" class="label">Option ${optionCount + 1}:</label>
-                    <button type="button" id="removebutton" class="text-white py-1 px-4 rounded" onclick="removeOption(this)">Remove</button>
-                    <div class="input-container">
-                        <input type="text" id="${optionId}" name="optionBody${optionCount}" class="text-input">
-                        <button class="upload-btn">
-                            
-                        </button>
-                        <div class="upload-container">
-                                <input type="file" id="${fileUploadId}"  name="optionImage${optionCount}" />
-                         </div>
-                    </div>
-                    <label for="optionCorrect${optionCount}">Is Correct:</label>
-                    <input type="checkbox" id="optionCorrect${optionCount}" name="optionCorrect${optionCount}"><br><br>
-                    
-                </div>
-              
-          `;
-          optionsContainer.appendChild(optionDiv); // Append to the container!
-          optionIds.push(optionCount);
-          const newOptionInput = document.getElementById(optionId);
-          if (newOptionInput) {
-              newOptionInput.style.width = '50%';
-              newOptionInput.style.border = '2px solid #d1d5db';
-          }
-          optionCount++;
-              
-        }
-        function removeOption(button) {
-            const optionDiv = button.closest('.option-container');
-            const optionId = parseInt(optionDiv.dataset.optionId);
-            
-            // Remove from DOM
-            optionDiv.remove();
-            optionCount--;
-            // Remove from tracking array
-            optionIds = optionIds.filter(id => id !== optionId);
-            
-            // Re-index the remaining options
-            const remainingOptions = optionsContainer.querySelectorAll('.option-container');
-            remainingOptions.forEach((container, index) => {
-                const newId = optionIds[index];
-                container.dataset.optionId = newId;
-                
-                // Update all the IDs and names in this container
-                const label = container.querySelector('.label');
-                const textInput = container.querySelector('.text-input');
-                const fileInput = container.querySelector('input[type="file"]');
-                const checkbox = container.querySelector('input[type="checkbox"]');
-                
-                if (label) {
-                    label.textContent = `Option ${index + 1}:`;
-                    label.setAttribute('for', `optionBody${newId}`);
-                }
-                if (textInput) {
-                    textInput.id = `optionBody${newId}`;
-                    textInput.name = `optionBody${newId}`;
-                }
-                if (fileInput) {
-                    fileInput.id = `file-upload-option-${newId}`;
-                    fileInput.name = `optionImage${newId}`;
-                    // Update the associated label's 'for' attribute
-                    const fileLabel = container.querySelector(`label[for="file-upload-option-${optionId}"]`);
-                    if (fileLabel) {
-                        fileLabel.setAttribute('for', `file-upload-option-${newId}`);
-                    }
-                }
-                if (checkbox) {
-                    checkbox.id = `optionCorrect${newId}`;
-                    checkbox.name = `optionCorrect${newId}`;
-                    // Update the associated label's 'for' attribute
-                    const checkboxLabel = container.querySelector(`label[for="optionCorrect${optionId}"]`);
-                    if (checkboxLabel) {
-                        checkboxLabel.setAttribute('for', `optionCorrect${newId}`);
-                    }
-                }
-            });
-        }
-
-addOptionButton.addEventListener('click', createOptionInput);
-
-        questionForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-
-            const formData = new FormData(questionForm); // Use FormData
-
-            const options = [];
-            for (let i = 0; i < optionCount; i++) {
-                options.push({
-                    body: formData.get(`optionBody${i}`),
-                    image: `optionImage${i}`,
-                    is_correct: formData.get(`optionCorrect${i}`) === 'on',
-                });
+        document.addEventListener('click', (event) => {
+            if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.style.display = 'none';
             }
-
-            // Remove individual option fields from formData
-            for (let i = 0; i < optionCount; i++) {
-                formData.delete(`optionBody${i}`);
-                // formData.delete(`optionImage${i}`);
-                formData.delete(`optionCorrect${i}`);
-            }
-
-            formData.append('options', JSON.stringify(options)); // append the options as a json string.
-
-            try {
-              // '/questions'
-                const response = await fetch('/questions', {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                if (response.ok) { // Check if the response was successful
-                    console.log('Success: Question created!');
-                    const responseData = await response.json();
-                    const questionId = responseData.id;
-                    // '/createQuestion'
-                    window.location.href = `/tags?question_id=${questionId}`; // Redirect to a success page or home page
-                } else {
-                    const errorData = await response.json();
-                    console.error('Error:', errorData);
-                    // Handle error, display error message to the user
-                }
-              } catch (error) {
-                  console.error('Error:', error);
-                  // Handle network errors, display error message to the user
-              }
-
         });
 
-        createOptionInput(); // Create the first option input on page load
         
+
+    //     const optionsContainer = document.getElementById('optionsContainer');
+    //     const addOptionButton = document.getElementById('addOption');
+    //     const questionForm = document.getElementById('questionForm');
+
+    //     // let optionCount = {{ question.options|length if question.options else 0 }};
+    //     let optionIds = [];
+        
+
+    //     // function createOptionInput(index) {
+    //     //   const optionDiv = document.createElement('div');
+    //     //   optionDiv.className = 'option-container';
+    //     //   optionDiv.dataset.optionId = index;
+          
+    //     //   optionDiv.innerHTML = `
+    //     //     <label class="label">Option ${index}:</label>
+    //     //     <button type="button" id="removebutton" class="remove-btn text-white py-1 px-4 rounded" onclick="removeOption(this)">Remove</button>
+    //     //     <div class="input-container">
+    //     //       <input type="text" id="optionBody${index}" name="optionBody${index}" class="text-input">
+    //     //       <div class="upload-container">
+    //     //         <label>
+    //     //           <input type="file" 
+    //     //                 id="optionImage${index}" 
+    //     //                 name="optionImage${index}">
+    //     //           Upload Image
+    //     //         </label>
+    //     //       </div>
+    //     //     </div>
+    //     //     <label>
+    //     //       Is Correct:
+    //     //       <input type="checkbox" id="optionCorrect${index}" name="optionCorrect${index}">
+    //     //     </label>
+    //     //     <br><br>
+    //     //   `;
+          
+    //     //   return optionDiv;
+    //     // }
+    //     // function removeOption(button) {
+    //     //     const optionDiv = button.closest('.option-container');
+    //     //     const optionId = parseInt(optionDiv.dataset.optionId);
+            
+    //     //     // Remove from DOM
+    //     //     optionDiv.remove();
+    //     //     optionCount--;
+    //     //     // Remove from tracking array
+    //     //     optionIds = optionIds.filter(id => id !== optionId);
+            
+    //     //     // Re-index the remaining options
+    //     //     const remainingOptions = optionsContainer.querySelectorAll('.option-container');
+    //     //     remainingOptions.forEach((container, index) => {
+    //     //         const newId = optionIds[index];
+    //     //         container.dataset.optionId = newId;
+                
+    //     //         // Update all the IDs and names in this container
+    //     //         const label = container.querySelector('.label');
+    //     //         const textInput = container.querySelector('.text-input');
+    //     //         const fileInput = container.querySelector('input[type="file"]');
+    //     //         const checkbox = container.querySelector('input[type="checkbox"]');
+                
+    //     //         if (label) {
+    //     //             label.textContent = `Option ${index + 1}:`;
+    //     //             label.setAttribute('for', `optionBody${newId}`);
+    //     //         }
+    //     //         if (textInput) {
+    //     //             textInput.id = `optionBody${newId}`;
+    //     //             textInput.name = `optionBody${newId}`;
+    //     //         }
+    //     //         if (fileInput) {
+    //     //             fileInput.id = `file-upload-option-${newId}`;
+    //     //             fileInput.name = `optionImage${newId}`;
+    //     //             // Update the associated label's 'for' attribute
+    //     //             const fileLabel = container.querySelector(`label[for="file-upload-option-${optionId}"]`);
+    //     //             if (fileLabel) {
+    //     //                 fileLabel.setAttribute('for', `file-upload-option-${newId}`);
+    //     //             }
+    //     //         }
+    //     //         if (checkbox) {
+    //     //             checkbox.id = `optionCorrect${newId}`;
+    //     //             checkbox.name = `optionCorrect${newId}`;
+    //     //             // Update the associated label's 'for' attribute
+    //     //             const checkboxLabel = container.querySelector(`label[for="optionCorrect${optionId}"]`);
+    //     //             if (checkboxLabel) {
+    //     //                 checkboxLabel.setAttribute('for', `optionCorrect${newId}`);
+    //     //             }
+    //     //         }
+    //     //     });
+    //     // }
+
+    //     // addOptionButton.addEventListener('click', createOptionInput);
+
+    //     questionForm.addEventListener('submit', async (event) => {
+    //         event.preventDefault();
+
+    //         const formData = new FormData(questionForm); // Use FormData
+
+    //         const options = [];
+    //         for (let i = 0; i < optionCount; i++) {
+    //             options.push({
+    //                 body: formData.get(`optionBody${i}`),
+    //                 image: `optionImage${i}`,
+    //                 is_correct: formData.get(`optionCorrect${i}`) === 'on',
+    //             });
+    //         }
+
+    //         // Remove individual option fields from formData
+    //         for (let i = 0; i < optionCount; i++) {
+    //             formData.delete(`optionBody${i}`);
+    //             // formData.delete(`optionImage${i}`);
+    //             formData.delete(`optionCorrect${i}`);
+    //         }
+
+    //         formData.append('options', JSON.stringify(options)); // append the options as a json string.
+
+    //         try {
+    //           // '/questions'
+    //             const response = await fetch('/editQuestionPage/<int:question_id>', {
+    //                 method: 'POST',
+    //                 body: formData,
+    //             });
+
+    //             if (response.ok) { // Check if the response was successful
+    //                 console.log('Success: Question created!');
+    //                 const responseData = await response.json();
+    //                 const questionId = responseData.id;
+    //                 // '/createQuestion'
+    //                 window.location.href = `/tags?question_id=${questionId}`; // Redirect to a success page or home page
+    //             } else {
+    //                 const errorData = await response.json();
+    //                 console.error('Error:', errorData);
+    //                 // Handle error, display error message to the user
+    //             }
+    //           } catch (error) {
+    //               console.error('Error:', error);
+    //               // Handle network errors, display error message to the user
+    //           }
+
+    //     });
+
+    //     // createOptionInput(); // Create the first option input on page load
+        
+        
+    //     //For changing changing current image and previewing it
     //     document.addEventListener('DOMContentLoaded', function() {
     //     const fileUpload = document.getElementById('file-upload');
     //     const currentImage = document.getElementById('current-image');
     //     const newImagePreview = document.getElementById('new-image-preview');
-    //     if (fileUpload && newImagePreview) {
+
+    //     if (fileUpload && currentImage) {
+    //         fileUpload.addEventListener('change', function() {
+    //             if (this.files && this.files[0]) {
+    //                 // Hide the current image
+    //                 currentImage.style.display = 'none';
+
+    //                 // Optionally, display a preview of the new image
+    //                 const reader = new FileReader();
+    //                 reader.onload = function(e) {
+    //                     newImagePreview.innerHTML = `<img src="${e.target.result}" alt="New Image Preview" style="max-width: 200px;">`;
+    //                 }
+    //                 reader.readAsDataURL(this.files[0]);
+    //             } else {
+    //                 // If no file is selected, show the current image again (optional)
+    //                 currentImage.style.display = 'block';
+    //                 newImagePreview.innerHTML = '';
+    //             }
+    //         });
+    //     } else if (fileUpload && newImagePreview) {
     //         // If there was no existing image, just show the preview
     //         fileUpload.addEventListener('change', function() {
     //             if (this.files && this.files[0]) {
