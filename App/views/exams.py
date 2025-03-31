@@ -32,7 +32,8 @@ def my_exams_page():
 
 @exams_views.route('/new_exam')
 def newExamPage():
-    return render_template('create_exam.html')
+    questions = get_all_my_questions(current_user)
+    return render_template('create_exam.html', questions=questions)
 
 @exams_views.route('/create_exams')
 @login_required
