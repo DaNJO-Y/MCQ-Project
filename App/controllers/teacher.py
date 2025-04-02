@@ -1,5 +1,9 @@
 from App.models import Teacher
+from App.models import Question
+from App.models import Exam
+from App.controllers import *
 from App.database import db
+from datetime import date
 
 def create_teacher(firstName, lastName, username, password, email):
     newteacher = Teacher(firstName=firstName, lastName=lastName, username=username, password=password, email=email)
@@ -45,14 +49,33 @@ def update_teacher(id, username, email):
         return db.session.commit()
     return None
 
-def createExam(title, questions, createdBy, dateCreated, courseCode):
-    pass
+def addQuestion(teacher_id,question,exam_id):
+    teacher = get_teacher(teacher_id)
+    if teacher:
+        if question.teacher_id == teacher.id:
+            exam = get_exam_by_id(exam_id)
+            if exam.teacher_id == teacher.id:
+                exam.exam_questions.append(question)
+                db.session.add(exam)
+                return db.session.commit
+    return None
 
-def createQuestion(text, options, createdBy, tag, courseCode):
+def createExam(teacher_id, title, courseCode):
+    teacher = get_teacher(teacher_id)
+    if teacher:
+        new_Exam = Exam(teacher_id=teacher.id, title=title, course_code=courseCode)
+        new_Exam.date_created = date.today()
+        db.session.add(new_Exam)
+        teacher.my_exams.append(new_Exam)
+        db.session.commit()
+    return new_Exam
+
+def createQuestion(teacher_id, text, difficulty, courseCode, options):
     teacher = get_teacher(id)
     if teacher:
-      new_Question = Question(teacher.id,text, difficulty, courseCode, options)
-      db.session.add(new_Question)
+      new_Question = save_question(teacherId=teacher_id, text=text, difficulty=difficulty,courseCode=courseCode, options=options)
+      teacher.questions.append(new_Question)
+      db.session.add(teacher)
       return db.session.commit()
     return None  
     
