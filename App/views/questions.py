@@ -113,9 +113,17 @@ def create_question():
                 image_filename = save_image(image_file)
         is_correct = option_data.get('is_correct', False)
         
+        # option = Option(questionId=None, body=body, image=image_filename, is_correct=is_correct)
         option = create_option(question_id=None, body=body, image=image_filename, is_correct=is_correct)
         options.append(option)
 
+    # question = Question(
+    #     teacherId=teacher_id,
+    #     text=text,
+    #     difficulty=difficulty,
+    #     courseCode=course_code,
+    #     options=options
+    # )
     question = save_question(
         teacherId=teacher_id,
         text=text,

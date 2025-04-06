@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
+             :root {
             --primary-color: #2b96ad;
             --primary-dark: #207d91;
             --primary-light: #3cb3cc;
@@ -17,11 +17,11 @@
         body {
             background-image: url("{{ url_for('static', filename='Images/mcq.jpg') }}");
             background-repeat: no-repeat;
-            background-attachment: fixed;
+            background-attachment: fixed; 
             background-size: 100% 100%;
             min-height: 100vh;
         }
-
+    
         .container {
             max-width: 1200px;
             margin: auto;
@@ -128,7 +128,7 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
-
+        
         #sideNav {
             display: flex;
             background-color: rgba(255, 255, 255, 0.9);
@@ -175,115 +175,116 @@
             min-width: 0;
             width:calc(100% - 2rem);
         }
-
+        
         .bg-gray-100 {
             width: 100%; /* Take up full width of the parent */
             padding: 1rem; /* Add some padding if needed */
-        }
-
+            }
+           
         .filters-container {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 1rem;
+                margin-left:10%;
+            }
+
+            .filter-button {
+                background-color: lightgrey;
+                padding: 0.5rem 1rem;
+                border-radius: 0.5rem;
+                width:100px;
+                margin-left:10px;
+            }
+
+            .searchbar {
+                width: 200%;
+                padding: 12px;
+                border: 1px solid darkgrey;
+                border-radius: 0.375rem;
+                margin-left: 20px;
+                left:30%;
+            }
+            table {
+              font-family: arial, sans-serif;
+              border-collapse: collapse;
+              width: 50%;
+            }
+            td, th {
+              border: 1px solid #dddddd;
+              text-align: left;
+              padding: 8px;
+              vertical-align: top;
+            }
+
+           .check-container {
+              position: relative;
+              padding-left: 35px;
+              margin-bottom: 12px;
+              cursor: pointer;
+              font-size: 22px;
+              /*-webkit-user-select: none;
+              -moz-user-select: none;
+              -ms-user-select: none;
+              user-select: none;*/
+            }
+
+            /* Hide the browser's default checkbox */
+            .check-container input {
+              position: absolute;
+              opacity: 0;
+              cursor: pointer;
+              height: 0;
+              width: 0;
+            }
+
+            /* Create a custom checkbox */
+            .checkmark {
+              position: absolute;
+              top: 0;
+              left: 0;
+              height: 25px;
+              width: 25px;
+              background-color: #eee;
+            }
+
+            /* On mouse-over, add a grey background color */
+            .check-container:hover input ~ .checkmark {
+              background-color: #ccc;
+            }
+
+            /* When the checkbox is checked, add a blue background */
+            .check-container input:checked ~ .checkmark {
+              background-color: #2196F3;
+            }
+
+            /* Create the checkmark/indicator (hidden when not checked) */
+            .checkmark:after {
+              content: "";
+              position: absolute;
+              display: none;
+            }
+
+            /* Show the checkmark when checked */
+            .check-container input:checked ~ .checkmark:after {
+              display: block;
+            }
+
+            /* Style the checkmark/indicator */
+            .check-container .checkmark:after {
+              left: 9px;
+              top: 5px;
+              width: 5px;
+              height: 10px;
+              border: solid white;
+              border-width: 0 3px 3px 0;
+              -webkit-transform: rotate(45deg);
+              -ms-transform: rotate(45deg);
+              transform: rotate(45deg);
+            }
+            .flex > main {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            margin-left:10%;
         }
-
-        .filter-button {
-            background-color: lightgrey;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            width:100px;
-            margin-left:10px;
-        }
-
-        .searchbar {
-            width: 200%;
-            padding: 12px;
-            border: 1px solid darkgrey;
-            border-radius: 0.375rem;
-            margin-left: 20px;
-            left:30%;
-        }
-        table {
-            font-family: arial, sans-serif;
-            border-collapse: collapse;
-            width: 50%;
-        }
-        td, th {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-            vertical-align: top;
-        }
-
-       .check-container {
-            position: relative;
-            padding-left: 35px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            font-size: 22px;
-            /*-webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;*/
-        }
-
-        /* Hide the browser's default checkbox */
-        .check-container input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-            height: 0;
-            width: 0;
-        }
-
-        /* Create a custom checkbox */
-        .checkmark {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 25px;
-            width: 25px;
-            background-color: #eee;
-        }
-
-        /* On mouse-over, add a grey background color */
-        .check-container:hover input ~ .checkmark {
-            background-color: #ccc;
-        }
-
-        /* When the checkbox is checked, add a blue background */
-        .check-container input:checked ~ .checkmark {
-            background-color: #2196F3;
-        }
-
-        /* Create the checkmark/indicator (hidden when not checked) */
-        .checkmark:after {
-            content: "";
-            position: absolute;
-            display: none;
-        }
-
-        /* Show the checkmark when checked */
-        .check-container input:checked ~ .checkmark:after {
-            display: block;
-        }
-
-        /* Style the checkmark/indicator */
-        .check-container .checkmark:after {
-            left: 9px;
-            top: 5px;
-            width: 5px;
-            height: 10px;
-            border: solid white;
-            border-width: 0 3px 3px 0;
-            -webkit-transform: rotate(45deg);
-            -ms-transform: rotate(45deg);
-            transform: rotate(45deg);
-        }
-        .flex > div { /* Changed this to target the div containing main and nav */
-            display: flex;
-        }
+            
 
 
     </style>
@@ -329,120 +330,149 @@
                             </button>
                         </div>
                     </div>
-
-                    <table id="question-bank-container" class="w-full">
-                        <thead>
-                            <tr class="bg-gray-200">
-                                <th class="p-2 text-left">Select</th>
-                                <th class="p-2 text-left">Question</th>
-                                <th class="p-2 text-left">Tag</th>
-                                <th class="p-2 text-left">Last used</th>
-                                <th class="p-2 text-left">Options</th>
-                                <th class="p-2 text-left">Answer</th>
-                                <th class="p-2 text-left">Actions</th>
-                            </tr>
-                        </thead>
-
-                        <tbody id="question-bank-body" class="bg-white rounded shadow">
-                            {% if questions %}
-                                {% for question in questions %}
-                                <tr data-question-id="{{ question.id }}" data-question-text="{{ question.text }}" data-question-tag="{{ question.tag}}">
-                                    <td class="p-2"><input type="checkbox" class="select-question"></td>
-                                    <td class="p-2">
-                                        {{ question.text }}
-                                    </td>
-                                    <td class="p-2">
-                                        {% if question.tag %}
-                                            {% for tag in question.tag %}
-                                                <li>{{ tag.tag_text }}</li>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </td>
-                                    <td class="p-2">{{ question.lastUsed }}</td>
-                                    <ul>
-                                    <td class="p-2">
-                                        {% if question.options %}
-
-
-                                                {% for option in question.options %}
-                                                    <li>{{ option.body }}</li>
-                                                {% endfor %}
-
-                                        {% endif %}
-                                    </ul>
-                                    </td>
-                                    <ul>
-                                    <td class="p-2">
-                                        {% if question.options %}
-
-
-                                                {% for option in question.options %}
-                                                    {% if option.is_correct %}
-                                                        <li>{{ option.body }}</li>
-                                                    {% endif %}
-                                                {% endfor %}
-
-                                        {% endif %}
-                                    </ul>
-                                    </td>
-                                    <td class="p-1">
-                                        <div>
-                                            <button id="viewbutton" class="text-blue py-1 px-4 rounded">
-                                                <a href="/displayQuestion/{{question.id}}">
-                                                    View Question
-                                                </a>
-                                            </button>
-                                        </div>
-                                    </td>
+                    <!--<div id="question-bank-container">
+                        <table class="w-1/2">
+                            <thead>
+                                <tr class="bg-gray-200">
+                                    <th class="p-2 text-left">Select</th>
+                                    <th class="p-2 text-left">Question</th>
+                                    <th class="p-2 text-left">Author/Uploader</th>
+                                    <th class="p-2 text-left">Tag</th>
+                                    <th class="p-2 text-left">Last used</th>
+                                    <th class="p-2 text-left">Options</th>
+                                    <th class="p-2 text-left">Answer</th>
                                 </tr>
-                                {% endfor %}
-                            {% else %}
-                                <tr><td class="p-4 text-center" colspan="6">No questions found.</td></tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
-                    </div>
+                            </thead>
+                            <tbody id="question-bank-body">
+                                <tr data-question-id="1" data-question-text="What is the powerhouse of the cell?" data-question-tag="Biology">
+                                    <td class="p-2"><input type="checkbox" class="select-question"></td>
+                                    <td class="p-2">What is the powerhouse of the cell?</td>
+                                    <td class="p-2">John</td>
+                                    <td class="p-2">Biology</td>
+                                    <td class="p-2">2025, Sem 1</td>
+                                    <td class="p-2">Mitochondria...</td>
+                                    <td class="p-2">Mitochondria</td>
+                                </tr>
+                                <tr data-question-id="2" data-question-text="H2O is the chemical formula for?" data-question-tag="Chemistry">
+                                    <td class="p-2"><input type="checkbox" class="select-question"></td>
+                                    <td class="p-2">H2O is the chemical formula for?</td>
+                                    <td class="p-2">Jane</td>
+                                    <td class="p-2">Chemistry</td>
+                                    <td class="p-2">Never</td>
+                                    <td class="p-2">Water...</td>
+                                    <td class="p-2">Water</td>
+                                </tr>
+                                </tbody>
+                        </table>
+                    </div>-->
+                    <!--<div id="question-table" class="bg-white rounded shadow">-->
+                        <table id="question-bank-container" class="w-full">
+                            <thead>
+                                <tr class="bg-gray-200">
+                                    <th class="p-2 text-left">Select</th>
+                                    <th class="p-2 text-left">Question</th>
+                                    <th class="p-2 text-left">Tag</th>
+                                    <th class="p-2 text-left">Last used</th>
+                                    <th class="p-2 text-left">Options</th>
+                                    <th class="p-2 text-left">Answer</th>
+                                    <th class="p-2 text-left">Actions</th> 
+                                </tr>
+                            </thead>
+    
+                            <tbody id="question-bank-body" class="bg-white rounded shadow">
+                                {% if questions %}
+                                    {% for question in questions %}
+                                    <tr data-question-id="{{ question.id }}" data-question-text="{{ question.text }}" data-question-tag="{{ question.tag}}">
+                                            <td class="p-2"><input type="checkbox" class="select-question"></td>
+                                            <td class="p-2">
+                                                {{ question.text }}
+                                            </td>
+                                            <td class="p-2">
+                                                {% if question.tag %}
+                                                    {% for tag in question.tag %}
+                                                        <li>{{ tag.tag_text }}</li>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </td>
+                                            <td class="p-2">{{ question.lastUsed }}</td>
+                                            <ul>
+                                            <td class="p-2">
+                                                {% if question.options %}
+                                                    
+                                                        {% for option in question.options %}
+                                                            <li>{{ option.body }}</li>
+                                                        {% endfor %}
+                                                
+                                                {% endif %}
+                                            </ul>
+                                            </td>
+                                            <ul>
+                                            <td class="p-2">
+                                                {% if question.options %}
+                                                    
+                                                        {% for option in question.options %}
+                                                            {% if option.is_correct %}
+                                                                <li>{{ option.body }}</li>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                {% endif %}
+                                            </td>
+                                            </ul>
+                                          <td class="p-1">
+                                            <div>
+                                                <button id="viewbutton" class="text-blue py-1 px-4 rounded">
+                                                    <a href="/displayQuestion/{{question.id}}">
+                                                        View Question
+                                                    </a>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr><td class="p-4 text-center" colspan="6">No questions found.</td></tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    <!--</div>-->
+                </div>
             </nav>
 
             <main id="mainContent" class="bg-white rounded shadow">
-
-
-                <div class="bg-gray-100 rounded p-4">
-                        <div class="flex justify-between items-center mb-2">
-                            <h2 class="text-xl font-semibold text-[#2b96ad]">Exam Builder</h2>
-                            <div>No. of questions: <span id="exam-question-count">0</span></div>
-                        </div>
-                        <div class="mb-2 flex items-center space-x-4">
-                            <div>
+                
+                    
+                    <!--<div class=" pl-4">-->
+                        <div class="bg-gray-100 rounded p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <h2 class="text-xl font-semibold text-[#2b96ad]">Exam Builder</h2>
+                                <div>No. of questions: <span id="exam-question-count">0</span></div>
+                            </div>
+                            <div class="mb-2">
                                 <label for="exam-title" class="block text-gray-700 text-sm font-bold mb-1">Exam Title:</label>
                                 <input type="text" id="exam-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                             </div>
-                            <div>
-                                <label for="course-code" class="block text-gray-700 text-sm font-bold mb-1">Course Code:</label>
-                                <input type="text" id="course-code" class="shadow appearance-none border rounded w-32 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <div class="mb-2">
+                                <div class="flex space-x-2">
+                                    <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">micro</button>
+                                    <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">bio</button>
+                                    <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">hard</button>
+                                    </div>
+                            </div>
+
+                            <div id="exam-questions-container" class="mt-4 border rounded p-2 bg-white">
+                                <h3 class="text-lg font-semibold mb-2 text-gray-700">Selected Questions</h3>
+                                <ul id="exam-questions-list" class="space-y-2">
+                                    </ul>
+                                <p id="exam-questions-empty" class="text-gray-500 text-sm italic">No questions added yet.</p>
+                            </div>
+
+                            <div class="mt-4 flex justify-end space-x-2">
+                                <button id="save-exam-button" class="bg-[#2b96ad] hover:bg-[#207d91] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Save</button>
+                                <button id="download-exam-button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Download</button>
                             </div>
                         </div>
-                        <div class="mb-2">
-                            <div class="flex space-x-2">
-                                <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">micro</button>
-                                <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">bio</button>
-                                <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">hard</button>
-                            </div>
-                        </div>
-
-                        <div id="exam-questions-container" class="mt-4 border rounded p-2 bg-white">
-                            <h3 class="text-lg font-semibold mb-2 text-gray-700">Selected Questions</h3>
-                            <ul id="exam-questions-list" class="space-y-2">
-                                </ul>
-                            <p id="exam-questions-empty" class="text-gray-500 text-sm italic">No questions added yet.</p>
-                        </div>
-
-                        <div class="mt-4 flex justify-end space-x-2">
-                            <button id="save-exam-button" class="bg-[#2b96ad] hover:bg-[#207d91] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Save</button>
-                            <button id="download-exam-button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Download</button>
-                        </div>
-                    </div>
-
+                    <!--</div>-->
+                
             </main>
         </div>
     </div>
@@ -513,6 +543,28 @@
                 }
             });
 
+            // Handle mobile navigation
+            // if (window.innerWidth <= 1024) {
+            //     isNavOpen = false;
+            //     sideNav.style.width = '0';
+            //     sideNav.style.opacity = '0';
+            //     sideNav.style.visibility = 'hidden';
+            //     mainContent.style.marginLeft = '0';
+            // }
+
+            // window.addEventListener('resize', () => {
+            //     if (window.innerWidth <= 1024) {
+            //         sideNav.style.width = '0';
+            //         sideNav.style.opacity = '0';
+            //         sideNav.style.visibility = 'hidden';
+            //         mainContent.style.marginLeft = '0';
+            //     } else if (isNavOpen) {
+            //         sideNav.style.width = '20%';
+            //         sideNav.style.opacity = '1';
+            //         sideNav.style.visibility = 'visible';
+            //         mainContent.style.marginLeft = '2rem';
+            //     }
+            // });
         });
 
         window.addEventListener('resize', () => {
@@ -571,52 +623,16 @@
 
         }
 
-    document.getElementById('save-exam-button').addEventListener('click', () => {
-        const examTitle = document.getElementById('exam-title').value;
-        const courseCode= document.getElementById('course-code').value;
-        const questionIds = Object.keys(selectedQuestions);
+        document.getElementById('save-exam-button').addEventListener('click', () => {
+            const examTitle = document.getElementById('exam-title').value;
+            const questionIds = Object.keys(selectedQuestions);
+            if (questionIds.length > 0 && examTitle.trim() !== "") {
+                alert(`Exam "${examTitle}" with questions: ${questionIds.join(', ')} will be saved (server-side implementation needed).`);
+            } else {
+                alert("Please add questions and an exam title.");
+            }
+        });
 
-        console.log("Exam Title:", examTitle);
-        console.log("Course Code:", courseCode);
-        console.log("Question IDs:", questionIds);
-        console.log("Exam Data being sent:", { title: examTitle, courseCode: courseCode, question_ids: questionIds });
-
-        if (questionIds.length > 0 && examTitle.trim() !== "") {
-            // Prepare the data to send
-            const examData = {
-                title: examTitle,
-                courseCode: courseCode,
-                question_ids: questionIds
-            };
-
-        // Make a POST request to your Flask route
-            fetch('/save_exams', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(examData), // Convert the data to JSON string
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json(); // Or response.text() depending on your Flask response
-            })
-            .then(data => {
-                // Handle the response from the server (e.g., show a success message)
-                console.log('Success:', data);
-                alert('Exam saved successfully!');
-                // Optionally, redirect the user or clear the exam builder
-            })
-            .catch(error => {
-                console.error('Error saving exam:', error);
-                alert('An error occurred while saving the exam.');
-            });
-        } else {
-            alert("Please add questions and an exam title.");
-        }
-    });
         document.getElementById('download-exam-button').addEventListener('click', () => {
             const questionIds = Object.keys(selectedQuestions);
             if (questionIds.length > 0) {
@@ -664,20 +680,666 @@
                 toggleNav.innerHTML = '<i class="fas fa-angle-right"></i>';
             }
         });
-
-
-
-//      document.addEventListener('DOMContentLoaded', function() {
-//     const saveExamButton = document.getElementById('save-exam-button');
-
-//     if (saveExamButton) {
-//       saveExamButton.addEventListener('click', function() {
-//         window.location.href = '/save_exams';
-//       });
-//     } else {
-//       console.error("Could not find the 'save-exam-button'.");
-//     }
-//   });
     </script>
 </body>
+<!-- <body>
+    <div class="container relative">
+        <header>
+            <div class="text-2xl font-bold">
+                <a href="/homePage" class="text-white hover:text-gray-500 transition duration-300">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="button">New Question</button>
+                <button class="button">New Exam</button>
+                <div class="relative">
+                    <button id="profileButton" class="profile-button">
+                        <i class="fas fa-user-circle text-3xl"></i>
+                        <span class="ml-2">Your Profile</span>
+                    </button>
+                    <div id="profileDropdown" class="dropdown-menu">
+                        <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex">
+            <button id="toggleNav" class="fixed top-5 left-2 z-20 bg-[#2b96ad] text-white p-2 rounded shadow"><i class="fas fa-angle-right"></i></button>
+            <nav id="sideNav" class="fixed top-0 left-0 h-full w-64 bg-white shadow-md transform -translate-x-full transition-transform duration-300 z-10 overflow-y-auto">
+                <div class="p-4">
+                    <ul class="space-y-4">
+                        <button class="nav-button" onclick="window.location.href='{{ url_for('questions_views.my_questions_page') }}'">
+                            <i class="fas fa-file-alt mr-2"></i> My Questions
+                        </button>
+                        <li><button class="nav-button"><i class="fas fa-file-alt mr-2"></i> My Exams</button></li>
+                        <li><button class="nav-button"><i class="fas fa-file-upload mr-2"></i> Import Questions</button></li>
+                        <li><button class="nav-button"><i class="fas fa-question-circle mr-2"></i> Help</button></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main id="mainContent" class="flex-1 bg-white rounded shadow p-4 transition-all duration-300">
+                <div class="flex justify-between items-center mb-4">
+                    <button id="filter" class="filter-button">Filters</button>
+                    <div class="relative">
+                        <input id="searchbar" type="text" placeholder="Search Questions" class="searchbar">
+                        <button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="question-bank-container">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-200">
+                                <th class="p-2 text-left">Select</th>
+                                <th class="p-2 text-left">Question</th>
+                                <th class="p-2 text-left">Author/Uploader</th>
+                                <th class="p-2 text-left">Tag</th>
+                                <th class="p-2 text-left">Last used</th>
+                                <th class="p-2 text-left">Options</th>
+                                <th class="p-2 text-left">Answer</th>
+                            </tr>
+                        </thead>
+                        <tbody id="question-bank-body">
+                            </tbody>
+                    </table>
+                </div>
+            </main>
+
+            <aside id="examBuilder" class="fixed top-0 right-0 h-full w-96 bg-gray-100 shadow-md transform translate-x-full transition-transform duration-300 z-20 overflow-y-auto p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-[#2b96ad]">Exam Builder</h2>
+                    <button id="toggleExamBuilder" class="bg-gray-300 hover:bg-gray-400 text-gray-600 p-2 rounded-full"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="mb-2">
+                    <label for="exam-title" class="block text-gray-700 text-sm font-bold mb-1">Exam Title:</label>
+                    <input type="text" id="exam-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div class="mb-2">
+                    <div class="flex space-x-2">
+                        <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">micro</button>
+                        <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">bio</button>
+                        <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">hard</button>
+                    </div>
+                </div>
+
+                <div id="exam-questions-container" class="mt-4 border rounded p-2 bg-white">
+                    <h3 class="text-lg font-semibold mb-2 text-gray-700">Selected Questions</h3>
+                    <ul id="exam-questions-list" class="space-y-2">
+                    </ul>
+                    <p id="exam-questions-empty" class="text-gray-500 text-sm italic">No questions added yet.</p>
+                </div>
+
+                <div class="mt-4 flex justify-end space-x-2">
+                    <button id="save-exam-button" class="bg-[#2b96ad] hover:bg-[#207d91] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Save</button>
+                    <button id="download-exam-button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Download</button>
+                </div>
+
+                <div class="absolute bottom-4 left-4">
+                    <button id="seeQuestionsButton" class="bg-gray-300 hover:bg-gray-400 text-gray-600 p-2 rounded-full rotate-90"><i class="fas fa-angle-left"></i></button>
+                </div>
+            </aside>
+
+            <button id="toggleExamBuilderButton" class="fixed top-1/2 right-2 z-20 bg-gray-300 text-gray-600 p-2 rounded-full -rotate-90 shadow"><i class="fas fa-angle-left"></i></button>
+        </div>
+    </div>
+
+    <script>
+        const toggleNav = document.getElementById('toggleNav');
+        const sideNav = document.getElementById('sideNav');
+        const mainContent = document.getElementById('mainContent');
+        const toggleExamBuilderButton = document.getElementById('toggleExamBuilderButton');
+        const examBuilder = document.getElementById('examBuilder');
+        const toggleExamBuilder = document.getElementById('toggleExamBuilder');
+        const seeQuestionsButton = document.getElementById('seeQuestionsButton'); // Button inside Exam Builder
+
+        let isNavOpen = false;
+        let isExamBuilderOpen = false;
+
+        toggleNav.addEventListener('click', () => {
+            isNavOpen = !isNavOpen;
+            sideNav.classList.toggle('-translate-x-full', !isNavOpen);
+            mainContent.classList.toggle('ml-64', isNavOpen);
+            toggleNav.innerHTML = isNavOpen ? '<i class="fas fa-angle-left"></i>' : '<i class="fas fa-angle-right"></i>';
+        });
+
+        toggleExamBuilderButton.addEventListener('click', () => {
+            isExamBuilderOpen = !isExamBuilderOpen;
+            examBuilder.classList.toggle('translate-x-full', !isExamBuilderOpen);
+            toggleExamBuilderButton.classList.toggle('-rotate-90', !isExamBuilderOpen);
+        });
+
+        toggleExamBuilder.addEventListener('click', () => {
+            isExamBuilderOpen = false;
+            examBuilder.classList.add('translate-x-full');
+            toggleExamBuilderButton.classList.add('-rotate-90');
+        });
+
+        seeQuestionsButton.addEventListener('click', () => {
+            isExamBuilderOpen = false;
+            examBuilder.classList.add('translate-x-full');
+            toggleExamBuilderButton.classList.add('-rotate-90');
+        });
+
+        // JavaScript for handling question selection and Exam Builder population (as in the previous response)
+        const questionBankBody = document.getElementById('question-bank-body');
+        const examQuestionsList = document.getElementById('exam-questions-list');
+        const examQuestionCount = document.getElementById('exam-question-count');
+        const examQuestionsEmpty = document.getElementById('exam-questions-empty');
+        const selectedQuestions = {};
+
+        questionBankBody.addEventListener('change', (event) => {
+            if (event.target.classList.contains('select-question')) {
+                const row = event.target.closest('tr');
+                const questionId = row.dataset.questionId;
+                const questionText = row.dataset.questionText;
+                const questionTag = row.dataset.questionTag;
+
+                if (event.target.checked) {
+                    selectedQuestions[questionId] = { id: questionId, text: questionText, tag: questionTag };
+                } else {
+                    delete selectedQuestions[questionId];
+                }
+                updateExamBuilder();
+            }
+        });
+
+        function updateExamBuilder() {
+            examQuestionsList.innerHTML = '';
+            let count = 0;
+            for (const id in selectedQuestions) {
+                const question = selectedQuestions[id];
+                const listItem = document.createElement('li');
+                listItem.textContent = `${question.text} (${question.tag})`;
+
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.classList.add('bg-red-500', 'hover:bg-red-700', 'text-white', 'font-bold', 'py-1', 'px-2', 'rounded', 'text-xs', 'ml-2');
+                removeButton.addEventListener('click', () => {
+                    delete selectedQuestions[id];
+                    const bankCheckbox = questionBankBody.querySelector(`tr[data-question-id="${id}"] .select-question`);
+                    if (bankCheckbox) {
+                        bankCheckbox.checked = false;
+                    }
+                    updateExamBuilder();
+                });
+                listItem.appendChild(removeButton);
+                examQuestionsList.appendChild(listItem);
+                count++;
+            }
+
+            examQuestionCount.textContent = count;
+            examQuestionsEmpty.style.display = count === 0 ? 'block' : 'none';
+        }
+
+        document.getElementById('save-exam-button').addEventListener('click', () => {
+            const examTitle = document.getElementById('exam-title').value;
+            const questionIds = Object.keys(selectedQuestions);
+            if (questionIds.length > 0 && examTitle.trim() !== "") {
+                alert(`Exam "${examTitle}" with questions: ${questionIds.join(', ')} will be saved (server-side implementation needed).`);
+            } else {
+                alert("Please add questions and an exam title.");
+            }
+        });
+
+        document.getElementById('download-exam-button').addEventListener('click', () => {
+            const questionIds = Object.keys(selectedQuestions);
+            if (questionIds.length > 0) {
+                alert(`Questions ${questionIds.join(', ')} will be downloaded (server-side implementation needed).`);
+            } else {
+                alert("Please select questions to download.");
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Fetch and populate question bank data here (as before)
+            const questions = [
+                { id: 1, text: "What is the powerhouse of the cell?", author: "John", tag: "Biology", lastUsed: "2025, Sem 1", options: "Mitochondria...", answer: "Mitochondria" },
+                { id: 2, text: "H2O is the chemical formula for?", author: "Jane", tag: "Chemistry", lastUsed: "Never", options: "Water...", answer: "Water" },
+                // Add more sample questions
+            ];
+            const questionBankBody = document.getElementById('question-bank-body');
+            questions.forEach(question => {
+                const row = questionBankBody.insertRow();
+                row.dataset.questionId = question.id;
+                row.dataset.questionText = question.text;
+                row.dataset.questionTag = question.tag;
+                row.innerHTML = `
+                    <td class="p-2"><input type="checkbox" class="select-question"></td>
+                    <td class="p-2">${question.text}</td>
+                    <td class="p-2">${question.author}</td>
+                    <td class="p-2">${question.tag}</td>
+                    <td class="p-2">${question.lastUsed}</td>
+                    <td class="p-2">${question.options}</td>
+                    <td class="p-2">${question.answer}</td>
+                `;
+            });
+
+            const profileButton = document.getElementById('profileButton');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            if (profileButton) {
+                profileButton.addEventListener('click', () => {
+                    profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+                });
+            }
+
+            document.addEventListener('click', (event) => {
+                if (profileButton && profileDropdown && !profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                    profileDropdown.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body> -->
+
+<!-- <body>
+    <div class="container">
+        <header>
+            <div class="text-2xl font-bold">
+                <a href="/homePage" class="text-white hover:text-gray-500 transition duration-300">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="button">New Question</button>
+                <button class="button">New Exam</button>
+                <div class="relative">
+                    <button id="profileButton" class="profile-button">
+                        <i class="fas fa-user-circle text-3xl"></i>
+                        <span class="ml-2">Your Profile</span>
+                    </button>
+                    <div id="profileDropdown" class="dropdown-menu">
+                        <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex">
+            <main id="mainContent" class="flex w-full bg-white rounded shadow p-4">
+                <div class="w-1/2 pr-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <button id="filter" class="filter-button">Filters</button>
+                        <div class="relative">
+                            <input id="searchbar" type="text" placeholder="Search Questions" class="searchbar">
+                            <button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="question-bank-container">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-200">
+                                    <th class="p-2 text-left">Select</th>
+                                    <th class="p-2 text-left">Question</th>
+                                    <th class="p-2 text-left">Author/Uploader</th>
+                                    <th class="p-2 text-left">Tag</th>
+                                    <th class="p-2 text-left">Last used</th>
+                                    <th class="p-2 text-left">Options</th>
+                                    <th class="p-2 text-left">Answer</th>
+                                </tr>
+                            </thead>
+                            <tbody id="question-bank-body">
+                                <tr data-question-id="1" data-question-text="What is the powerhouse of the cell?" data-question-tag="Biology">
+                                    <td class="p-2"><input type="checkbox" class="select-question"></td>
+                                    <td class="p-2">What is the powerhouse of the cell?</td>
+                                    <td class="p-2">John</td>
+                                    <td class="p-2">Biology</td>
+                                    <td class="p-2">2025, Sem 1</td>
+                                    <td class="p-2">Mitochondria...</td>
+                                    <td class="p-2">Mitochondria</td>
+                                </tr>
+                                <tr data-question-id="2" data-question-text="H2O is the chemical formula for?" data-question-tag="Chemistry">
+                                    <td class="p-2"><input type="checkbox" class="select-question"></td>
+                                    <td class="p-2">H2O is the chemical formula for?</td>
+                                    <td class="p-2">Jane</td>
+                                    <td class="p-2">Chemistry</td>
+                                    <td class="p-2">Never</td>
+                                    <td class="p-2">Water...</td>
+                                    <td class="p-2">Water</td>
+                                </tr>
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="w-1/2 pl-4">
+                    <div class="bg-gray-100 rounded p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <h2 class="text-xl font-semibold text-[#2b96ad]">Exam Builder</h2>
+                            <div>No. of questions: <span id="exam-question-count">0</span></div>
+                        </div>
+                        <div class="mb-2">
+                            <label for="exam-title" class="block text-gray-700 text-sm font-bold mb-1">Exam Title:</label>
+                            <input type="text" id="exam-title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-2">
+                            <div class="flex space-x-2">
+                                <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">micro</button>
+                                <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">bio</button>
+                                <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">hard</button>
+                                </div>
+                        </div>
+
+                        <div id="exam-questions-container" class="mt-4 border rounded p-2 bg-white">
+                            <h3 class="text-lg font-semibold mb-2 text-gray-700">Selected Questions</h3>
+                            <ul id="exam-questions-list" class="space-y-2">
+                                </ul>
+                            <p id="exam-questions-empty" class="text-gray-500 text-sm italic">No questions added yet.</p>
+                        </div>
+
+                        <div class="mt-4 flex justify-end space-x-2">
+                            <button id="save-exam-button" class="bg-[#2b96ad] hover:bg-[#207d91] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Save</button>
+                            <button id="download-exam-button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Download</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const questionBankBody = document.getElementById('question-bank-body');
+        const examQuestionsList = document.getElementById('exam-questions-list');
+        const examQuestionCount = document.getElementById('exam-question-count');
+        const examQuestionsEmpty = document.getElementById('exam-questions-empty');
+        const selectedQuestions = {}; // Object to store selected questions (ID: data)
+
+        questionBankBody.addEventListener('change', (event) => {
+            if (event.target.classList.contains('select-question')) {
+                const row = event.target.closest('tr');
+                const questionId = row.dataset.questionId;
+                const questionText = row.dataset.questionText;
+                const questionTag = row.dataset.questionTag;
+
+                if (event.target.checked) {
+                    selectedQuestions[questionId] = { id: questionId, text: questionText, tag: questionTag };
+                } else {
+                    delete selectedQuestions[questionId];
+                }
+                updateExamBuilder();
+            }
+        });
+
+        function updateExamBuilder() {
+            examQuestionsList.innerHTML = ''; // Clear the list
+            let count = 0;
+            for (const id in selectedQuestions) {
+                const question = selectedQuestions[id];
+                const listItem = document.createElement('li');
+                listItem.textContent = `${question.text} (${question.tag})`;
+
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.classList.add('bg-red-500', 'hover:bg-red-700', 'text-white', 'font-bold', 'py-1', 'px-2', 'rounded', 'text-xs', 'ml-2');
+                removeButton.addEventListener('click', () => {
+                    delete selectedQuestions[id];
+                    const bankCheckbox = questionBankBody.querySelector(`tr[data-question-id="${id}"] .select-question`);
+                    if (bankCheckbox) {
+                        bankCheckbox.checked = false;
+                    }
+                    updateExamBuilder();
+                });
+                listItem.appendChild(removeButton);
+                examQuestionsList.appendChild(listItem);
+                count++;
+            }
+
+            examQuestionCount.textContent = count;
+            examQuestionsEmpty.style.display = count === 0 ? 'block' : 'none';
+        }
+
+        // Placeholder for Save Exam functionality
+        document.getElementById('save-exam-button').addEventListener('click', () => {
+            const examTitle = document.getElementById('exam-title').value;
+            const questionIds = Object.keys(selectedQuestions);
+            if (questionIds.length > 0 && examTitle.trim() !== "") {
+                alert(`Exam "${examTitle}" with questions: ${questionIds.join(', ')} will be saved (server-side implementation needed).`);
+                // In a real application, you would send examTitle and questionIds to your server.
+            } else {
+                alert("Please add questions and an exam title.");
+            }
+        });
+
+        // Placeholder for Download Exam functionality
+        document.getElementById('download-exam-button').addEventListener('click', () => {
+            const questionIds = Object.keys(selectedQuestions);
+            if (questionIds.length > 0) {
+                alert(`Questions ${questionIds.join(', ')} will be downloaded (server-side implementation needed).`);
+                // In a real application, you would trigger a download from the server.
+            } else {
+                alert("Please select questions to download.");
+            }
+        });
+
+        // Basic toggle for side navigation (you might want to remove this for the new layout)
+        const toggleNav = document.getElementById('toggleNav');
+        const mainContent = document.getElementById('mainContent');
+        let isNavOpen = true;
+
+        if (toggleNav) {
+            toggleNav.addEventListener('click', () => {
+                isNavOpen = !isNavOpen;
+                // Adjust mainContent padding/margin based on isNavOpen if you keep the toggle
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileButton = document.getElementById('profileButton');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            if (profileButton) {
+                profileButton.addEventListener('click', () => {
+                    profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+                });
+            }
+
+            document.addEventListener('click', (event) => {
+                if (profileButton && profileDropdown && !profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                    profileDropdown.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body> -->
+
+
+<!-- <body>
+    <div class="container">
+        <header>
+            <div class="text-2xl font-bold">
+                <a href="/homePage" class="text-white hover:text-gray-500 transition duration-300">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+            <button class="button">New Question</button>
+            <button class="button">New Exam</button>
+            <div class="relative">
+                <button id="profileButton" class="profile-button">
+                    <i class="fas fa-user-circle text-3xl"></i>
+                    <span class="ml-2">Your Profile</span>
+                </button>
+                <div id="profileDropdown" class="dropdown-menu">
+                    <a href="login.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex">
+            <button id="toggleNav"><i class="fas fa-angle-left"></i></button>
+            <nav id="sideNav">
+                <ul class="space-y-4">
+                    <button class="nav-button" onclick="window.location.href='{{ url_for('questions_views.my_questions_page') }}'">
+                        <i class="fas fa-file-alt mr-2"></i> My Questions
+                    </button>
+                    <li><button class="nav-button"><i class="fas fa-file-alt mr-2"></i> My Exams</button></li>
+                    <li><button class="nav-button"><i class="fas fa-file-upload mr-2"></i> Import Questions</button></li>
+                    <li><button class="nav-button"><i class="fas fa-question-circle mr-2"></i> Help</button></li>
+                </ul>
+            </nav>
+
+            <main id="mainContent" class="flex flex-col md:flex-row">
+                
+                <div class="w-full md:w-1/2 bg-white rounded shadow p-4 mb-4 md:mb-0 md:mr-4">
+                    <form action="/create_an_exam" method="POST">
+                        <h2 class="text-xl font-semibold mb-2 text-[#2b96ad]">Exam Questions</h2>
+                        <div id="exam-question-list-container">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="bg-gray-200">
+                                        <th class="p-2 text-left">Question Text</th>
+                                        <th class="p-2 text-left">Tag</th>
+                                        <th class="p-2 text-left">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="exam-question-list-body">
+                                    </tbody>
+                            </table>
+                        </div>
+                        <button id="create-exam-button" class="bg-[#2b96ad] hover:bg-[#207d91] text-white font-bold py-2 px-4 rounded mt-4 focus:outline-none focus:shadow-outline">
+                            Create Exam
+                        </button>
+                    </form>
+                </div>
+
+                <div class="w-full md:w-1/2 bg-white rounded shadow p-4">
+                    <h2 class="text-xl font-semibold mb-2 text-[#2b96ad]">Question Bank</h2>
+                    <div id="question-list-container">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-200">
+                                    <th class="p-2 text-left">Select</th>
+                                    <th class="p-2 text-left">Question Text</th>
+                                    <th class="p-2 text-left">Tag</th>
+                                </tr>
+                            </thead>
+                            <tbody id="question-bank-body">
+                                <tr data-question-id="1" data-question-text="Sample Question 1" data-question-tag="Biology">
+                                    <td class="p-2"><input type="checkbox" class="select-question"></td>
+                                    <td class="p-2">Sample Question 1</td>
+                                    <td class="p-2">Biology</td>
+                                </tr>
+                                <tr data-question-id="2" data-question-text="Another Question" data-question-tag="Chemistry">
+                                    <td class="p-2"><input type="checkbox" class="select-question"></td>
+                                    <td class="p-2">Another Question</td>
+                                    <td class="p-2">Chemistry</td>
+                                </tr>
+                                </tbody>
+                        </table>
+                    </div>
+
+                    <h2 class="text-xl font-semibold mt-6 mb-2 text-[#2b96ad]">Download Questions</h2>
+                    <form action="/download_questions" method="POST">
+                        <div class="mb-4">
+                            <label for="course_code" class="block text-gray-700 text-sm font-bold mb-2">Course Code:</label>
+                            <input type="text" id="course_code" name="course_code" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Download Options:</label>
+                            <label class="inline-flex items-center mr-4">
+                                <input type="radio" class="form-radio" name="download_format" value="pdf">
+                                <span class="ml-2">PDF</span>
+                            </label>
+                            <label class="inline-flex items-center mr-4">
+                                <input type="radio" class="form-radio" name="download_format" value="csv">
+                                <span class="ml-2">CSV</span>
+                            </label>
+                        </div>
+                        <button type="submit" class="bg-[#2b96ad] hover:bg-[#207d91] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Download Selected Questions (from Bank)
+                        </button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const toggleNav = document.getElementById('toggleNav');
+        const sideNav = document.getElementById('sideNav');
+        const mainContent = document.getElementById('mainContent');
+        let isNavOpen = true;
+
+        toggleNav.addEventListener('click', () => {
+            isNavOpen = !isNavOpen;
+
+            // if (isNavOpen) {
+            //     sideNav.style.width = '20%';
+            //     sideNav.style.opacity = '1';
+            //     sideNav.style.visibility = 'visible';
+            //     mainContent.style.marginLeft = '2rem';
+            //     toggleNav.innerHTML = '<i class="fas fa-angle-left"></i>';
+            // } else {
+            //     sideNav.style.width = '0';
+            //     sideNav.style.opacity = '0';
+            //     sideNav.style.visibility = 'hidden';
+            //     mainContent.style.marginLeft = '10px';
+            //     toggleNav.innerHTML = '<i class="fas fa-angle-right"></i>';
+            // }
+            if (isNavOpen) {
+                sideNav.style.marginLeft = '0';
+                sideNav.style.width = '25%';
+                mainContent.style.marginLeft = '20px';
+                mainContent.style.marginRight = '2rem';
+                toggleNav.innerHTML = '<i class="fas fa-angle-left"></i>';
+            } else {
+                sideNav.style.marginLeft = '-25%';
+                sideNav.style.width = '0';
+                mainContent.style.marginLeft = '22rem';
+                mainContent.style.marginRight = '2rem';
+                toggleNav.innerHTML = '<i class="fas fa-angle-right"></i>';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileButton = document.getElementById('profileButton');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            profileButton.addEventListener('click', () => {
+                profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Close the dropdown if clicked outside
+            document.addEventListener('click', (event) => {
+                if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                    profileDropdown.style.display = 'none';
+                }
+            });
+
+            // Handle mobile navigation
+            if (window.innerWidth <= 1024) {
+                isNavOpen = false;
+                sideNav.style.width = '0';
+                sideNav.style.opacity = '0';
+                sideNav.style.visibility = 'hidden';
+                mainContent.style.marginLeft = '0';
+            }
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth <= 1024) {
+                    sideNav.style.width = '0';
+                    sideNav.style.opacity = '0';
+                    sideNav.style.visibility = 'hidden';
+                    mainContent.style.marginLeft = '0';
+                } else if (isNavOpen) {
+                    sideNav.style.width = '20%';
+                    sideNav.style.opacity = '1';
+                    sideNav.style.visibility = 'visible';
+                    mainContent.style.marginLeft = '2rem';
+                }
+            });
+        });
+    </script>
+</body> -->
 </html>
