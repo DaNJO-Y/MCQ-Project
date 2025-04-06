@@ -1,14 +1,24 @@
-from flask import Flask, Blueprint, render_template, jsonify, request, flash, send_from_directory, flash, redirect, url_for
+from flask import Flask, Blueprint, render_template, jsonify, request, flash, send_from_directory, flash, redirect, url_for, session
 from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, set_access_cookies, create_access_token, JWTManager
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 from flask_login import login_user, login_required, logout_user, current_user
 from App.controllers import teacher 
 from App.models import *
+from flask_mail import Mail, Message
+from flask import current_app
 import os
 import uuid
 import json
 from.index import index_views
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import pyotp
+import threading
+import sendgrid, time
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail, Email, To, Content
 
 from App.controllers import *
 
@@ -30,21 +40,52 @@ def save_image(file):
             return None
     return None
 
+def generate_secret_key():
+    return pyotp.random_base32()
+
+def generate_otp(secret_key):
+    totp = pyotp.TOTP(secret_key)
+    return totp.now()
+
+def verify_otp(secret_key, otp):
+    totp = pyotp.TOTP(secret_key)
+    # print(f"Verifying with Secret Key: {secret_key}")
+    # print(f"Verifying OTP: {otp}")
+    return totp.verify(otp, valid_window=4)
+
+
+def send_email(otp, user_email):
+    message = Mail(
+    from_email='d4884781@gmail.com',
+    to_emails=[user_email],
+    subject='This e-mail message is being sent to deliver your one-time password.',
+    html_content=f'<strong>This is your one-time password code: {otp} .</strong>')
+    try:
+        sg = SendGridAPIClient(current_app.config['SENDGRID_API_KEY'])
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+    except Exception as e:
+            print(f"Error sending email: {str(e)}")
+
+RESEND_LIMIT = 3  
+RESEND_WINDOW = 60  
+resend_attempts = {}
+# secret_key= ""
+otp = ""
+
 '''
 Page/Action Routes
 '''    
 
-# @auth_views.route('/displayQuestion',methods=['GET'])
-# def displayQuestionPage():
-#     return render_template('display_question.html')
-
-# @auth_views.route('/createQuestion',methods=['GET'])
-# def createQuestionPage():
-#     return render_template('create_question.html')
-
 @auth_views.route('/homePage',methods=['GET'])
 def homePage():
     return render_template('homepage.html')
+
+@auth_views.route('/otp', methods=['GET'])
+def otp_page():
+    return render_template('otp.html')
 
 # @auth_views.route('/questions', methods=['POST'])
 # def create_question():
@@ -113,6 +154,33 @@ def identify_page():
     return render_template('message.html', title="Identify", message=f"You are logged in as {current_user.id} - {current_user.username}")
     
 
+@auth_views.route('/resend',methods=['POST'])
+def resend_code():
+    data = request.form
+    email = data['email']
+    now = time.time()
+    otp=""
+    session.pop('secret_key', None)
+
+    if email in resend_attempts and resend_attempts[email]['count'] >= RESEND_LIMIT and now - resend_attempts[email]['last_request'] < RESEND_WINDOW:
+        flash(f"Too many resend requests. Please wait {RESEND_WINDOW - int(now - resend_attempts[email]['last_request'])} seconds before trying again.", 'error')
+        return render_template('otp.html', email=email)
+
+    secret_key = generate_secret_key()
+    # print(f'this is the : {secret_key}')
+    session['secret_key'] = secret_key  # Store in session
+    otp = generate_otp(secret_key)
+    # print(f"Generated OTP: {otp}")
+    send_email(otp,email)
+    flash("New OTP sent to your email address.")
+    if email not in resend_attempts or now - resend_attempts[email]['last_request'] > RESEND_WINDOW:
+        resend_attempts[email] = {'count': 1, 'last_request': now}
+    else:
+        resend_attempts[email]['count'] += 1
+        resend_attempts[email]['last_request'] = now
+    
+    return render_template('otp.html', email=email)
+
 
 @auth_views.route('/login', methods=['POST'])
 def login_action():
@@ -125,18 +193,46 @@ def login_action():
     if potential_teacher and check_password_hash(potential_teacher.password,password):
         login_user(potential_teacher,remember=True)
         flash(f'Login Successful! Welcome {potential_teacher.firstName}')
-        return redirect(url_for('auth_views.homePage'))
+        secret_key = generate_secret_key()
+        print(f'this is the : {secret_key}')
+        session['secret_key'] = secret_key  # Store in session
+        otp = generate_otp(secret_key)
+        print(f"Generated OTP: {otp}")
+        send_email(otp,potential_teacher.email)
+        # return redirect(url_for('auth_views.homePage'))
+        return render_template('otp.html', email=potential_teacher.email)
+        # return render_template('login.html', twoFactor = True)
     elif potential_admin and check_password_hash(potential_admin.password,password):
         login_user(potential_admin,remember=True)
         flash(f'Login Successful! Welcome {potential_admin.firstName}')
-        return redirect(url_for('auth_views.homePage'))
+        return render_template('otp.html')
+        # return redirect(url_for('auth_views.homePage'))
     elif user and check_password_hash(user.password,password):
         login_user(user,remember=True)
         flash(f'Login Successful! Welcome {user.firstName}')
-        return redirect(url_for('auth_views.homePage'))
+        # return redirect(url_for('auth_views.homePage'))
+        return render_template('otp.html')
+        # return render_template('login.html', twoFactor = True), 401
     else:
         flash('Bad username or password given')
-        return render_template('login.html'), 401
+        return render_template('login.html', twoFactor = False), 401
+
+@auth_views.route('/authenticate', methods=['POST'])
+def auth_user():
+    data = request.form
+    one_time_pad = data['otp']
+    secret_key = session.pop('secret_key', None)
+    print(f'hiiii this is the : {secret_key}')
+    print(one_time_pad)
+    print("hi")
+    # user_input_otp = input("Enter OTP: ")
+    if secret_key and verify_otp(secret_key, one_time_pad):
+        flash("OTP verified. Access granted.")
+        return redirect(url_for('auth_views.homePage'))
+    else:
+        flash("OTP verification failed. Access denied.")
+        return render_template('login.html')
+
 
 @auth_views.route('/login', methods=['GET'])
 def login_page():

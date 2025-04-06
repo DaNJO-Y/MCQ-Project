@@ -21,3 +21,5 @@ sqlalchemy-serializer==1.4.12
 Flask-Login==0.6.3
 alembic==1.13.1
 python-docx==0.8.11
+pyotp==2.9.0
+Flask-Mail==0.10.0
