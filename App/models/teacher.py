@@ -7,6 +7,7 @@ class Teacher(User, UserMixin):
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     my_exams = db.relationship('Exam', back_populates='teacher')
     questions = db.relationship('Question', backref=db.backref('created_by',lazy='joined'))
+    #add details here
 
     __mapper_args__ = {
         'polymorphic_identity': 'teacher'
