@@ -4,25 +4,23 @@ from .associations import Question_Tag_Bridge
 from App.database import db
 
 class Question(db.Model):
-    __tablename__ = 'question'   
+    __tablename__ = 'question'
     id = db.Column(db.Integer, primary_key=True)
     teacherId = db.Column(db.Integer, db.ForeignKey('teacher.id'))
     examId = db.Column(db.Integer, db.ForeignKey('exam.id'))
     text = db.Column(db.String(500))
-    # correctOption = db.relationship('Option', backref=db.backref('question_correct_option', lazy='joined'))#where is question_correct_option?
     image = db.Column(db.String(300))
     difficulty = db.Column(db.String(200))
     tag = db.relationship('Tag', secondary='question_tag_bridge', back_populates='question')
     courseCode = db.Column(db.String(200))
     belonging_exams = db.relationship('Exam', secondary='exam_question', back_populates='exam_questions', lazy='joined')
-    statistics = db.relationship('QuestionStatistics', backref=db.backref('question_statistics', lazy='joined'))
+    statistics = db.relationship('QuestionStatistics', back_populates='question') # Use back_populates
     options = db.relationship('Option', back_populates='question')
     lastUsed = db.Column(db.Date, nullable=True)
     dateCreated = db.Column(db.Date, nullable= True)
 
     def __init__(self, teacherId, text, difficulty, courseCode, options):
         self.teacherId = teacherId
-        # self.correctOption = correctOption
         self.text = text
         self.difficulty = difficulty
         self.courseCode = courseCode
@@ -33,8 +31,8 @@ class Question(db.Model):
             "id": self.id,
             "teacherid": self.teacherId,
             "text": self.text,
-            # "correct option": self.correctOption,
             "difficulty": self.difficulty,
             "course code": self.courseCode,
             "options": [op.get_json() for op in self.options]
         }
+    
