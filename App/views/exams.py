@@ -47,10 +47,17 @@ def save_the_exam():
     data = request.get_json()
     teacher_id = current_user.id
     title = data.get('title')
-    course_code = data.get('course_code')
+    course_code = data.get('courseCode')
 
-    if not all([teacher_id, title, course_code]):
-        return jsonify({'message': 'Missing required data'}), 400
+    # if not all([teacher_id, title, course_code]):
+    if not title:
+        return jsonify({'message': 'Missing required data title'}), 400
+   
+    if not teacher_id:
+        return jsonify({'message': 'Missing required data teacher_id'}), 400
+        # return jsonify({'message': 'Missing required data $title, $course_code'}), 400
+    if not course_code:
+        return jsonify({'message': 'Missing required data course_code'}), 400
 
     new_exam = Exam(
         teacher_id=teacher_id,
