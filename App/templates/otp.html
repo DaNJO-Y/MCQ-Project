@@ -1,0 +1,206 @@
+<!doctype html>
+<html>
+  <head>
+  
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">-->
+     <!--Import Google Icon Font-->
+    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
+    <!-- Compiled and minified CSS -->
+   <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!--<title>{% block title %}<h1>Welcome bob</h1>{% endblock %}</title>-->
+    <style>
+      * {
+          /*background-color: #2b96ad;*/
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: white;
+      }
+
+      #img {
+          width:55%;  /* Larger Image */
+          height: 100%;  /* Maintain Aspect Ratio */
+          height: 100vh; /* Image will now fill 100% of the viewport's height */
+          object-fit: cover; /* Maintain aspect ratio while covering the entire area */
+          border-radius: 10px;
+          margin-right: 20px; /* Space between image and form */
+      }
+
+      
+      .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            bottom: auto; /* Override Materialize's bottom positioning */
+            left: auto; /* Override Materialize's left positioning */
+            transform: none !important; /* Prevent Materialize's default transform */
+            color: white ; 
+            background-color: rgba(0, 0, 0, 0.7) ;
+        }
+        /* . {
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+        body{
+            background:#28c7f1;
+
+        } */
+        .otp-box {
+            background:#fff;
+            width:100%;
+            max-width:800px;
+            max-height: 400;
+            padding:2em;
+            margin-right: 20px;
+            border-radius:10px;
+            box-shadow: 0px 2px 5px 10px rgba(0,0,0,0.05);
+            display:grid;
+            gap:1.5em;
+            text-align:center;
+        }
+        .otp-box .content-box h2 {
+            font-size:20px;
+            color:#111;
+            margin-bottom:5px;
+        }
+        .otp-box .content-box p {
+            color:#555;
+            font-size:14px;
+        }
+        .otp-box .inputs {
+            display:flex;
+            justify-content:space-between;
+            max-width:320px;
+            margin:0 auto;
+            gap:0.5em;
+        }
+        .otp-box .inputs input {
+            width:40px;
+            height:40px;
+            border:1px solid #bbb;
+            border-radius:8px;
+            font-size:20px;
+            text-align:center;
+            color:#111;
+            caret-color: transparent;
+        }
+        .otp-box button {
+            width:100%;
+            height:40px;
+            background:#28c7f1;
+            color:#fff;
+            font-size: 15px;
+            border:none;
+            outline:none;
+            border-radius:8px;
+            cursor:pointer;
+
+        }
+        .otp-box button:disabled {
+            opacity:0.5;
+            pointer-events: none;
+            cursor:initial;
+        }
+  </style>
+
+  </head>
+  <body>
+    <!-- Left Side: Image -->
+    <img id ="img" src="{{ url_for('static', filename='Images/mcq.jpg') }}" alt="MCQ Image">
+
+
+
+    <!-- Right Side: Form -->
+    <div class="otp-box">
+        <form action="/authenticate" method="POST" id="myForm">
+            <div class="content-box">
+                <h2>Verification code</h2>
+                <p>We have sent a verification code to your registered email</p>
+            </div>
+            <div class="inputs">
+                <input type="text" maxlength="1" class="otp-input"/>
+                <input type="text" maxlength="1" class="otp-input"/>
+                <input type="text" maxlength="1" class="otp-input"/>
+                <input type="text" maxlength="1" class="otp-input"/>
+                <input type="text" maxlength="1" class="otp-input"/>
+                <input type="text" maxlength="1" class="otp-input"/>
+            </div>
+            <input type="hidden" name="otp" id="hidden-otp">
+            <div class="verify-btn">
+                <button type="submit" disabled>Verify</button>
+            </div>
+        </form>
+        <form action="/resend" method="POST">
+            <input type="hidden" id="op" name="email" value={{email}}>
+            <button type="submit" class="login-btn bg-[#2b96ad] text-white py-3 px-4 rounded-md hover:opacity-90 transition duration-300 text-lg">Resend OTP</button>
+        </form>
+    </div>
+
+    </div>
+
+     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+       M.AutoInit();
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+              {% for message in messages %}
+              M.toast({html: '{{message}}'})
+              {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+       const inputs = [...document.querySelectorAll(".otp-box input.otp-input")];
+       const submitBtn = document.querySelector(".otp-box button");
+       const hiddenOtpInput = document.getElementById("hidden-otp");
+
+       inputs.forEach((input, index) => {
+        input.addEventListener("keyup", (e) => {
+            if(!(e.keyCode >= 48 && e.keyCode <= 57)){
+                e.target.value = "";
+                updateHiddenOtp();
+                return;
+            }
+            
+            e.target.value = String.fromCharCode(e.keyCode);
+
+            if(index < (inputs.length - 1)){
+                inputs[index + 1].focus();
+            }
+
+            setTimeout(() =>{
+                const isDisabledBtn = inputs.some(e => e.value.length !== 1);
+                submitBtn.disabled = isDisabledBtn;
+                updateHiddenOtp();
+            }, 0);
+        });
+        input.addEventListener("input", () => {
+            updateHiddenOtp(); 
+        });
+       });
+
+       function updateHiddenOtp() {
+            let otpValue = "";
+            inputs.forEach(input => {
+                otpValue += input.value;
+            });
+            hiddenOtpInput.value = otpValue;
+        }
+        const form = document.getElementById("myForm");
+        form.addEventListener("submit", () => {
+            updateHiddenOtp();
+        });
+    </script>
+  </body>
+</html>
