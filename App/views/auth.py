@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, se
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 from flask_login import login_user, login_required, logout_user, current_user
+from App.controllers import teacher 
 from App.models import *
 from flask_mail import Mail, Message
 from flask import current_app
@@ -186,7 +187,7 @@ def login_action():
     data = request.form
     username = data['username']
     password = data['password']
-    potential_teacher = get_teacher_by_username(username)
+    potential_teacher = teacher.get_teacher_by_username(username)
     potential_admin = get_admin_by_username(username)
     user = get_user_by_username(username)
     if potential_teacher and check_password_hash(potential_teacher.password,password):
@@ -276,7 +277,7 @@ def signup_action_data():
     if data['radio'] == 'admin':
         new_user = create_admin(data['first_name'], data['last_name'], data['username'], data['pwd'], email)
     elif data['radio'] == 'teacher':
-        new_user = create_teacher(data['first_name'], data['last_name'], data['username'], data['pwd'], email)
+        new_user = teacher.create_teacher(data['first_name'], data['last_name'], data['username'], data['pwd'], email)
     else:
         new_user = create_user(data['first_name'], data['last_name'], data['username'], data['pwd'], email)
 

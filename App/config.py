@@ -3,6 +3,8 @@ import os
 from flask_mail import Mail, Message
 from dotenv import load_dotenv
 
+
+
 load_dotenv()
 def load_config(app, overrides):
     if os.path.exists(os.path.join('./App', 'custom_config.py')):
