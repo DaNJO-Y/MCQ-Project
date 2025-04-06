@@ -19,6 +19,8 @@ def my_exams_page():
     if not current_user.is_authenticated:
         return redirect(url_for('auth_views.login_action'))  # Redirect to login if not logged in
 
+    #exams = get_exams(current_user,page=1, per_page=10)  # Fetch only the logged-in teacher's questions
+    #return render_template('MyExams.html', exams=exams)
     response = get_exams(current_user, page=1, per_page=10)
     if isinstance(response, tuple):  # Handling error responses
         response, status = response

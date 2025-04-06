@@ -246,34 +246,51 @@
           transform: rotate(45deg);
         }
 
-        .button-container {
-            display: flex;
-            align-items: center; /* Align items vertically */
-            gap: 10px; /* Add spacing between buttons */
-            flex-wrap: wrap; /* Allow wrapping if the content overflows */
+        .deleteButton{
+          color: black;
+          padding: 7px 13px;
+          border: none;
+          border-radius: 1px;
+          background: #e5e7eb;
+          position:relative;
+          left:5%;
+        }
+        .deleteButton:hover{
+          background: grey ;
+        }
+        .deleteButton:active{
+          background: #e74c3c;
+        }
+        .editButton{
+          color: black;
+          padding: 7px 13px;
+          border: none;
+          border-radius: 1px;
+          background: #e5e7eb;
+          position:relative;
+          left:10%;
+        }
+        .editButton:hover{
+          background: grey ;
+        }
+        .editButton:active{
+          background: #e74c3c;
         }
 
-        .deleteButton,
-        .editButton,
-        .downloadButton {
-            color: black;
-            padding: 7px 13px;
-            border: none;
-            border-radius: 1px;
-            background: #e5e7eb;
-            transition: background 0.3s ease;
+        .downloadButton{
+          color: black;
+          padding: 7px 13px;
+          border: none;
+          border-radius: 1px;
+          background: #e5e7eb;
+          position:relative;
+          left:15%;
         }
-
-        .deleteButton:hover,
-        .editButton:hover,
-        .downloadButton:hover {
-            background: grey;
+        .downloadButton:hover{
+          background: grey ;
         }
-
-        .deleteButton:active,
-        .editButton:active,
-        .downloadButton:active {
-            background: #e74c3c;
+        .downloadButton:active{
+          background: #e74c3c;
         }
     </style>
 </head>
@@ -283,7 +300,7 @@
             <div class="text-2xl font-bold">
                 <a class="text-white hover:text-gray-500 transition duration-300" onclick="window.location.href='{{ url_for('auth_views.homePage') }}'">
                     <i class="fas fa-home"></i>HomePage
-                </a>
+                       </a>
             </div>
             <button class="button"><a href="/createQuestion">New Question</a></button>
             <button class="button"><a href="/new_exam">New Exam</a></button>
@@ -330,37 +347,32 @@
                     <input id="searchbar" type="text" placeholder="Search Exams" class="searchbar">
 
                 </div>
-                <tbody>
-                    {% if exams %}
-                        {% for exam in exams %}
-                        <tr data-exam-id="{{ exam.id }}">
-                            <td class="p-2">
-                                <div class="button-container">
-                                    <label class="check-container" style="display:flex">
-                                        {{ exam.title }}
-                                        <input type="checkbox">
-                                        <span class="checkmark"></span>
-                                    </label>
+                <div id="question-table" class="bg-white rounded shadow">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-200">
+                                <th class="p-2 text-left">Question</th>
+                                <th class="p-2 text-left">Tag</th>
+                                <th class="p-2 text-left">Date created</th>
+                                <th class="p-2 text-left">Course Code</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-2"><label class="check-container" style="display:flex">Metabolism exam 1
+                                  <input type="checkbox" checked="checked">
+                                  <span class="checkmark"></span>
+                                </label> 
                                     <button class="deleteButton"><i class="fas fa-trash mr-2"></i>Delete</button>
                                     <button class="editButton"><i class="fas fa-edit mr-2"></i>Edit</button>
                                     <button class="downloadButton"><i class="fas fa-download mr-2"></i>Download</button>
-                                </div>
-                            </td>
-                            <td class="p-2">
-                                {% for tag in exam.tags %}
-                                    {{ tag }}<br>
-                                {% endfor %}
-                            </td>
-                            <td class="p-2">{{ exam.date_created }}</td>
-                            <td class="p-2">{{ exam.course_code }}</td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                    <tr>
-                        <td class="p-2" colspan="4">No exams found.</td>
-                    </tr>
-                    {% endif %}
-                </tbody>
+                                </td>
+                                <td class="p-2">Metabolism<br> Nutrition therapy</td>
+                                <td class="p-2">06/04/2021</td>
+                                <td class="p-2">NUTR 1600</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </main>
         </div>
@@ -426,24 +438,6 @@
                     sideNav.style.visibility = 'visible';
                     mainContent.style.marginLeft = '2rem';
                 }
-            });
-
-            const selectedExams = new Set(); // Use a Set to store selected exam IDs
-
-            // Add event listener to all checkboxes
-            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                checkbox.addEventListener('change', (event) => {
-                    const examRow = event.target.closest('tr'); // Get the parent row
-                    const examId = examRow.dataset.examId; // Assuming each row has a data-exam-id attribute
-
-                    if (event.target.checked) {
-                        selectedExams.add(examId); // Add exam ID to the Set
-                    } else {
-                        selectedExams.delete(examId); // Remove exam ID from the Set
-                    }
-
-                    console.log('Selected Exams:', Array.from(selectedExams)); // Log selected exams
-                });
             });
         });
     </script>
