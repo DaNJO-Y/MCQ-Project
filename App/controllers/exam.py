@@ -1,9 +1,24 @@
 from App.models import Exam
+from App.models import Question
 from App.database import db
 from flask import send_file
 #from fpdf2 import FPDF
 import os
 import random
+
+def create_exam(title, course_code, questions, teacher_id):
+    # Create a new exam instance
+    new_exam = Exam(title=title, course_code=course_code, teacher_id=teacher_id)
+
+    # Add questions to the exam
+    for question in questions:
+        question_instance = Question.query.get(question)
+        if question_instance:
+            new_exam.questions.append(question_instance)
+
+    db.session.add(new_exam)
+    db.session.commit()
+    return new_exam.get_json()  # Return the created exam as JSON
 
 def get_exams(user, page=1, per_page=10):
     paginated_exams = Exam.query.filter_by(teacher_id=user.id).paginate(page=page, per_page=per_page, error_out=False)
