@@ -156,68 +156,130 @@
             /* color: #2b96ad; */
             /* background-color: rgba(0, 0, 0, 0.7) ; */
         }
+        #loader {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 1;
+            width: 120px;
+            height: 120px;
+            margin: -76px 0 0 -76px;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Add animation to "page content" */
+        .animate-bottom {
+            position: relative;
+            -webkit-animation-name: animatebottom;
+            -webkit-animation-duration: 1s;
+            animation-name: animatebottom;
+            animation-duration: 1s
+        }
+
+        @-webkit-keyframes animatebottom {
+            from { bottom:-100px; opacity:0 } 
+            to { bottom:0px; opacity:1 }
+        }
+
+        @keyframes animatebottom { 
+            from{ bottom:-100px; opacity:0 } 
+            to{ bottom:0; opacity:1 }
+        }
+
+        #myDiv {
+            display: none;
+            text-align: center;
+        }
+
     </style>
   
 </head>
-<body>
-    <div class="container">
-        <header>
-            <div class="text-2xl font-bold">
-
-                <a class="text-white hover:text-gray-500 transition duration-300" onclick="window.location.href='{{ url_for('auth_views.homePage') }}'">
-                    <i class="fas fa-home"></i>HomePage
-                       </a>
-            </div>
-            <button class="button"><a href="/createQuestion">New Question</a></button>
-            <button class="button"><a href="/new_exam">New Exam</a></button>
-           <div class="relative">
-                <button id="profileButton" class="profile-button">
-                    <i class="fas fa-user-circle text-3xl"></i>
-                    <span class="ml-2">Your Profile</span>
-                </button>
-                <div id="profileDropdown" class="dropdown-menu">
-                    <form action="{{ url_for('auth_views.logout_action') }}" method="get">
-                        <button class="nav-button">
-                            <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                        </button>
-                    </form>
+<body onload="myFunction()" style="margin:0;">
+    <div id="loader"></div>
+    <div style="display:none;" id="myDiv" class="animate-bottom">
+        <div class="container">
+            <header>
+                <div class="text-2xl font-bold">
+    
+                    <a class="text-white hover:text-gray-500 transition duration-300" onclick="window.location.href='{{ url_for('auth_views.homePage') }}'">
+                        <i class="fas fa-home"></i>HomePage
+                           </a>
                 </div>
-               
+                <button class="button"><a href="/createQuestion">New Question</a></button>
+                <button class="button"><a href="/new_exam">New Exam</a></button>
+               <div class="relative">
+                    <button id="profileButton" class="profile-button">
+                        <i class="fas fa-user-circle text-3xl"></i>
+                        <span class="ml-2">Your Profile</span>
+                    </button>
+                    <div id="profileDropdown" class="dropdown-menu">
+                        <form action="{{ url_for('auth_views.logout_action') }}" method="get">
+                            <button class="nav-button">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                            </button>
+                        </form>
+                    </div>
+                   
+                </div>
+            </header>
+    
+            <div class="flex">
+                <button id="toggleNav"><i class="fas fa-angle-left"></i></button>
+                <nav id="sideNav">
+                    <ul class="space-y-4">
+                        <button class="nav-button" onclick="window.location.href='{{ url_for('questions_views.my_questions_page') }}'">
+                            <i class="fas fa-file-alt mr-2"></i> My Questions
+                        </button>
+                        <button class="nav-button" onclick="window.location.href='{{ url_for('exams_views.my_exams_page') }}'">
+                            <i class="fas fa-file-alt mr-2"></i> My Exams
+                        </button>
+                        <button class="nav-button" onclick="window.location.href='{{ url_for('import_page_views.import_page') }}'">
+                            <i class="fas fa-file-upload mr-2"></i> Import Questions
+                        </button>
+                        <button class="nav-button" onclick="window.location.href='{{ url_for('help_views.help_page') }}'">
+                            <i class="fas fa-question-circle"></i> Help
+                        </button>
+                    </ul>
+                </nav>
+    
+                <main id="mainContent">
+                    <h1 class="text-2xl font-bold mb-6 text-center text-[#2b96ad]">
+                        Welcome To the Department of Preclinical Sciences MCQ Bank
+                    </h1>
+                    <p class="text-[#2b96ad] text-center">
+                        Access and manage your exams and questions here. Use the navigation menu on the left to get started.
+                    </p>
+                </main>
             </div>
-        </header>
-
-        <div class="flex">
-            <button id="toggleNav"><i class="fas fa-angle-left"></i></button>
-            <nav id="sideNav">
-                <ul class="space-y-4">
-                    <button class="nav-button" onclick="window.location.href='{{ url_for('questions_views.my_questions_page') }}'">
-                        <i class="fas fa-file-alt mr-2"></i> My Questions
-                    </button>
-                    <button class="nav-button" onclick="window.location.href='{{ url_for('exams_views.my_exams_page') }}'">
-                        <i class="fas fa-file-alt mr-2"></i> My Exams
-                    </button>
-                    <button class="nav-button" onclick="window.location.href='{{ url_for('import_page_views.import_page') }}'">
-                        <i class="fas fa-file-upload mr-2"></i> Import Questions
-                    </button>
-                    <button class="nav-button" onclick="window.location.href='{{ url_for('help_views.help_page') }}'">
-                        <i class="fas fa-question-circle"></i> Help
-                    </button>
-                </ul>
-            </nav>
-
-            <main id="mainContent">
-                <h1 class="text-2xl font-bold mb-6 text-center text-[#2b96ad]">
-                    Welcome To the Department of Preclinical Sciences MCQ Bank
-                </h1>
-                <p class="text-[#2b96ad] text-center">
-                    Access and manage your exams and questions here. Use the navigation menu on the left to get started.
-                </p>
-            </main>
         </div>
     </div>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
-        
+        var myVar;
+
+        function myFunction() {
+            myVar = setTimeout(showPage, 2500);
+        }
+
+        function showPage() {
+            ocument.getElementById("loader").style.display = "none";
+            document.getElementById("myDiv").style.display = "block";
+        }
         M.AutoInit();
 
         {% with messages = get_flashed_messages() %}
