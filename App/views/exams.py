@@ -39,11 +39,10 @@ def newExamPage():
 @exams_views.route('/save_exams', methods=['POST'])
 @login_required
 def save_the_exam():
-    user = current_user.id
+    user = current_user
 
     if not user.is_authenticated:
         return jsonify({'message': 'Unauthorized'}), 401
-
 
     data = request.get_json()
     teacher_id = current_user.id
