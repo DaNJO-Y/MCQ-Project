@@ -70,3 +70,19 @@ def save_the_exam():
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': f'Error creating exam: {str(e)}'}), 500
+    
+
+@exams_views.route('/download_my_exams', methods=['POST'])
+@login_required
+def download_my_exams():
+    user = current_user
+    if not user.is_authenticated:
+        return jsonify({'message': 'Unauthorized'}), 401
+
+    # Get the last saved exam
+    last_exam = Exam.query.filter_by(teacher_id=user.id).order_by(Exam.id.desc()).first()
+    if not last_exam:
+        return jsonify({'message': 'No exams found to download'}), 404
+
+    # Use the last exam ID for downloading
+    return download_exam(last_exam.id, format="pdf")

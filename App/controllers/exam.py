@@ -2,9 +2,11 @@ from App.models import Exam
 from App.models import Question
 from App.database import db
 from flask import send_file
-#from fpdf2 import FPDF
+from fpdf import FPDF
 import os
 import random
+from io import BytesIO
+from flask import Response
 
 def create_exam(title, course_code, questions, teacher_id):
     # Create a new exam instance
@@ -79,46 +81,67 @@ def edit_exam(exam_id, title=None, course_code=None, add_questions=None, remove_
     db.session.commit()  
     return exam.get_json()  
 
-
-def download_exam(exam_id, format="txt"):
+def download_exam(exam_id, format):
     exam = Exam.query.get(exam_id)
     if not exam:
         return {"error": "Exam not found"}, 404
 
-    filename = f"exam_{exam.id}.{format}"
-    filepath = os.path.join("downloads", filename)
-
-    # Ensure the downloads directory exists
-    os.makedirs("downloads", exist_ok=True)
-
     if format == "txt":
-        with open(filepath, "w", encoding="utf-8") as file:
-            file.write(f"Exam Title: {exam.title}\n")
-            file.write(f"Course Code: {exam.course_code}\n")
-            file.write("Questions:\n")
-            for index, question in enumerate(exam.questions, start=1):
-                file.write(f"{index}. {question.text}\n")
-    
+        # Create the file in memory
+        file_content = f"Exam Title: {exam.title}\n"
+        file_content += f"Course Code: {exam.course_code}\n"
+        file_content += "Questions:\n"
+        for index, question in enumerate(exam.exam_questions, start=1):
+            file_content += f"{index}. {question.text}\n"
+
+        # Use BytesIO to create a file-like object
+        file_stream = BytesIO(file_content.encode('utf-8'))
+        return send_file(
+            file_stream,
+            as_attachment=True,
+            download_name=f"exam_{exam.id}.txt",
+            mimetype="text/plain"
+        )
+
     elif format == "pdf":
+        # Create the PDF in memory
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Arial", size=12)
+
+        # Add exam details
         pdf.cell(200, 10, txt=f"Exam Title: {exam.title}", ln=True, align="C")
         pdf.cell(200, 10, txt=f"Course Code: {exam.course_code}", ln=True, align="C")
         pdf.ln(10)
         pdf.cell(200, 10, txt="Questions:", ln=True)
         pdf.ln(5)
-        
-        for index, question in enumerate(exam.questions, start=1):
+
+        # Debugging: Print questions to console
+        print(f"Exam Title: {exam.title}")
+        print(f"Course Code: {exam.course_code}")
+        print("Questions associated with this exam:")
+        for question in exam.exam_questions:
+            print(f"Question ID: {question.id}, Text: {question.text}")
+
+        # Add questions to the PDF
+        for index, question in enumerate(exam.exam_questions, start=1):
             pdf.multi_cell(0, 10, f"{index}. {question.text}")
-        
-        pdf.output(filepath)
+
+        # Use BytesIO to create a file-like object
+        file_stream = BytesIO()
+        pdf.output(file_stream)
+        file_stream.seek(0)  # Move to the beginning of the file stream
+
+        # Send the file to the user
+        return send_file(
+            file_stream,
+            as_attachment=True,
+            download_name=f"exam_{exam.id}.pdf",
+            mimetype="application/pdf"
+        )
 
     else:
         return {"error": "Invalid format. Use 'txt' or 'pdf'."}, 400
-
-    return send_file(filepath, as_attachment=True)
-
 
 def save_exam(exam_id):
     exam = Exam.query.get(exam_id)
@@ -143,5 +166,10 @@ def shuffle_questions(exam_id):
     # Update the exam's question order
     exam.questions = questions_list
     db.session.commit()
+
+    print(f"Exam ID: {exam.id}, Title: {exam.title}")
+    print("Questions:")
+    for question in exam.exam_questions:
+        print(f"Question ID: {question.id}, Text: {question.text}")
 
     return {"message": "Questions shuffled successfully", "exam": exam.get_json()}

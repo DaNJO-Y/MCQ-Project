@@ -617,14 +617,85 @@
             alert("Please add questions and an exam title.");
         }
     });
-        document.getElementById('download-exam-button').addEventListener('click', () => {
-            const questionIds = Object.keys(selectedQuestions);
-            if (questionIds.length > 0) {
-                alert(`Questions ${questionIds.join(', ')} will be downloaded (server-side implementation needed).`);
-            } else {
-                alert("Please select questions to download.");
+
+    document.getElementById('download-exam-button').addEventListener('click', () => {
+        const examTitle = document.getElementById('exam-title').value;
+        const courseCode = document.getElementById('course-code').value;
+        const questionIds = Object.keys(selectedQuestions);
+
+        if (questionIds.length > 0 && examTitle.trim() !== "") {
+            // Prepare the data to send for download
+            const downloadData = {
+                title: examTitle,
+                courseCode: courseCode,
+                question_ids: questionIds,
+                format: 'pdf' // Specify the desired format as PDF
+            };
+
+            // Make a POST request to your Flask download route
+            fetch('/download_my_exams', { // Assuming '/download_my_exams' is your download route
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(downloadData),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        console.error('Error downloading exam:', error);
+                        alert(`Error downloading exam: ${error.message || 'An error occurred.'}`);
+                        throw new Error('Download failed');
+                    });
+                }
+                return response.blob(); // Get the response as a blob (for file download)
+            })
+            .then(blob => {
+                // Create a temporary URL for the blob
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${examTitle.replace(/\s+/g, '_') || 'exam'}.pdf`; // Set the filename
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url); // Clean up the URL
+            })
+            .catch(error => {
+                console.error('Error during download:', error);
+                alert('An error occurred while initiating the download.');
+            });
+        } else {
+            alert("Please add questions and an exam title before downloading.");
+        }
+
+        // Example usage of the suggested code change
+        fetch('/download_my_exams', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ exam_id: 1, format: 'pdf' }), // Replace with the actual exam ID and format
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to download the file');
             }
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'exam.pdf'; // Set the filename
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        })
+        .catch(error => {
+            console.error('Error:', error);
         });
+    });
 
         document.addEventListener('DOMContentLoaded', () => {
             const profileButton = document.getElementById('profileButton');
