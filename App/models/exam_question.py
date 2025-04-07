@@ -3,8 +3,8 @@ from App.database import db
 class ExamQuestion(db.Model):
     __tablename__ = 'exam_question'
     id = db.Column(db.Integer, primary_key=True)
-    question_id = db.Column(db.Integer, db.ForeignKey('question.id'), primary_key=True, nullable=False)
-    exam_id = db.Column(db.Integer, db.ForeignKey('exam.id'), primary_key=True, nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)
+    exam_id = db.Column(db.Integer, db.ForeignKey('exam.id'), nullable=False)
 
 
     def __init__(self, exam_id, question_id):

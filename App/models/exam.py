@@ -31,7 +31,7 @@ class Exam(db.Model):
             "teacher_id": self.teacher_id,
             "title": self.title,
             "course_code": self.course_code,
-            "date_created": self.date_created.isoformat() if self.date_created else None,
+            # "date_created": self.date_created.isoformat() if self.date_created else None,
             "saved": self.saved,
             "questions": [question.id for question in self.exam_questions],
             "statistics": [stat.get_json() for stat in self.statistics] if self.statistics else []
