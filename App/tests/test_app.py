@@ -475,7 +475,48 @@ class ExamIntegrationTests(unittest.TestCase):
         }
         db.session.remove()
     
-# class optionIntegrationTests(unittest.TestCase):
+class optionIntegrationTests(unittest.TestCase):
+    def test_create_option(self):
+        question = save_question(teacherId=2, text="Test question for options", difficulty="Intermediate", courseCode="Test 1",options=[])
+        option = create_option(question_id=question.id, body="Option text", image=None, is_correct=True)
+        option_json = option.get_json()
+        assert option_json == {
+            "id": option.id,
+            "questionId":question.id,
+            "body":"Option text",
+            "image":None,
+            "is_correct": True
+        }
+
+    def test_add_text_to_option(self):
+        question = save_question(teacherId=2, text="Test question for add options", difficulty="Intermediate", courseCode="Test 1",options=[])
+        option = create_option(question_id=question.id, body="", image=None, is_correct=True)
+        updated_option = add_text(id=option.id, text="New text", question_id=question.id)
+        option_json = updated_option.get_json()
+        assert option_json == {
+            "id": updated_option.id,
+            "questionId":question.id,
+            "body":"New text",
+            "image":None,
+            "is_correct": True
+        }
+    
+    
+        
+    
+    def test_remove_option_text(self):
+        question = save_question(teacherId=2, text="Test question for remove option text", difficulty="Intermediate", courseCode="Test 1",options=[])
+        option = create_option(question_id=question.id, body="Option text to be removed", image=None, is_correct=True)
+        assert option.body == "Option text to be removed"
+        updated_option = remove_text(id=option.id, question_id=question.id)
+        option_json = updated_option.get_json()
+        assert option_json == {
+            "id": updated_option.id,
+            "questionId":question.id,
+            "body":None,
+            "image":None,
+            "is_correct": True
+        }
 
 
 
