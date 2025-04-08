@@ -328,6 +328,7 @@
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
+
                     </div>
 
                     <table id="question-bank-container" class="w-full">
@@ -617,14 +618,42 @@
             alert("Please add questions and an exam title.");
         }
     });
-        document.getElementById('download-exam-button').addEventListener('click', () => {
-            const questionIds = Object.keys(selectedQuestions);
-            if (questionIds.length > 0) {
-                alert(`Questions ${questionIds.join(', ')} will be downloaded (server-side implementation needed).`);
-            } else {
-                alert("Please select questions to download.");
+
+    document.getElementById('download-exam-button').addEventListener('click', () => {
+        const button = document.getElementById('download-exam-button');
+        button.disabled = true;  // Disable the button to prevent multiple clicks
+
+        fetch('/download_my_exams', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ format: 'pdf' }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to download the file');
             }
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'exam.pdf';  // Set the filename
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);  // Clean up the URL
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while downloading the exam.');
+        })
+        .finally(() => {
+            button.disabled = false;  // Re-enable the button
         });
+    });
 
         document.addEventListener('DOMContentLoaded', () => {
             const profileButton = document.getElementById('profileButton');
