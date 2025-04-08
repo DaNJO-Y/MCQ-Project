@@ -12,7 +12,7 @@ def get_option(id):
 
 def add_text(id, text, question_id):
     option = get_option(id)
-    if option and option.question_id == question_id:
+    if option and option.questionId == question_id:
         option.body = text
         db.session.add(option)
         db.session.commit()
