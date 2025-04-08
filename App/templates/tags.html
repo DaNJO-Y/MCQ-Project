@@ -527,9 +527,10 @@
                 const data = await response.json();
                 console.log('Tags associated successfully:', data);
                 M.toast({ html: 'Tags associated successfully!' });
-                setTimeout(() => {
-                    window.location.href = '/myQuestions';
-                }, 1500);
+                // setTimeout(() => {
+                //     window.location.href = '/myQuestions';
+                // }, 1500);
+                window.location.href = '/myQuestions';
                 // Optionally, you might want to unselect the tags after saving
                 selectedTagElements.forEach(el => el.classList.remove('selected'));
                 selectedTags = [];
