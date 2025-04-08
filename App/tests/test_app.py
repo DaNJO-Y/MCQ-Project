@@ -475,7 +475,7 @@ class ExamIntegrationTests(unittest.TestCase):
         }
         db.session.remove()
     
-class optionIntegrationTests(unittest.TestCase):
+class OptionIntegrationTests(unittest.TestCase):
     def test_create_option(self):
         question = save_question(teacherId=2, text="Test question for options", difficulty="Intermediate", courseCode="Test 1",options=[])
         option = create_option(question_id=question.id, body="Option text", image=None, is_correct=True)
@@ -517,8 +517,73 @@ class optionIntegrationTests(unittest.TestCase):
             "image":None,
             "is_correct": True
         }
+    def test_toggle_is_correct(self):
+        question = save_question(teacherId=2, text="Test question for option correct toggling", difficulty="Intermediate", courseCode="Test 1",options=[])
+        option = create_option(question_id=question.id, body="Option text", image=None, is_correct=False)
+        assert option.is_correct == False
+        message = toggle_isCorrectOption(id=question.id,option_id=option.id)
+        assert option.is_correct == True
+        assert message["message"] == "Option is_correct toggled"
 
+class QuestionIntegrationTests(unittest.TestCase):
+    def test_save_question(self):
+        question = save_question(teacherId=2,text="Test Question", difficulty="Easy", courseCode="Testing101", options=[])
+        question_json = question.get_json()
+        assert question_json == {
+            "id": question.id,
+            "teacherid": 2,
+            "text": "Test Question",
+            "difficulty": "Easy",
+            "course code": "Testing101",
+            "options": []
+        }
 
+    def test_edit_question(self):
+        question = save_question(teacherId=2,text="Test Question for Editing", difficulty="Easy", courseCode="Testing1010", options=[])
+        question_json = question.get_json()
+        assert question_json == {
+            "id": question.id,
+            "teacherid": 2,
+            "text": "Test Question for Editing",
+            "difficulty": "Easy",
+            "course code": "Testing1010",
+            "options": []
+        }
+        updated_question = edit_question(id=question.id, text="Updated test text", difficulty="Hard", courseCode="Testing1010")
+        if updated_question:
+            updated_question_json = updated_question.get_json()
+            assert updated_question_json == {
+                "id": updated_question.id,
+                "teacherid": 2,
+                "text": "Updated test text",
+                "difficulty": "Hard",
+                "course code": "Testing1010",
+                "options": []
+            }
+    def test_get_questions(self):
+        teacher = create_teacher("Richard", "Williams", "Richo", "richpass0", "richard45@my.gmail.com")
+        print("hi")
+        print(teacher)
+        question_1 = save_question(teacherId=teacher.id,text="Test Question 1", difficulty="Easy", courseCode="Testing101", options=[])
+        question_2 = save_question(teacherId=teacher.id,text="Test Question 2", difficulty="Hard", courseCode="Testing102", options=[])
+        questions_json = get_all_my_questions_json(teacher)
+        self.assertListEqual([
+            {'id':question_1.id,
+            "teacherid": teacher.id,
+            "text": "Test Question 1",
+            "difficulty": "Easy",
+            "course code": "Testing101",
+            "options": []},
+
+            {'id':question_2.id,
+            "teacherid": teacher.id,
+            "text": "Test Question 2",
+            "difficulty": "Hard",
+            "course code": "Testing102",
+            "options": []}
+            ], questions_json)
+
+    
 
 
 # class UsersIntegrationTests(unittest.TestCase):
