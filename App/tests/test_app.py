@@ -562,8 +562,8 @@ class QuestionIntegrationTests(unittest.TestCase):
             }
     def test_get_questions(self):
         teacher = create_teacher("Richard", "Williams", "Richo", "richpass0", "richard45@my.gmail.com")
-        print("hi")
-        print(teacher)
+        # print("hi")
+        # print(teacher)
         question_1 = save_question(teacherId=teacher.id,text="Test Question 1", difficulty="Easy", courseCode="Testing101", options=[])
         question_2 = save_question(teacherId=teacher.id,text="Test Question 2", difficulty="Hard", courseCode="Testing102", options=[])
         questions_json = get_all_my_questions_json(teacher)
@@ -583,7 +583,12 @@ class QuestionIntegrationTests(unittest.TestCase):
             "options": []}
             ], questions_json)
 
-    
+class TagsIntegrationTests(unittest.TestCase):
+    def test_add_tag(self): 
+        teacher = create_teacher("Richard", "Williams", "Richo", "richpass0", "richard45@my.gmail.com")
+        question_1 = save_question(teacherId=teacher.id,text="Test Question 1", difficulty="Easy", courseCode="Testing101", options=[]) 
+        message = add_tag(tag_id=None, question_id=question_1.id, tag_text="Test")
+        assert message["message"] == "Tag added successfully"
 
 
 # class UsersIntegrationTests(unittest.TestCase):
