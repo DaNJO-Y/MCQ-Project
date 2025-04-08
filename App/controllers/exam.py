@@ -132,8 +132,23 @@ def download_exam(exam_id, format):
         pdf.ln(5)
 
         for index, question in enumerate(exam.exam_questions, start=1):
-            pdf.multi_cell(190, 10, f"Question {index}: {question.text}", align="L")
-            pdf.ln(5)
+            # Add question text
+            question_text = f"Question {index}: {question.text}"
+            pdf.multi_cell(140, 10, question_text, align="L")  # Reserve space for the image on the right
+
+            # Add question image if it exists
+            if question.image:
+                image_path = os.path.join("App/static/uploads", question.image)  # Construct full path
+                if os.path.exists(image_path):  # Check if the file exists
+                    try:
+                        # Place the image on the right of the question text
+                        pdf.image(image_path, x=160, y=pdf.get_y() - 10, w=30)  # Adjust `x`, `y`, and `w` as needed
+                    except RuntimeError as e:
+                        print(f"Error adding image for Question {index}: {e}")
+                else:
+                    print(f"Image not found for Question {index}: {image_path}")
+
+            pdf.ln(15)  # Add spacing after the question and image
 
             # Fetch the current question and its options
             current_question = get_question(question.id)
@@ -141,10 +156,22 @@ def download_exam(exam_id, format):
                 pdf.cell(200, 10, txt="   Options:", ln=True)
                 for index2, option in enumerate(current_question.options, start=1):
                     option_letter = chr(96 + index2)  # Convert index to letter (a, b, c, ...)
-                    # Use a fixed width for the cell to avoid overflow
                     pdf.multi_cell(190, 10, f"      {option_letter}. {option.body}", align="L")
+
+                    # Add option image if it exists
+                    if option.image:
+                        option_image_path = os.path.join("App/static/uploads", option.image)  # Construct full path
+                        if os.path.exists(option_image_path):  # Check if the file exists
+                            try:
+                                pdf.image(option_image_path, x=160, y=pdf.get_y(), w=30)  # Adjust `x`, `y`, and `w` as needed
+                                pdf.ln(15)  # Add spacing after the option image
+                            except RuntimeError as e:
+                                print(f"Error adding image for Option {index2}: {e}")
+                        else:
+                            print(f"Image not found for Option {index2}: {option_image_path}")
                     pdf.ln(2)  # Add spacing between options
-                    print(f"Option ID: {option.id}, Text: {option.body}, Is Correct: {option.is_correct}")
+                    # print(f"HIIIIIIIIIIIIOption ID: {option.id}, Text: {option.body}, Is Correct: {option.is_correct}")
+                    # print(f"hiiii")
 
                 # Find the correct answer
                 correct_option = next(
