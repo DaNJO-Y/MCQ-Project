@@ -3,6 +3,8 @@ from App.models import Question
 from App.database import db
 from flask import send_file
 from fpdf import FPDF
+# from .question import question 
+from .question import get_question  # Import the correct function
 import os
 import random
 from io import BytesIO
@@ -81,6 +83,7 @@ def edit_exam(exam_id, title=None, course_code=None, add_questions=None, remove_
     db.session.commit()  
     return exam.get_json()  
 
+
 def download_exam(exam_id, format):
     exam = Exam.query.get(exam_id)
     if not exam:
@@ -90,12 +93,25 @@ def download_exam(exam_id, format):
         # Create the file in memory
         file_content = f"Exam Title: {exam.title}\n"
         file_content += f"Course Code: {exam.course_code}\n"
-        file_content += "Questions:\n"
+        file_content += "Questions:\n\n"
         for index, question in enumerate(exam.exam_questions, start=1):
-            file_content += f"{index}. {question.text}\n"
+            file_content += f"Question {index}: {question.text}\n"
+            file_content += "   Options:\n"
+            current_question = get_question(question.id)
+            if current_question and current_question.options:
+                for index2, option in enumerate(current_question.options, start=1):
+                    option_letter = chr(96 + index2)  # Convert index to letter (a, b, c, ...)
+                    file_content += f"      {option_letter}. {option.body}\n"
+                # Find the correct answer
+                correct_option = next(
+                    (chr(96 + idx) for idx, opt in enumerate(current_question.options, start=1) if opt.is_correct),
+                    "None"
+                )
+                file_content += f"   Answer: {correct_option}\n\n"
 
         # Use BytesIO to create a file-like object
         file_stream = BytesIO(file_content.encode('utf-8'))
+        file_stream.seek(0)  # Move to the beginning of the file stream
         return send_file(
             file_stream,
             as_attachment=True,
@@ -109,30 +125,41 @@ def download_exam(exam_id, format):
         pdf.add_page()
         pdf.set_font("Arial", size=12)
 
-        # Add exam details
         pdf.cell(200, 10, txt=f"Exam Title: {exam.title}", ln=True, align="C")
         pdf.cell(200, 10, txt=f"Course Code: {exam.course_code}", ln=True, align="C")
         pdf.ln(10)
         pdf.cell(200, 10, txt="Questions:", ln=True)
         pdf.ln(5)
 
-        # Debugging: Print questions to console
-        print(f"Exam Title: {exam.title}")
-        print(f"Course Code: {exam.course_code}")
-        print("Questions associated with this exam:")
-        for question in exam.exam_questions:
-            print(f"Question ID: {question.id}, Text: {question.text}")
-
-        # Add questions to the PDF
         for index, question in enumerate(exam.exam_questions, start=1):
-            pdf.multi_cell(0, 10, f"{index}. {question.text}")
+            pdf.multi_cell(190, 10, f"Question {index}: {question.text}", align="L")
+            pdf.ln(5)
+
+            # Fetch the current question and its options
+            current_question = get_question(question.id)
+            if current_question and current_question.options:
+                pdf.cell(200, 10, txt="   Options:", ln=True)
+                for index2, option in enumerate(current_question.options, start=1):
+                    option_letter = chr(96 + index2)  # Convert index to letter (a, b, c, ...)
+                    # Use a fixed width for the cell to avoid overflow
+                    pdf.multi_cell(190, 10, f"      {option_letter}. {option.body}", align="L")
+                    pdf.ln(2)  # Add spacing between options
+                    print(f"Option ID: {option.id}, Text: {option.body}, Is Correct: {option.is_correct}")
+
+                # Find the correct answer
+                correct_option = next(
+                    (chr(96 + idx) for idx, opt in enumerate(current_question.options, start=1) if opt.is_correct),
+                    "None"
+                )
+                pdf.ln(2)
+                pdf.cell(200, 10, txt=f"   Answer: {correct_option}", ln=True)
+                pdf.ln(5)
 
         # Use BytesIO to create a file-like object
         file_stream = BytesIO()
         pdf.output(file_stream)
-        file_stream.seek(0)  # Move to the beginning of the file stream
+        file_stream.seek(0)
 
-        # Send the file to the user
         return send_file(
             file_stream,
             as_attachment=True,
@@ -140,8 +167,7 @@ def download_exam(exam_id, format):
             mimetype="application/pdf"
         )
 
-    else:
-        return {"error": "Invalid format. Use 'txt' or 'pdf'."}, 400
+    return {"error": "Invalid format. Use 'txt' or 'pdf'."}, 400
 
 def save_exam(exam_id):
     exam = Exam.query.get(exam_id)

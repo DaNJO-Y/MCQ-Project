@@ -46,14 +46,14 @@ def save_the_exam():
     teacher_id = current_user.id
     title = data.get('title')
     course_code = data.get('courseCode')
+    question_ids = data.get('question_ids', [])  # Get the list of question IDs
 
-    # if not all([teacher_id, title, course_code]):
     if not title:
         return jsonify({'message': 'Missing required data title'}), 400
-   
+
     if not teacher_id:
         return jsonify({'message': 'Missing required data teacher_id'}), 400
-        # return jsonify({'message': 'Missing required data $title, $course_code'}), 400
+
     if not course_code:
         return jsonify({'message': 'Missing required data course_code'}), 400
 
@@ -63,6 +63,12 @@ def save_the_exam():
         course_code=course_code
     )
 
+    # Associate the selected questions with the exam
+    for question_id in question_ids:
+        question = Question.query.get(question_id)
+        if question:
+            new_exam.exam_questions.append(question)
+
     db.session.add(new_exam)
     try:
         db.session.commit()
@@ -70,7 +76,6 @@ def save_the_exam():
     except Exception as e:
         db.session.rollback()
         return jsonify({'message': f'Error creating exam: {str(e)}'}), 500
-    
 
 @exams_views.route('/download_my_exams', methods=['POST'])
 @login_required

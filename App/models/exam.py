@@ -1,6 +1,6 @@
 from App.database import db
 from sqlalchemy.sql import func
-from .exam_question import ExamQuestion
+from .exam_question import exam_question
 
 class Exam(db.Model):
     __tablename__ = 'exam'

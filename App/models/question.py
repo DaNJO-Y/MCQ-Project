@@ -1,5 +1,5 @@
 from .teacher import Teacher
-from .exam import Exam
+from .exam import exam_question
 from .associations import Question_Tag_Bridge
 from App.database import db
 
