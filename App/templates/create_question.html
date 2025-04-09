@@ -244,8 +244,8 @@
         }
         #savebutton{
             background-color:#2b96ad;
-            display:inline-block;
-            float:right;
+            /* display:inline-block; */
+            float: right;
             margin-right: 20px;
             margin-bottom: 10px;
             font-size: 1.0rem;
@@ -793,7 +793,7 @@
                                 <div class="upload-container">
                                     <label for="file-upload">+ Add Image</label>
                                     <input name="questionImage" type="file" id="file-upload" class="hidden" />
-                                    <!-- <div id="new-image-preview"></div> -->
+                                    <div id="new-image-preview"></div>
                                 </div>
                             </div>
                         </div>
@@ -1038,25 +1038,25 @@ addOptionButton.addEventListener('click', createOptionInput);
 
         createOptionInput(); // Create the first option input on page load
         
-    //     document.addEventListener('DOMContentLoaded', function() {
-    //     const fileUpload = document.getElementById('file-upload');
-    //     const currentImage = document.getElementById('current-image');
-    //     const newImagePreview = document.getElementById('new-image-preview');
-    //     if (fileUpload && newImagePreview) {
-    //         // If there was no existing image, just show the preview
-    //         fileUpload.addEventListener('change', function() {
-    //             if (this.files && this.files[0]) {
-    //                 const reader = new FileReader();
-    //                 reader.onload = function(e) {
-    //                     newImagePreview.innerHTML = `<img src="${e.target.result}" alt="New Image Preview" style="max-width: 200px;">`;
-    //                 }
-    //                 reader.readAsDataURL(this.files[0]);
-    //             } else {
-    //                 newImagePreview.innerHTML = '';
-    //             }
-    //         });
-    //     }
-    // });
+        document.addEventListener('DOMContentLoaded', function() {
+        const fileUpload = document.getElementById('file-upload');
+        const currentImage = document.getElementById('current-image');
+        const newImagePreview = document.getElementById('new-image-preview');
+        if (fileUpload && newImagePreview) {
+          //If there was no existing image, just show the preview
+          fileUpload.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                newImagePreview.innerHTML = `<img src="${e.target.result}" alt="New Image Preview" style="max-width: 200px;">`;
+              }
+              reader.readAsDataURL(this.files[0]);
+            } else {
+                newImagePreview.innerHTML = '';
+              }
+          });
+        }
+     });
   
     </script>
 </body>
