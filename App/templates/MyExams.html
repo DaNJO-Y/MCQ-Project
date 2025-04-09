@@ -341,9 +341,18 @@
                                         <input type="checkbox">
                                         <span class="checkmark"></span>
                                     </label>
-                                    <button class="deleteButton"><i class="fas fa-trash mr-2"></i>Delete</button>
-                                    <button class="editButton"><i class="fas fa-edit mr-2"></i>Edit</button>
-                                    <button class="downloadButton"><i class="fas fa-download mr-2"></i>Download</button>
+                                    <button class="deleteButton" onclick="deleteExam('{{ exam.id }}')">
+                                        <i class="fas fa-trash mr-2"></i>Delete
+                                    </button>
+                                    <a href="/edit_exam/{{ exam.id }}">
+                                        <button class="editButton">
+                                            <i class="fa fa-pencil" aria-hidden="true"></i> Edit
+                                        </button>
+                                    </a>
+        
+                                    <button class="downloadButton" onclick="window.location.href='/download_exam/{{ exam.id }}'">
+                                        <i class="fas fa-download mr-2"></i>Download
+                                    </button>
                                 </div>
                             </td>
                             <td class="p-2">
@@ -446,6 +455,35 @@
                 });
             });
         });
+
+        function deleteExam(examId) {
+            if (confirm("Are you sure you want to delete this exam?")) {
+                fetch(`/delete_exam/${examId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Remove the exam row from the table
+                        const examRow = document.querySelector(`tr[data-exam-id="${examId}"]`);
+                        if (examRow) {
+                            examRow.remove();
+                        }
+                        alert("Exam deleted successfully.");
+                    } else {
+                        response.json().then(data => {
+                            alert(data.error || "Failed to delete the exam.");
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error deleting exam:", error);
+                    alert("An error occurred while deleting the exam.");
+                });
+            }
+        }
     </script>
 </body>
 </html>

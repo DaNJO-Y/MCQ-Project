@@ -6,6 +6,7 @@ from fpdf import FPDF
 # from .question import question 
 from .question import get_question  # Import the correct function
 import os
+import re
 import random
 from io import BytesIO
 from flask import Response
@@ -49,11 +50,9 @@ def get_exam_by_id(exam_id):
 
 def delete_exam(exam_id):
     exam = Exam.query.get(exam_id)
-    if not exam:
-        return {"error": "Exam not found"}, 404
     db.session.delete(exam)
     db.session.commit()
-    return {"message": "Exam deleted successfully"}
+    return 
 
 
 def edit_exam(exam_id, title=None, course_code=None, add_questions=None, remove_questions=None):
@@ -144,13 +143,13 @@ def download_exam(exam_id, format):
                 if os.path.exists(image_path):  # Check if the file exists
                     try:
                         # Place the image on the right of the question text
-                        pdf.image(image_path, x=160, y=pdf.get_y() - 10, w=30)  # Adjust `x`, `y`, and `w` as needed
+                        pdf.image(image_path, x=160, y=pdf.get_y() - 10, w=30)  
                     except RuntimeError as e:
                         print(f"Error adding image for Question {index}: {e}")
                 else:
                     print(f"Image not found for Question {index}: {image_path}")
 
-            pdf.ln(15)  # Add spacing after the question and image
+            pdf.ln(3)  # Add spacing after the question and image
 
             # Fetch the current question and its options
             current_question = get_question(question.id)
@@ -165,7 +164,7 @@ def download_exam(exam_id, format):
                         option_image_path = os.path.join("App/static/uploads", option.image)  # Construct full path
                         if os.path.exists(option_image_path):  # Check if the file exists
                             try:
-                                pdf.image(option_image_path, x=160, y=pdf.get_y(), w=30)  # Adjust `x`, `y`, and `w` as needed
+                                pdf.image(option_image_path, x=160, y=pdf.get_y(), w=30)  
                                 pdf.ln(15)  # Add spacing after the option image
                             except RuntimeError as e:
                                 print(f"Error adding image for Option {index2}: {e}")
@@ -188,11 +187,13 @@ def download_exam(exam_id, format):
         file_stream = BytesIO()
         pdf.output(file_stream)
         file_stream.seek(0)
-
+        # exam_title=exam.title
+        
+        exam_title = re.sub(r'[\\/*?:"<>|]', "_", exam.title)
         return send_file(
             file_stream,
             as_attachment=True,
-            download_name=f"exam_{exam.id}.pdf",
+            download_name=f"{exam_title}.pdf",
             mimetype="application/pdf"
         )
 

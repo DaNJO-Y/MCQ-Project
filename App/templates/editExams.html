@@ -431,11 +431,17 @@
                             </div>
                         </div>
 
-                        <div id="exam-questions-container" class="mt-4 border rounded p-2 bg-white">
-                            <h3 class="text-lg font-semibold mb-2 text-gray-700">Selected Questions</h3>
+                        <div id="exam-questions-container">
+                            <h3 class="text-lg font-semibold mb-2 text-gray-700">Selected Questions for {{ exams.title }}</h3>
                             <ul id="exam-questions-list" class="space-y-2">
-                                </ul>
-                            <p id="exam-questions-empty" class="text-gray-500 text-sm italic">No questions added yet.</p>
+                                {% if exams and exams.exam_questions %}
+                                    {% for question in exams.exam_questions %}
+                                        <li>{{ question.text }}</li>
+                                    {% endfor %}
+                                {% else %}
+                                    <p id="exam-questions-empty" class="text-gray-500 text-sm italic">No questions added to this exam yet.</p>
+                                {% endif %}
+                            </ul>
                         </div>
 
                         <div class="mt-4 flex justify-end space-x-2">
@@ -621,38 +627,41 @@
 
     document.getElementById('download-exam-button').addEventListener('click', () => {
         const button = document.getElementById('download-exam-button');
-        button.disabled = true;  // Disable the button to prevent multiple clicks
+        button.disabled = true; // Disable the button to prevent multiple clicks
 
-        fetch('/download_new_exam', {
-            method: 'POST',
+        // Replace `{{ exams.id }}` with the actual exam ID dynamically
+        const examId = {{ exams.id }};
+        const url = `/download_exam/${examId}?format=pdf`; // Add the format as a query parameter
+
+        fetch(url, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ format: 'pdf' }),
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to download the file');
-            }
-            return response.blob();
-        })
-        .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'exam.pdf';  // Set the filename
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);  // Clean up the URL
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while downloading the exam.');
-        })
-        .finally(() => {
-            button.disabled = false;  // Re-enable the button
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to download the file');
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = 'exam.pdf'; // Set the filename
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(downloadUrl); // Clean up the URL
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while downloading the exam.');
+            })
+            .finally(() => {
+                button.disabled = false; // Re-enable the button
+            });
     });
 
         document.addEventListener('DOMContentLoaded', () => {
