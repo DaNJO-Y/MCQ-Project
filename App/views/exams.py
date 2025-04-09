@@ -77,9 +77,9 @@ def save_the_exam():
         db.session.rollback()
         return jsonify({'message': f'Error creating exam: {str(e)}'}), 500
 
-@exams_views.route('/download_my_exams', methods=['POST'])
+@exams_views.route('/download_new_exam', methods=['POST'])
 @login_required
-def download_my_exams():
+def download_new_exam():
     user = current_user
     if not user.is_authenticated:
         return jsonify({'message': 'Unauthorized'}), 401
@@ -91,3 +91,35 @@ def download_my_exams():
 
     # Use the last exam ID for downloading
     return download_exam(last_exam.id, format="pdf")
+
+@exams_views.route('/download_exam/<int:exam_id>', methods=['GET'])
+def download_exam_route(exam_id):
+    return download_exam(exam_id, format="pdf")
+
+
+@exams_views.route('/delete_exam/<int:exam_id>', methods=['DELETE'])
+def delete_exam_route(exam_id):
+    exam = Exam.query.get(exam_id)
+    if not exam:
+        return jsonify({"error": "Exam not found"}), 404
+
+    try:
+        delete_exam(exam_id)  # Call the function to delete the exam
+        return jsonify({"message": "Exam deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Failed to delete exam: {str(e)}"}), 500
+
+
+@exams_views.route('/edit_exam/<int:exam_id>', methods=['GET'])
+def edit_exam(exam_id):
+    exam = Exam.query.get(exam_id)
+    if not exam:
+        return jsonify({"error": "Exam not found"}), 404
+    questions = get_all_my_questions(current_user)
+
+
+    return render_template('editExams.html', exams=exam,questions=questions)
+
+
+
