@@ -315,7 +315,6 @@
                 </div>
             </div>
         </header>
-
         <div class="flex">
             <button id="toggleNav"><i class="fas fa-angle-left"></i></button>
             <nav id="sideNav">
@@ -327,6 +326,7 @@
                             <button class="absolute right-[-15rem] top-1/2 transform -translate-y-1/2 text-gray-500">
                                 <i class="fas fa-search"></i>
                             </button>
+                        </div>
 
                     </div>
 
@@ -352,13 +352,56 @@
                                                    {% if exam_question_ids and question.id in exam_question_ids %} checked {% endif %}>
                                         </td>
                                         <td class="p-2">{{ question.text }}</td>
+                                        <td class="p-2">
+                                            {% if question.tag %}
+                                                {% for tag in question.tag %}
+                                                    <li>{{ tag.tag_text }}</li>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </td>
+                                        <td class="p-2">{{ question.lastUsed }}</td>
+                                        <ul>
+                                        <td class="p-2">
+                                            {% if question.options %}
+    
+    
+                                                    {% for option in question.options %}
+                                                        <li>{{ option.body }}</li>
+                                                    {% endfor %}
+    
+                                            {% endif %}
+                                        </ul>
+                                        </td>
+                                        <ul>
+                                        <td class="p-2">
+                                            {% if question.options %}
+    
+    
+                                                    {% for option in question.options %}
+                                                        {% if option.is_correct %}
+                                                            <li>{{ option.body }}</li>
+                                                        {% endif %}
+                                                    {% endfor %}
+    
+                                            {% endif %}
+                                        </ul>
+                                        </td>
+                                        <td class="p-1">
+                                            <div>
+                                                <button id="viewbutton" class="text-blue py-1 px-4 rounded">
+                                                    <a href="/displayQuestion/{{question.id}}">
+                                                        View Question
+                                                    </a>
+                                                </button>
+                                            </div>
+                                        </td>
                                     </tr>
-                                {% endfor %}
-                            {% else %}
-                                <tr><td colspan="6">No questions found.</td></tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr><td class="p-4 text-center" colspan="6">No questions found.</td></tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
                     </div>
             </nav>
 
