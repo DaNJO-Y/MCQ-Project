@@ -227,3 +227,38 @@ def shuffle_questions(exam_id):
         print(f"Question ID: {question.id}, Text: {question.text}")
 
     return {"message": "Questions shuffled successfully", "exam": exam.get_json()}
+
+
+
+def update_exam(exam_id, title=None, course_code=None, add_questions=None, remove_questions=None, teacher_id=None):
+   
+    exam = Exam.query.get(exam_id)
+    if not exam:
+        return {"error": "Exam not found"}, 404
+
+    # Update Exam Title or Course Code
+    if title:
+        exam.title = title
+    if course_code:
+        exam.course_code = course_code
+
+    # Add Questions
+    if add_questions:
+        for question_id in add_questions:
+            question_instance = Question.query.get(question_id)
+            if question_instance and question_instance not in exam.exam_questions:
+                exam.exam_questions.append(question_instance)
+
+    # Remove Questions
+    if remove_questions:
+        for question_id in remove_questions:
+            question_instance = Question.query.get(question_id)
+            if question_instance and question_instance in exam.exam_questions:
+                exam.exam_questions.remove(question_instance)
+
+    # Update Teacher ID (if applicable)
+    if teacher_id:
+        exam.teacher_id = teacher_id
+
+    db.session.commit()
+    return {"message": "Exam updated successfully", "exam": exam.get_json()}

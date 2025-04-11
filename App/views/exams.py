@@ -112,14 +112,41 @@ def delete_exam_route(exam_id):
 
 
 @exams_views.route('/edit_exam/<int:exam_id>', methods=['GET'])
+@login_required
 def edit_exam(exam_id):
-    exam = Exam.query.get(exam_id)
-    if not exam:
-        return jsonify({"error": "Exam not found"}), 404
+    exam = Exam.query.get_or_404(exam_id)
     questions = get_all_my_questions(current_user)
 
+    # Get the IDs of the questions already in this exam
+    exam_question_ids = [question.id for question in exam.exam_questions]
 
-    return render_template('editExams.html', exams=exam,questions=questions)
+    return render_template('editExams.html', exam=exam, questions=questions, exam_question_ids=exam_question_ids)
+
+
+@exams_views.route('/edit_exam/<int:exam_id>', methods=['PUT'])
+def edit_exam_route(exam_id):
+    data = request.get_json()
+    title = data.get('title')
+    course_code = data.get('courseCode')
+    add_questions = data.get('add_questions', [])
+    remove_questions = data.get('remove_questions', [])
+    teacher_id = data.get('teacher_id')  # Optional
+
+    # Call the update_exam controller
+    result = update_exam(
+        exam_id=exam_id,
+        title=title,
+        course_code=course_code,
+        add_questions=add_questions,
+        remove_questions=remove_questions,
+        teacher_id=teacher_id
+    )
+
+    if "error" in result:
+        return jsonify(result), 404
+    return jsonify(result), 200
+
+
 
 
 
