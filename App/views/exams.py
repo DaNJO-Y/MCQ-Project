@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, unset_jwt_cookies, set_access_cooki
 from werkzeug.security import check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 from App.views.auth import auth_views
+import json
 
 from.index import index_views
 
@@ -110,7 +111,6 @@ def delete_exam_route(exam_id):
         db.session.rollback()
         return jsonify({"error": f"Failed to delete exam: {str(e)}"}), 500
 
-
 @exams_views.route('/edit_exam/<int:exam_id>', methods=['GET'])
 @login_required
 def edit_exam(exam_id):
@@ -119,9 +119,9 @@ def edit_exam(exam_id):
 
     # Get the IDs of the questions already in this exam
     exam_question_ids = [question.id for question in exam.exam_questions]
+    exam_question_ids_json = json.dumps(exam_question_ids)  # Convert the list to a JSON string
 
-    return render_template('editExams.html', exam=exam, questions=questions, exam_question_ids=exam_question_ids)
-
+    return render_template('editExams.html', exam=exam, questions=questions, exam_question_ids=exam_question_ids, exam_question_ids_json=exam_question_ids_json)
 
 @exams_views.route('/edit_exam/<int:exam_id>', methods=['PUT'])
 def edit_exam_route(exam_id):
@@ -130,7 +130,9 @@ def edit_exam_route(exam_id):
     course_code = data.get('courseCode')
     add_questions = data.get('add_questions', [])
     remove_questions = data.get('remove_questions', [])
-    teacher_id = data.get('teacher_id')  # Optional
+    teacher_id = data.get('teacher_id')  
+
+    print("Remove Questions:", remove_questions)  
 
     # Call the update_exam controller
     result = update_exam(

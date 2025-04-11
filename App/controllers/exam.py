@@ -53,36 +53,6 @@ def delete_exam(exam_id):
     db.session.commit()
     return 
 
-
-def edit_exam(exam_id, title=None, course_code=None, add_questions=None, remove_questions=None):
-    exam = Exam.query.get(exam_id)
-    if not exam:
-        return {"error": "Exam not found"}, 404
-
-    # Update Exam Title or Course Code 
-    if title:
-        exam.title = title
-    if course_code:
-        exam.course_code = course_code
-
-    #Add Questions 
-    if add_questions:
-        for question_id in add_questions:
-            question = Question.query.get(question_id)
-            if question and question not in exam.questions:
-                exam.questions.append(question)  # Add question to exam
-
-    # Remove Questions
-    if remove_questions:
-        for question_id in remove_questions:
-            question = Question.query.get(question_id)
-            if question and question in exam.questions:
-                exam.questions.remove(question)  # Remove question from exam
-
-    db.session.commit()  
-    return exam.get_json()  
-
-
 def download_exam(exam_id, format):
     exam = Exam.query.get(exam_id)
     if not exam:
@@ -230,7 +200,7 @@ def shuffle_questions(exam_id):
 
 
 
-def update_exam(exam_id, title=None, course_code=None, add_questions=None, remove_questions=None, teacher_id=None):
+def update_exam(exam_id, title, course_code, add_questions, remove_questions, teacher_id):
    
     exam = Exam.query.get(exam_id)
     if not exam:
@@ -250,11 +220,13 @@ def update_exam(exam_id, title=None, course_code=None, add_questions=None, remov
                 exam.exam_questions.append(question_instance)
 
     # Remove Questions
+    print("Before Removing Questions:", [q.id for q in exam.exam_questions])
     if remove_questions:
         for question_id in remove_questions:
             question_instance = Question.query.get(question_id)
             if question_instance and question_instance in exam.exam_questions:
                 exam.exam_questions.remove(question_instance)
+    print("After Removing Questions:", [q.id for q in exam.exam_questions])
 
     # Update Teacher ID (if applicable)
     if teacher_id:
