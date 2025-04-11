@@ -432,7 +432,10 @@
 
                     <div class="mt-4 flex justify-end space-x-2">
                         <button id="save-exam-button" class="bg-[#2b96ad] hover:bg-[#207d91] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" data-exam-id="{{ exam.id }}">Save</button>
-                        <button id="download-exam-button" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Download</button>
+                        <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="window.location.href='/download_exam/{{ exam.id }}'">
+                            Download
+                        </button>
+                        
                     </div>
                 </div>
 
@@ -645,41 +648,41 @@
             }
         });
 
-        document.getElementById('download-exam-button').addEventListener('click', () => {
-            const button = document.getElementById('download-exam-button');
-            button.disabled = true;  // Disable the button to prevent multiple clicks
+        // document.getElementById('download-exam-button').addEventListener('click', () => {
+        //     const button = document.getElementById('download-exam-button');
+        //     button.disabled = true;  // Disable the button to prevent multiple clicks
 
-            fetch('/download_new_exam', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ format: 'pdf' }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to download the file');
-                }
-                return response.blob();
-            })
-            .then(blob => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'exam.pdf';  // Set the filename
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);  // Clean up the URL
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while downloading the exam.');
-            })
-            .finally(() => {
-                button.disabled = false;  // Re-enable the button
-            });
-        });
+        //     fetch('/download_exam/{{ exam.id }}', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //         },
+        //         body: JSON.stringify({ format: 'pdf' }),
+        //     })
+        //     .then(response => {
+        //         if (!response.ok) {
+        //             throw new Error('Failed to download the file');
+        //         }
+        //         return response.blob();
+        //     })
+        //     .then(blob => {
+        //         const url = window.URL.createObjectURL(blob);
+        //         const a = document.createElement('a');
+        //         a.href = url;
+        //         a.download = 'exam.pdf';  // Set the filename
+        //         document.body.appendChild(a);
+        //         a.click();
+        //         document.body.removeChild(a);
+        //         window.URL.revokeObjectURL(url);  // Clean up the URL
+        //     })
+        //     .catch(error => {
+        //         console.error('Error:', error);
+        //         alert('An error occurred while downloading the exam.');
+        //     })
+        //     .finally(() => {
+        //         button.disabled = false;  // Re-enable the button
+        //     });
+        // });
 
         document.addEventListener('DOMContentLoaded', () => {
             const profileButton = document.getElementById('profileButton');
