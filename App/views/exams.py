@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, unset_jwt_cookies, set_access_cooki
 from werkzeug.security import check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 from App.views.auth import auth_views
+import json
 
 from.index import index_views
 
@@ -77,9 +78,9 @@ def save_the_exam():
         db.session.rollback()
         return jsonify({'message': f'Error creating exam: {str(e)}'}), 500
 
-@exams_views.route('/download_my_exams', methods=['POST'])
+@exams_views.route('/download_new_exam', methods=['POST'])
 @login_required
-def download_my_exams():
+def download_new_exam():
     user = current_user
     if not user.is_authenticated:
         return jsonify({'message': 'Unauthorized'}), 401
@@ -91,3 +92,63 @@ def download_my_exams():
 
     # Use the last exam ID for downloading
     return download_exam(last_exam.id, format="pdf")
+
+@exams_views.route('/download_exam/<int:exam_id>', methods=['GET'])
+def download_exam_route(exam_id):
+    return download_exam(exam_id, format="pdf")
+
+
+@exams_views.route('/delete_exam/<int:exam_id>', methods=['DELETE'])
+def delete_exam_route(exam_id):
+    exam = Exam.query.get(exam_id)
+    if not exam:
+        return jsonify({"error": "Exam not found"}), 404
+
+    try:
+        delete_exam(exam_id)  # Call the function to delete the exam
+        return jsonify({"message": "Exam deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Failed to delete exam: {str(e)}"}), 500
+
+@exams_views.route('/edit_exam/<int:exam_id>', methods=['GET'])
+@login_required
+def edit_exam(exam_id):
+    exam = Exam.query.get_or_404(exam_id)
+    questions = get_all_my_questions(current_user)
+
+    # Get the IDs of the questions already in this exam
+    exam_question_ids = [question.id for question in exam.exam_questions]
+    exam_question_ids_json = json.dumps(exam_question_ids)  # Convert the list to a JSON string
+
+    return render_template('editExams.html', exam=exam, questions=questions, exam_question_ids=exam_question_ids, exam_question_ids_json=exam_question_ids_json)
+
+@exams_views.route('/edit_exam/<int:exam_id>', methods=['PUT'])
+def edit_exam_route(exam_id):
+    data = request.get_json()
+    title = data.get('title')
+    course_code = data.get('courseCode')
+    add_questions = data.get('add_questions', [])
+    remove_questions = data.get('remove_questions', [])
+    teacher_id = data.get('teacher_id')  
+
+    print("Remove Questions:", remove_questions)  
+
+    # Call the update_exam controller
+    result = update_exam(
+        exam_id=exam_id,
+        title=title,
+        course_code=course_code,
+        add_questions=add_questions,
+        remove_questions=remove_questions,
+        teacher_id=teacher_id
+    )
+
+    if "error" in result:
+        return jsonify(result), 404
+    return jsonify(result), 200
+
+
+
+
+

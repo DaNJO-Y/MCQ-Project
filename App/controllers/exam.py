@@ -6,6 +6,7 @@ from fpdf import FPDF
 # from .question import question 
 from .question import get_question  # Import the correct function
 import os
+import re
 import random
 from io import BytesIO
 from flask import Response
@@ -49,42 +50,10 @@ def get_exam_by_id(exam_id):
 
 def delete_exam(exam_id):
     exam = Exam.query.get(exam_id)
-    if not exam:
-        return {"error": "Exam not found"}, 404
     db.session.delete(exam)
     db.session.commit()
+
     return {"message": "Exam deleted successfully"}
-
-
-def edit_exam(exam_id, title=None, course_code=None, add_questions=None, remove_questions=None):
-    exam = Exam.query.get(exam_id)
-    if not exam:
-        return {"error": "Exam not found"}, 404
-
-    # Update Exam Title or Course Code 
-    if title:
-        exam.title = title
-    if course_code:
-        exam.course_code = course_code
-
-    #Add Questions 
-    if add_questions:
-        for question_added in add_questions:
-            id = question_added.id
-            question = Question.query.get(id)
-            if question and question not in exam.exam_questions:
-                exam.exam_questions.append(question)  # Add question to exam
-
-    # Remove Questions
-    if remove_questions:
-        for question_removed in remove_questions:
-            removed_id = question_removed.id
-            question = Question.query.get(removed_id)
-            if question and question in exam.exam_questions:
-                exam.exam_questions.remove(question)  # Remove question from exam
-
-    db.session.commit()  
-    return exam.get_json()  
 
 
 def download_exam(exam_id, format):
@@ -144,13 +113,13 @@ def download_exam(exam_id, format):
                 if os.path.exists(image_path):  # Check if the file exists
                     try:
                         # Place the image on the right of the question text
-                        pdf.image(image_path, x=160, y=pdf.get_y() - 10, w=30)  # Adjust `x`, `y`, and `w` as needed
+                        pdf.image(image_path, x=160, y=pdf.get_y() - 10, w=30)  
                     except RuntimeError as e:
                         print(f"Error adding image for Question {index}: {e}")
                 else:
                     print(f"Image not found for Question {index}: {image_path}")
 
-            pdf.ln(15)  # Add spacing after the question and image
+            pdf.ln(3)  # Add spacing after the question and image
 
             # Fetch the current question and its options
             current_question = get_question(question.id)
@@ -165,7 +134,7 @@ def download_exam(exam_id, format):
                         option_image_path = os.path.join("App/static/uploads", option.image)  # Construct full path
                         if os.path.exists(option_image_path):  # Check if the file exists
                             try:
-                                pdf.image(option_image_path, x=160, y=pdf.get_y(), w=30)  # Adjust `x`, `y`, and `w` as needed
+                                pdf.image(option_image_path, x=160, y=pdf.get_y(), w=30)  
                                 pdf.ln(15)  # Add spacing after the option image
                             except RuntimeError as e:
                                 print(f"Error adding image for Option {index2}: {e}")
@@ -188,11 +157,13 @@ def download_exam(exam_id, format):
         file_stream = BytesIO()
         pdf.output(file_stream)
         file_stream.seek(0)
-
+        # exam_title=exam.title
+        
+        exam_title = re.sub(r'[\\/*?:"<>|]', "_", exam.title)
         return send_file(
             file_stream,
             as_attachment=True,
-            download_name=f"exam_{exam.id}.pdf",
+            download_name=f"{exam_title}.pdf",
             mimetype="application/pdf"
         )
 
@@ -228,3 +199,40 @@ def shuffle_questions(exam_id):
         print(f"Question ID: {question.id}, Text: {question.text}")
 
     return {"message": "Questions shuffled successfully", "exam": exam.get_json()}
+
+
+
+def update_exam(exam_id, title, course_code, add_questions, remove_questions, teacher_id):
+   
+    exam = Exam.query.get(exam_id)
+    if not exam:
+        return {"error": "Exam not found"}, 404
+
+    # Update Exam Title or Course Code
+    if title:
+        exam.title = title
+    if course_code:
+        exam.course_code = course_code
+
+    # Add Questions
+    if add_questions:
+        for question_id in add_questions:
+            question_instance = Question.query.get(question_id)
+            if question_instance and question_instance not in exam.exam_questions:
+                exam.exam_questions.append(question_instance)
+
+    # Remove Questions
+    print("Before Removing Questions:", [q.id for q in exam.exam_questions])
+    if remove_questions:
+        for question_id in remove_questions:
+            question_instance = Question.query.get(question_id)
+            if question_instance and question_instance in exam.exam_questions:
+                exam.exam_questions.remove(question_instance)
+    print("After Removing Questions:", [q.id for q in exam.exam_questions])
+
+    # Update Teacher ID (if applicable)
+    if teacher_id:
+        exam.teacher_id = teacher_id
+
+    db.session.commit()
+    return {"message": "Exam updated successfully", "exam": exam.get_json()}

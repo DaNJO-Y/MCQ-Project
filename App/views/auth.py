@@ -87,65 +87,6 @@ def homePage():
 def otp_page():
     return render_template('otp.html')
 
-# @auth_views.route('/questions', methods=['POST'])
-# def create_question():
-#     teacher = current_user
-#     teacher_id = teacher.id
-#     text = request.form.get('text')
-#     course_code = request.form.get('course-code')
-#     difficulty = request.form.get('difficulty') 
-#     options_data = request.form.get('options')
-#     # question_image = request.files.get('questionImage')
-#     question_image = request.files.get('questionImage')
-    
-
-#     if not teacher_id or not difficulty or not course_code or not options_data:
-#         return jsonify({"error": "Missing required fields"}), 400
-
-#     question_image_filename = None
-#     if question_image:
-#         question_image_filename = save_image(question_image)
-
-#     try:
-#         options_d = json.loads(options_data)  # Parse the JSON string
-#     except json.JSONDecodeError:
-#         return jsonify({"error": "Invalid JSON format for options"}), 400
-
-#     options = []
-#     for option_data in options_d:
-#         body = option_data.get('body')
-#         image_input_name = option_data.get('image')  # Get the string name
-#         image_filename = None
-#         if image_input_name:
-#             image_file = request.files.get(image_input_name)
-#             if image_file:
-#                 image_filename = save_image(image_file)
-#         is_correct = option_data.get('is_correct', False)
-        
-#         option = Option(questionId=None, body=body, image=image_filename, is_correct=is_correct)
-#         options.append(option)
-
-#     question = Question(
-#         teacherId=teacher_id,
-#         text=text,
-#         difficulty=difficulty,
-#         courseCode=course_code,
-#         options=options
-#     )
-
-#     if question_image_filename:
-#         question.image = question_image_filename
-
-#     db.session.add(question)
-#     db.session.commit()
-
-#     for option in options:
-#         option.questionId = question.id
-#     db.session.commit()
-
-#     print(question.get_json())
-#     flash('Question Successfully created!')
-#     return jsonify(question.get_json()), 201
 
 @auth_views.route('/identify', methods=['GET'])
 # @jwt_required()
@@ -375,38 +316,3 @@ def user_api_logout():
 
 
 
-
-# @auth_views.route('/admin_home')
-# def admin_home_page():
-#   return render_template('admin.html')
-
-# @auth_views.route('/aHome')
-# @login_required
-# def is_admin():
-#   user = current_user
-#   if user.type != 'Admin':
-#     flash("You are not authorized to view the admin page")
-#     response = redirect(url_for('auth_views.base_page'))
-#   if user.type == 'Admin':
-#     response = redirect(url_for('auth_views.admin_home_page'))
-#   return response
-
-# @auth_views.route('/base')
-# @login_required
-# def base_page():
-#   user = current_user
-#   if user.type == 'Admin':
-#     title = "Admin"
-#     message=f"Hello you are a {current_user.type}"
-#   if user.type == 'teacher':
-#     title = "Teacher"
-#     message=f"Hello you are a {current_user.type}"
-#   if user.type == 'user':
-#     title = "User"
-#     message=f"Hello you are a {current_user.type}"
-#   return render_template('home.html',title=title, message=message, current_user=current_user,)
-
-# @auth_views.route('/users', methods=['GET'])
-# def get_user_page():
-#     users = get_all_users()
-#     return render_template('users.html', users=users)
