@@ -59,6 +59,9 @@ def get_question(id):
 def get_all_my_questions(user):
     return Question.query.filter_by(teacherId=user.id).all()  # Fetch all questions for the teacher
 
+def get_all_my_questions_json(user):
+    questions = Question.query.filter_by(teacherId=user.id).all()  
+    return [question.get_json() for question in questions]
 
 def add_image(id,image):
     question = get_question(id)

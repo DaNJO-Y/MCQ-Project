@@ -6,6 +6,7 @@ from App.database import db, create_db
 from App.models import *
 from App.controllers import *
 from datetime import datetime
+from pytest import approx
 
 LOGGER = logging.getLogger(__name__)
 
@@ -78,7 +79,7 @@ class ExamUnitTests(unittest.TestCase):
             "teacher_id": 1,
             "title": "Final Exam",
             "course_code": "CS101",
-            "date_created": None,  # Would be a timestamp in a real DB entry
+            # "date_created": None,  # Would be a timestamp in a real DB entry
             "saved": False,
             "questions": [],
             "statistics": []
@@ -293,11 +294,12 @@ class QuestionUnitTests(unittest.TestCase):
 
 # This fixture creates an empty database for the test and deletes it after the test
 # scope="class" would execute the fixture once and resued for all methods in the class
-@pytest.fixture(autouse=True, scope="module")
+@pytest.fixture(autouse=True, scope="class")
 def empty_db():
     app = create_app({'TESTING': True, 'SQLALCHEMY_DATABASE_URI': 'sqlite:///test.db'})
     create_db()
     yield app.test_client()
+    # db.session.remove()
     db.drop_all()
 
 
@@ -337,7 +339,256 @@ class TeachersIntegrationTests(unittest.TestCase):
         assert teacher.email == "Wen@email.com"
 
 
+class ExamIntegrationTests(unittest.TestCase):
+    def test_create_exam(self):
+        teacher_rich = create_teacher("Richard", "Williams", "Richy", "richpass", "richard23@my.gmail.com")
+        questions_list = []
+        
+        options_list=[]
+        question = save_question(teacherId=teacher_rich.id, text="What is the largest organ in the human body?", difficulty="Hard", courseCode="Integumentary system 7863",options=options_list)
+        
+        option_1 = create_option(question_id=question.id, body="Brain", image=None,is_correct=False)
+        options_list.append(option_1)
+        option_2 = create_option(question_id=question.id, body="Heart", image=None,is_correct=False)
+        options_list.append(option_2)
+        option_3 = create_option(question_id=question.id, body="Lungs", image=None,is_correct=False)
+        options_list.append(option_3)
+        option_4 = create_option(question_id=question.id, body="Skin", image=None,is_correct=True)
+        options_list.append(option_4)
 
+        question.options = options_list
+        questions_list.append(question)
+
+        options_list_2=[]
+        question_2 = save_question(teacherId=teacher_rich.id, text="What is the formula for the compound that causes Hypertension?", difficulty="Medium", courseCode="BioChemistry3476",options=options_list_2)
+        
+        option_1 = create_option(question_id=question.id, body="H2SO4", image=None,is_correct=False)
+        options_list_2.append(option_1)
+        option_2 = create_option(question_id=question.id, body="H2O", image=None,is_correct=False)
+        options_list_2.append(option_2)
+        option_3 = create_option(question_id=question.id, body="NaCL", image=None,is_correct=True)
+        options_list_2.append(option_3)
+        option_4 = create_option(question_id=question.id, body="Br", image=None,is_correct=False)
+        options_list_2.append(option_4)
+
+        question_2.options = options_list_2
+        questions_list.append(question_2)
+
+        exam_statistic = ExamStatistics(1,"Mean Score: 24, Total Students answered above 50%: 200", 2022)
+        exam = Exam(teacher_id=teacher_rich.id, title="Test Exam", course_code="Test4567")
+        
+        exam.exam_questions = questions_list
+        db.session.add(exam)
+        db.session.commit()
+
+        exam = Exam.query.get(1)
+        
+        exam_statistic.exam_id = exam,id
+        exam.statistics.append(exam_statistic)
+        exam_json = get_exam_by_id(exam.id)
+        assert exam_json == {
+            "id": 1,
+            "teacher_id": 1,
+            "title": "Test Exam",
+            "course_code": "Test4567",
+            "saved": False,
+            "questions": [1,2],
+            "statistics": [{
+                    "id": 1,
+                    "exam_id": 1,
+                    "data": "Mean Score: 24, Total Students answered above 50%: 200",
+                    "year": 2022
+            }]
+        }
+
+        db.session.remove()
+        
+        
+    def test_edit_exam(self):
+        teacher_rich = create_teacher("Richard", "Williams", "Richo", "richpass0", "richard45@my.gmail.com")
+        questions_list = []
+        
+        options_list=[]
+        question = save_question(teacherId=teacher_rich.id, text="Test question?", difficulty="Hard", courseCode="Test 1",options=options_list)
+        
+        option_1 = create_option(question_id=question.id, body="test option 1", image=None,is_correct=False)
+        options_list.append(option_1)
+        option_2 = create_option(question_id=question.id, body="test option 2", image=None,is_correct=False)
+        options_list.append(option_2)
+        option_3 = create_option(question_id=question.id, body="test option 3", image=None,is_correct=False)
+        options_list.append(option_3)
+        option_4 = create_option(question_id=question.id, body="test option 4", image=None,is_correct=True)
+        options_list.append(option_4)
+
+        question.options = options_list
+        questions_list.append(question)
+
+        options_list_2=[]
+        question_2 = save_question(teacherId=teacher_rich.id, text="What is the formula for the compound that causes Hypertension?", difficulty="Medium", courseCode="BioChemistry3476",options=options_list_2)
+        
+        option_1 = create_option(question_id=question.id, body="H2SO4", image=None,is_correct=False)
+        options_list_2.append(option_1)
+        option_2 = create_option(question_id=question.id, body="H2O", image=None,is_correct=False)
+        options_list_2.append(option_2)
+        option_3 = create_option(question_id=question.id, body="NaCL", image=None,is_correct=True)
+        options_list_2.append(option_3)
+        option_4 = create_option(question_id=question.id, body="Br", image=None,is_correct=False)
+        options_list_2.append(option_4)
+
+        question_2.options = options_list_2
+        questions_list.append(question_2)
+
+        # exam_statistic = ExamStatistics(1,"Mean Score: 24, Total Students answered above 50%: 200", 2022)
+        exam = Exam(teacher_id=teacher_rich.id, title="Test Exam for update", course_code="Test4567")
+        exam.exam_questions = questions_list
+        db.session.add(exam)
+        db.session.commit()
+
+        add_questions=[]
+        remove_question = []
+        options_list_3=[]
+        question_3 = save_question(teacherId=teacher_rich.id, text="Test question", difficulty="Hard", courseCode="Test 23",options=options_list_2)
+        
+        option_1 = create_option(question_id=question.id, body="Test option 1", image=None,is_correct=False)
+        options_list_3.append(option_1)
+        option_2 = create_option(question_id=question.id, body="Test option 2", image=None,is_correct=False)
+        options_list_3.append(option_2)
+        option_3 = create_option(question_id=question.id, body="Test option 3", image=None,is_correct=True)
+        options_list_3.append(option_3)
+        option_4 = create_option(question_id=question.id, body="Test option 4", image=None,is_correct=False)
+        options_list_3.append(option_4)
+
+        question_3.options = options_list_3
+        add_questions.append(question_3)
+        remove_question.append(question_2)
+
+        updated_exam_json = edit_exam(exam_id=exam.id,title="Test update",course_code="Course update",add_questions=add_questions,remove_questions=remove_question )
+
+        assert updated_exam_json == {
+            "id": 2,
+            "teacher_id": 2,
+            "title": "Test update",
+            "course_code": "Course update",
+            "saved": False,
+            "questions": [3,5],
+            "statistics": []
+        }
+        db.session.remove()
+    
+class OptionIntegrationTests(unittest.TestCase):
+    def test_create_option(self):
+        question = save_question(teacherId=2, text="Test question for options", difficulty="Intermediate", courseCode="Test 1",options=[])
+        option = create_option(question_id=question.id, body="Option text", image=None, is_correct=True)
+        option_json = option.get_json()
+        assert option_json == {
+            "id": option.id,
+            "questionId":question.id,
+            "body":"Option text",
+            "image":None,
+            "is_correct": True
+        }
+
+    def test_add_text_to_option(self):
+        question = save_question(teacherId=2, text="Test question for add options", difficulty="Intermediate", courseCode="Test 1",options=[])
+        option = create_option(question_id=question.id, body="", image=None, is_correct=True)
+        updated_option = add_text(id=option.id, text="New text", question_id=question.id)
+        option_json = updated_option.get_json()
+        assert option_json == {
+            "id": updated_option.id,
+            "questionId":question.id,
+            "body":"New text",
+            "image":None,
+            "is_correct": True
+        }
+    
+    
+        
+    
+    def test_remove_option_text(self):
+        question = save_question(teacherId=2, text="Test question for remove option text", difficulty="Intermediate", courseCode="Test 1",options=[])
+        option = create_option(question_id=question.id, body="Option text to be removed", image=None, is_correct=True)
+        assert option.body == "Option text to be removed"
+        updated_option = remove_text(id=option.id, question_id=question.id)
+        option_json = updated_option.get_json()
+        assert option_json == {
+            "id": updated_option.id,
+            "questionId":question.id,
+            "body":None,
+            "image":None,
+            "is_correct": True
+        }
+    def test_toggle_is_correct(self):
+        question = save_question(teacherId=2, text="Test question for option correct toggling", difficulty="Intermediate", courseCode="Test 1",options=[])
+        option = create_option(question_id=question.id, body="Option text", image=None, is_correct=False)
+        assert option.is_correct == False
+        message = toggle_isCorrectOption(id=question.id,option_id=option.id)
+        assert option.is_correct == True
+        assert message["message"] == "Option is_correct toggled"
+
+class QuestionIntegrationTests(unittest.TestCase):
+    def test_save_question(self):
+        question = save_question(teacherId=2,text="Test Question", difficulty="Easy", courseCode="Testing101", options=[])
+        question_json = question.get_json()
+        assert question_json == {
+            "id": question.id,
+            "teacherid": 2,
+            "text": "Test Question",
+            "difficulty": "Easy",
+            "course code": "Testing101",
+            "options": []
+        }
+
+    def test_edit_question(self):
+        question = save_question(teacherId=2,text="Test Question for Editing", difficulty="Easy", courseCode="Testing1010", options=[])
+        question_json = question.get_json()
+        assert question_json == {
+            "id": question.id,
+            "teacherid": 2,
+            "text": "Test Question for Editing",
+            "difficulty": "Easy",
+            "course code": "Testing1010",
+            "options": []
+        }
+        updated_question = edit_question(id=question.id, text="Updated test text", difficulty="Hard", courseCode="Testing1010")
+        if updated_question:
+            updated_question_json = updated_question.get_json()
+            assert updated_question_json == {
+                "id": updated_question.id,
+                "teacherid": 2,
+                "text": "Updated test text",
+                "difficulty": "Hard",
+                "course code": "Testing1010",
+                "options": []
+            }
+    def test_get_questions(self):
+        teacher = create_teacher("Richard", "Williams", "Richo", "richpass0", "richard45@my.gmail.com")
+        # print("hi")
+        # print(teacher)
+        question_1 = save_question(teacherId=teacher.id,text="Test Question 1", difficulty="Easy", courseCode="Testing101", options=[])
+        question_2 = save_question(teacherId=teacher.id,text="Test Question 2", difficulty="Hard", courseCode="Testing102", options=[])
+        questions_json = get_all_my_questions_json(teacher)
+        self.assertListEqual([
+            {'id':question_1.id,
+            "teacherid": teacher.id,
+            "text": "Test Question 1",
+            "difficulty": "Easy",
+            "course code": "Testing101",
+            "options": []},
+
+            {'id':question_2.id,
+            "teacherid": teacher.id,
+            "text": "Test Question 2",
+            "difficulty": "Hard",
+            "course code": "Testing102",
+            "options": []}
+            ], questions_json)
+
+class TagsIntegrationTests(unittest.TestCase):
+    def test_add_tag(self): 
+        teacher = create_teacher("Richard", "Williams", "Richo", "richpass0", "richard45@my.gmail.com")
+        question_1 = save_question(teacherId=teacher.id,text="Test Question 1", difficulty="Easy", courseCode="Testing101", options=[]) 
+        message = add_tag(tag_id=None, question_id=question_1.id, tag_text="Test")
+        assert message["message"] == "Tag added successfully"
 
 
 # class UsersIntegrationTests(unittest.TestCase):

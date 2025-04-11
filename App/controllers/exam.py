@@ -13,13 +13,14 @@ from flask import Response
 
 def create_exam(title, course_code, questions, teacher_id):
     # Create a new exam instance
-    new_exam = Exam(title=title, course_code=course_code, teacher_id=teacher_id)
+    new_exam = Exam(teacher_id=teacher_id, title=title, course_code=course_code)
 
     # Add questions to the exam
     for question in questions:
-        question_instance = Question.query.get(question)
+        id = question.id
+        question_instance = Question.query.get(id)
         if question_instance:
-            new_exam.questions.append(question_instance)
+            new_exam.exam_questions.append(question_instance)
 
     db.session.add(new_exam)
     db.session.commit()
@@ -51,7 +52,9 @@ def delete_exam(exam_id):
     exam = Exam.query.get(exam_id)
     db.session.delete(exam)
     db.session.commit()
-    return 
+
+    return {"message": "Exam deleted successfully"}
+
 
 def download_exam(exam_id, format):
     exam = Exam.query.get(exam_id)
@@ -87,7 +90,6 @@ def download_exam(exam_id, format):
             download_name=f"exam_{exam.id}.txt",
             mimetype="text/plain"
         )
-
     elif format == "pdf":
         # Create the PDF in memory
         pdf = FPDF()
@@ -99,7 +101,7 @@ def download_exam(exam_id, format):
         pdf.ln(10)
         pdf.cell(200, 10, txt="Questions:", ln=True)
         pdf.ln(5)
-
+        
         for index, question in enumerate(exam.exam_questions, start=1):
             # Add question text
             question_text = f"Question {index}: {question.text}"
@@ -184,11 +186,11 @@ def shuffle_questions(exam_id):
         return {"error": "Exam not found"}, 404
 
     # Shuffle questions
-    questions_list = exam.questions[:]  # Copy the list
+    questions_list = exam.exam_questions[:]  # Copy the list
     random.shuffle(questions_list)
 
     # Update the exam's question order
-    exam.questions = questions_list
+    exam.exam_questions = questions_list
     db.session.commit()
 
     print(f"Exam ID: {exam.id}, Title: {exam.title}")

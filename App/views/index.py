@@ -17,3 +17,7 @@ def init():
 @index_views.route('/health', methods=['GET'])
 def health_check():
     return jsonify({'status':'healthy'})
+
+@index_views.route('/api_home', methods=['GET'])
+def home():
+    return '<h1>Info 3604 Project MCQ Bank - MCQ Bank Group</h1>', 200

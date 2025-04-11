@@ -28,17 +28,17 @@ auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
 # app.config['UPLOAD_FOLDER'] = 'uploads'  # Set your upload folder
 # os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-def save_image(file):
-    if file:
-        try:
-            filename = f"{uuid.uuid4()}{os.path.splitext(file.filename)[1]}"
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(file_path)
-            return filename
-        except Exception as e:
-            print(f"Error saving image: {e}")
-            return None
-    return None
+# def save_image(file):
+#     if file:
+#         try:
+#             filename = f"{uuid.uuid4()}{os.path.splitext(file.filename)[1]}"
+#             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+#             file.save(file_path)
+#             return filename
+#         except Exception as e:
+#             print(f"Error saving image: {e}")
+#             return None
+#     return None
 
 def generate_secret_key():
     return pyotp.random_base32()
@@ -233,7 +233,7 @@ def signup_action_data():
 
   except Exception as e:
     db.session.rollback()
-    app.logger.error(f"Error occurred: {e}")
+    current_app.logger.error(f"Error occurred: {e}")
     flash("An error occurred during signup. Please try again.")
     response = redirect(url_for('auth_views.signup_action_data')) #redirect to signup page.
 
@@ -242,27 +242,77 @@ def signup_action_data():
 '''
 API Routes
 '''
+def get_token(user):
+    login_user(user)
+    access_token = create_access_token(identity=user.id)
+    return access_token
+
+def login_user_token(username,password):
+    teacher = get_teacher_by_username(username)
+    if teacher and check_password_hash(teacher.password,password):
+        return get_token(teacher)
 
 @auth_views.route('/api/login', methods=['POST'])
-def user_login_api():
-  data = request.json
-  token = login(data['username'], data['password'])
-  if not token:
-    return jsonify(message='bad username or password given'), 401
-  response = jsonify(access_token=token) 
-  set_access_cookies(response, token)
-  return response
+def user_api_login():
+    try:
+        data = request.json
+        if not data or 'username' not in data or 'password' not in data:
+            return jsonify({"error":"Username and Password required"}), 400
+        token = login_user_token(data['username'], data['password'])
+        if not token:
+            return jsonify({"error": "Bad Username or Password Given"}), 401
+        return jsonify(access_token=token), 200
+    except Exception as e:
+        return jsonify(error="An Error Occurred While Logging In"), 500
+        
+@auth_views.route('/api/signup', methods=['POST'])
+def user_api_signup():
+    try:
+        data = request.json
+        if not data or 'firstname' not in data or 'lastname' not in data or 'username' not in data or 'email' not in data or 'password' not in data or 'type' not in data:
+            return jsonify({"error":"Required fields missing"}), 400
+        if data['type'] == 'teacher':
+            user = create_teacher(data['firstname'], data['lastname'], data['username'], data['password'], data['email'])
+            if user:
+                return jsonify({"message": f"{data['firstname']} has been created in the system"}), 200
+        if data['type'] != 'teacher':
+            return jsonify({"error":"The system only handles teachers"}),401
+    except Exception as e:
+        return jsonify(error="An Error Occurred While Signing up"), 500
+    
+@auth_views.route('/api/logout', methods=['POST'])
+@login_required
+def user_api_logout():
+    user = current_user
+    try:
+        response = jsonify(message=f"{user.username} has been logged out successfully")
+        unset_jwt_cookies(response)
+        logout_user()
+        return response,200
+    except Exception as e:
+        return jsonify(error="An Error Occurred While Logging out"), 500
 
-@auth_views.route('/api/identify', methods=['GET'])
-@jwt_required()
-def identify_user():
-    return jsonify({'message': f"username: {current_user.username}, id : {current_user.id}"})
 
-@auth_views.route('/api/logout', methods=['GET'])
-def logout_api():
-    response = jsonify(message="Logged Out!")
-    unset_jwt_cookies(response)
-    return response
+# @auth_views.route('/api/login', methods=['POST'])
+# def user_login_api():
+#   data = request.json
+#   token = login(data['username'], data['password'])
+#   if not token:
+#     return jsonify(message='bad username or password given'), 401
+#   response = jsonify(access_token=token) 
+#   set_access_cookies(response, token)
+#   return response
+
+# @auth_views.route('/api/identify', methods=['GET'])
+# @jwt_required()
+# def identify_user():
+#     return jsonify({'message': f"username: {current_user.username}, id : {current_user.id}"})
+
+# @auth_views.route('/api/logout', methods=['GET'])
+# def logout_api():
+#     response = jsonify(message="Logged Out!")
+#     unset_jwt_cookies(response)
+#     return response
 
 
 

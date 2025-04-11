@@ -4,6 +4,7 @@ from App.database import db
 from flask_login import UserMixin
 
 
+
 exam_question = Table(
     'exam_question',
     db.metadata,
