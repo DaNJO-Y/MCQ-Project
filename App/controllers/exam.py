@@ -202,7 +202,7 @@ def shuffle_questions(exam_id):
 
 
 
-def update_exam(exam_id, title, course_code, add_questions, remove_questions, teacher_id):
+def update_exam(exam_id, title, course_code, add_questions, remove_questions):
    
     exam = Exam.query.get(exam_id)
     if not exam:
@@ -230,9 +230,36 @@ def update_exam(exam_id, title, course_code, add_questions, remove_questions, te
                 exam.exam_questions.remove(question_instance)
     print("After Removing Questions:", [q.id for q in exam.exam_questions])
 
-    # Update Teacher ID (if applicable)
-    if teacher_id:
-        exam.teacher_id = teacher_id
+   
 
     db.session.commit()
     return {"message": "Exam updated successfully", "exam": exam.get_json()}
+
+# need to look at the two functions and figure out how to change update_exam to edit_exam into exams wherever i have it 
+def edit_exam(exam_id, title=None, course_code=None, add_questions=None, remove_questions=None):
+    exam = Exam.query.get(exam_id)
+    if not exam:
+        return {"error": "Exam not found"}, 404
+
+    # Update Exam Title or Course Code 
+    if title:
+        exam.title = title
+    if course_code:
+        exam.course_code = course_code
+
+    #Add Questions 
+    if add_questions:
+        for question_id in add_questions:
+            question = Question.query.get(question_id)
+            if question and question not in exam.questions:
+                exam.questions.append(question)  # Add question to exam
+
+    # Remove Questions
+    if remove_questions:
+        for question_id in remove_questions:
+            question = Question.query.get(question_id)
+            if question and question in exam.questions:
+                exam.questions.remove(question)  # Remove question from exam
+
+    db.session.commit()  
+    return exam.get_json()  

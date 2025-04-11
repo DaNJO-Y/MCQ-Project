@@ -134,14 +134,12 @@ def edit_exam_route(exam_id):
 
     print("Remove Questions:", remove_questions)  
 
-    # Call the update_exam controller
     result = update_exam(
         exam_id=exam_id,
         title=title,
         course_code=course_code,
         add_questions=add_questions,
-        remove_questions=remove_questions,
-        teacher_id=teacher_id
+        remove_questions=remove_questions
     )
 
     if "error" in result:
