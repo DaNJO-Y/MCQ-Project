@@ -249,17 +249,19 @@ def edit_exam(exam_id, title=None, course_code=None, add_questions=None, remove_
 
     #Add Questions 
     if add_questions:
-        for question_id in add_questions:
-            question = Question.query.get(question_id)
-            if question and question not in exam.questions:
-                exam.questions.append(question)  # Add question to exam
+        for question_added in add_questions:
+            id = question_added.id
+            question = Question.query.get(id)
+            if question and question not in exam.exam_questions:
+                exam.exam_questions.append(question)  # Add question to exam
 
     # Remove Questions
     if remove_questions:
-        for question_id in remove_questions:
-            question = Question.query.get(question_id)
-            if question and question in exam.questions:
-                exam.questions.remove(question)  # Remove question from exam
+        for question_removed in remove_questions:
+            removed_id = question_removed.id
+            question = Question.query.get(removed_id)
+            if question and question in exam.exam_questions:
+                exam.exam_questions.remove(question)  # Remove question from exam
 
     db.session.commit()  
     return exam.get_json()  
