@@ -687,16 +687,18 @@
             <nav id="sideNav">
                 <ul class="space-y-4">
                   <button class="nav-button" onclick="window.location.href='{{ url_for('questions_views.my_questions_page') }}'">
-                    <i class="fas fa-file-alt mr-2"></i> My Questions
+                      <i class="fas fa-file-alt mr-2"></i> My Questions
                   </button>
                   <button class="nav-button" onclick="window.location.href='{{ url_for('exams_views.my_exams_page') }}'">
-                    <i class="fas fa-file-alt mr-2"></i> My Exams
+                      <i class="fas fa-file-alt mr-2"></i> My Exams
                   </button>
-                  <li><button class="nav-button"><i class="fas fa-file-upload mr-2"></i> Import Questions</button></li>
+                  <button class="nav-button" onclick="window.location.href='{{ url_for('import_page_views.import_page') }}'">
+                      <i class="fas fa-file-upload mr-2"></i> Import Questions
+                  </button>
                   <button class="nav-button" onclick="window.location.href='{{ url_for('help_views.help_page') }}'">
-                    <i class="fas fa-file-alt mr-2"></i> Help
-                </button>
-                </ul>
+                      <i class="fas fa-question-circle"></i> Help
+                  </button>
+              </ul>
             </nav>
 
             <main id="mainContent">

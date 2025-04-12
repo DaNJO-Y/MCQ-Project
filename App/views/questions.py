@@ -319,5 +319,5 @@ def edit_question(question_id):
         except Exception as e:
             db.session.rollback()
             flash(f'Error updating question: {str(e)}', 'error')
-            app.logger.error(f"Error updating question: {str(e)}")
+            current_app.logger.error(f"Error updating question: {str(e)}")
             return redirect(url_for('questions_views.edit_question', question_id=question_id))
