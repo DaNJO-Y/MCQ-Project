@@ -78,7 +78,16 @@ def displayQuestionPage(question_id):
         if q.id == question.id:
             chosenQuestion = q
     print(chosenQuestion.get_json()) 
-    return render_template('display_question.html', question=chosenQuestion)
+    exam_id_list = get_questions_exams(question_id)
+    exams = getExam(teacher.my_exams, exam_id_list)
+    return render_template('display_question.html', question=chosenQuestion, exams=exams)
+
+def getExam(teacher_exams, potential_exam_ids):
+    exam_list = []
+    for exam in teacher_exams:
+        if exam.id in potential_exam_ids:
+            exam_list.append(exam)
+    return exam_list
 
 @questions_views.route('/filter_questions', methods=['GET'])
 def filter_questions():
@@ -330,5 +339,5 @@ def edit_question(question_id):
         except Exception as e:
             db.session.rollback()
             flash(f'Error updating question: {str(e)}', 'error')
-            app.logger.error(f"Error updating question: {str(e)}")
+            current_app.logger.error(f"Error updating question: {str(e)}")
             return redirect(url_for('questions_views.edit_question', question_id=question_id))

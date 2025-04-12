@@ -1,8 +1,11 @@
 from App.models import Question
 from App.models import Tag
+from App.models import exam_question
 from App.database import db
 from App.utils import shuffle
 from datetime import date
+from sqlalchemy import select
+
 
 def save_question(teacherId, text, difficulty, courseCode, options):
     newquestion = Question(teacherId=teacherId, text=text, difficulty=difficulty,courseCode=courseCode, options=options)
@@ -111,7 +114,20 @@ def filter(difficulty, tag_id, course_code):
     filtered_questions = query.all()
     return filtered_questions
         
-    
+def get_questions_exams(questionId):
+    exam_ids = []
+    # questions = exam_question.query.filter_by(question_id=questionId).all()
+    # for question in questions:
+    #     exam_ids.append(question.exam_id)
+    # return exam_ids
+    stmt = select(exam_question.c.exam_id).where(exam_question.c.question_id == questionId)
+    #Execute the statement using the db's engine
+    results = db.session.execute(stmt).fetchall()
+
+    for row in results:
+        exam_ids.append(row[0]) #row is a tuple.
+    return exam_ids
+
 
     
 
