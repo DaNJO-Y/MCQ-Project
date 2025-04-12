@@ -235,14 +235,11 @@
                     <button class="nav-button" onclick="window.location.href='{{ url_for('exams_views.my_exams_page') }}'">
                         <i class="fas fa-file-alt mr-2"></i> My Exams
                     </button>
-                    <li>
-                        <button class="nav-button">
-                            <i class="fas fa-file-upload mr-2"></i>
-                            <a href="{{ url_for('import_page_views.import_page') }}">Import Questions</a>
-                        </button>
-                    </li>
+                    <button class="nav-button" onclick="window.location.href='{{ url_for('import_page_views.import_page') }}'">
+                        <i class="fas fa-file-upload mr-2"></i> Import Questions
+                    </button>
                     <button class="nav-button" onclick="window.location.href='{{ url_for('help_views.help_page') }}'">
-                        <i class="fas fa-file-alt mr-2"></i> Help
+                        <i class="fas fa-question-circle"></i> Help
                     </button>
                 </ul>
             </nav>

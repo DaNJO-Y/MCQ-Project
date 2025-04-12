@@ -325,8 +325,8 @@
                     <i class="fas fa-home"></i>HomePage
                        </a>
             </div>
-            <button class="button">New Question</button>
-            <button class="button">New Exam</button>
+            <button class="button"><a href="/createQuestion">New Question</a></button>
+            <button class="button"><a href="/new_exam">New Exam</a></button>
             <div class="relative">
                 <button id="profileButton" class="profile-button">
                     <i class="fas fa-user-circle text-3xl"></i>
@@ -352,12 +352,9 @@
                     <button class="nav-button" onclick="window.location.href='{{ url_for('exams_views.my_exams_page') }}'">
                         <i class="fas fa-file-alt mr-2"></i> My Exams
                     </button>
-                    <li>
-                        <button class="nav-button">
-                            <i class="fas fa-file-upload mr-2"></i>
-                            <a href="{{ url_for('import_page_views.import_page') }}">Import Questions</a>
-                        </button>
-                    </li>
+                    <button class="nav-button" onclick="window.location.href='{{ url_for('import_page_views.import_page') }}'">
+                        <i class="fas fa-file-upload mr-2"></i> Import Questions
+                    </button>
                     <button class="nav-button" onclick="window.location.href='{{ url_for('help_views.help_page') }}'">
                         <i class="fas fa-file-alt mr-2"></i> Help
                     </button>
@@ -365,10 +362,13 @@
             </nav>
 
             <main id="mainContent">
-                <button id="backbutton" class="text-white py-1 px-4 rounded">
+                <!-- <button id="backbutton" class="text-white py-1 px-4 rounded">
                     <a href="/myQuestions">
                         Back To My Questions
                     </a>
+                </button> -->
+                <button id="backbutton" class="text-white py-1 px-4 rounded" onclick="window.history.back()">
+                    Back To My Questions
                 </button>
                 <h1 class="question-bank-title">
                     Display Question
