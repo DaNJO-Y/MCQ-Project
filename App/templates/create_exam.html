@@ -114,7 +114,7 @@
             position: fixed;
             top: 5rem;
             left: 1rem;
-            z-index: 10;
+            z-index: 50;
             background-color: var(--primary-color);
             padding: 0.75rem;
             border-radius: 0.5rem;
@@ -153,6 +153,27 @@
         #sideNav td {
             padding: 4px; /* Reduce padding to compensate for smaller text */
         }
+        .scrollable-table-container {
+            max-height: 500px; /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+
+        #question-bank-container {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #question-bank-container th,
+        #question-bank-container td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #question-bank-container th {
+            background-color: #f2f2f2;
+        }
+
         #question-table{
             margin-left: auto;
             margin-right: auto;
@@ -188,12 +209,12 @@
             margin-left:10%;
         }
 
+
         .filter-button {
             background-color: lightgrey;
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
-            width:100px;
-            margin-left:10px;
+            width:200px;
         }
 
         .searchbar {
@@ -285,7 +306,38 @@
             display: flex;
         }
 
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
 
+        #filterModal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Ensure it stays in place */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            z-index: 1000; /* Higher than other elements */
+            justify-content: center;
+            align-items: center;
+        }
+        #filterModal.active {
+            display: flex; /* Show the modal when active */
+        }
+        #filterModal .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 30%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1010; /* Ensure the modal content is above the background */
+        }
     </style>
 </head>
 <body>
@@ -321,7 +373,9 @@
             <nav id="sideNav">
                 <div class=" w-full">
                     <div class="flex  mb-4 w-full">
-                        <button id="filter" class="filter-button">Filters</button>
+                        <div class="filters-container">
+                            <button id="filter" class="filter-button">Filters</button>
+                        </div>
                         <div class="relative">
                             <input id="searchbar" type="text" placeholder="Search Questions" class="searchbar">
                             <button class="absolute right-[-15rem] top-1/2 transform -translate-y-1/2 text-gray-500">
@@ -330,78 +384,81 @@
                         </div>
 
                     </div>
-
-                    <table id="question-bank-container" class="w-full">
-                        <thead>
-                            <tr class="bg-gray-200">
-                                <th class="p-2 text-left">Select</th>
-                                <th class="p-2 text-left">Question</th>
-                                <th class="p-2 text-left">Tag</th>
-                                <th class="p-2 text-left">Last used</th>
-                                <th class="p-2 text-left">Options</th>
-                                <th class="p-2 text-left">Answer</th>
-                                <th class="p-2 text-left">Actions</th>
-                            </tr>
-                        </thead>
-
-                        <tbody id="question-bank-body" class="bg-white rounded shadow">
-                            {% if questions %}
-                                {% for question in questions %}
-                                <tr data-question-id="{{ question.id }}" data-question-text="{{ question.text }}" data-question-tag="{{ question.tag}}">
-                                    <td class="p-2"><input type="checkbox" class="select-question"></td>
-                                    <td class="p-2">
-                                        {{ question.text }}
-                                    </td>
-                                    <td class="p-2">
-                                        {% if question.tag %}
-                                            {% for tag in question.tag %}
-                                                <li>{{ tag.tag_text }}</li>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </td>
-                                    <td class="p-2">{{ question.lastUsed }}</td>
-                                    <ul>
-                                    <td class="p-2">
-                                        {% if question.options %}
-
-
-                                                {% for option in question.options %}
-                                                    <li>{{ option.body }}</li>
-                                                {% endfor %}
-
-                                        {% endif %}
-                                    </ul>
-                                    </td>
-                                    <ul>
-                                    <td class="p-2">
-                                        {% if question.options %}
-
-
-                                                {% for option in question.options %}
-                                                    {% if option.is_correct %}
-                                                        <li>{{ option.body }}</li>
-                                                    {% endif %}
-                                                {% endfor %}
-
-                                        {% endif %}
-                                    </ul>
-                                    </td>
-                                    <td class="p-1">
-                                        <div>
-                                            <button id="viewbutton" class="text-blue py-1 px-4 rounded">
-                                                <a href="/displayQuestion/{{question.id}}">
-                                                    View Question
-                                                </a>
-                                            </button>
-                                        </div>
-                                    </td>
+                    <div class="scrollable-table-container">
+                        <table id="question-bank-container" class="w-full">
+                            <thead>
+                                <tr class="bg-gray-200">
+                                    <th class="p-2 text-left">Select</th>
+                                    <th class="p-2 text-left">Question</th>
+                                    <th class="p-2 text-left">Tag</th>
+                                    <th class="p-2 text-left">Difficulty</th>
+                                    <th class="p-2 text-left">Course Code</th>
+                                    <th class="p-2 text-left">Options</th>
+                                    <th class="p-2 text-left">Answer</th>
+                                    <th class="p-2 text-left">Actions</th>
                                 </tr>
-                                {% endfor %}
-                            {% else %}
-                                <tr><td class="p-4 text-center" colspan="6">No questions found.</td></tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
+                            </thead>
+    
+                            <tbody id="question-bank-body" class="bg-white rounded shadow">
+                                {% if questions %}
+                                    {% for question in questions %}
+                                    <tr data-question-id="{{ question.id }}" data-question-text="{{ question.text }}" data-question-tag="{{ question.tag }}">
+                                        <td class="p-2">
+                                            <input type="checkbox" class="select-question">
+                                        </td>
+                                        <td class="p-2">
+                                            {{ question.text }}
+                                        </td>
+                                        <td class="p-2">
+                                            {% if question.tag %}
+                                                {% for tag in question.tag %}
+                                                    <li>{{ tag.tag_text }}</li>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </td>
+                                        <td class="p-2">
+                                            {{ question.difficulty }}
+                                        </td>
+                                        <td class="p-2">{{ question.courseCode }}</td>
+                                        <!-- options -->
+                                         
+                                        <td class="p-2">
+                                            {% if question.options %}
+                                                <ul>
+                                                    {% for option in question.options %}
+                                                        <li>{{ option.body }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                        </td>
+                                        <td> {% if question.options %}
+                                                        
+                                            {% for option in question.options %}
+                                                {% if option.is_correct %}
+                                                    <li>{{ option.body }}</li>
+                                                {% endif %}
+                                            {% endfor %}
+                                    {% endif %}</td>
+                                        <td class="p-1">
+                                            <div>
+                                                <button id="viewbutton" class="text-blue py-1 px-4 rounded">
+                                                    <a href="/displayQuestion/{{ question.id }}">
+                                                        View Question
+                                                    </a>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td class="p-4 text-center" colspan="7">No questions found.</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
                     </div>
             </nav>
 
@@ -447,6 +504,47 @@
             </main>
         </div>
     </div>
+
+    <!-- Filter Modal -->
+    <<div id="filterModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="modal-content">
+            <h2 class="text-xl font-bold mb-4">Filter Questions</h2>
+            <form id="filterForm" method="GET" action="/filter_questions_exams">
+                <div class="mb-4">
+                    <label for="difficultyFilter" class="block font-semibold mb-2">Difficulty:</label>
+                    <select id="difficultyFilter" name="difficulty" class="p-2 border border-gray-300 rounded w-full">
+                        <option value="" selected>All</option>
+                        <option value="Easy">Easy</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="tagFilter" class="block font-semibold mb-2">Tag:</label>
+                    <select id="tagFilter" name="tag" class="p-2 border border-gray-300 rounded w-full">
+                        <option value="" selected>All</option>
+                        {% for tag in tags %}
+                            <option value="{{ tag.id }}">{{ tag.tag_text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="courseCodeFilter" class="block font-semibold mb-2">Course Code:</label>
+                    <select id="courseCodeFilter" name="course_code" class="p-2 border border-gray-300 rounded w-full">
+                        <option value="" selected>All</option>
+                        {% for course in courses %}
+                            <option value="{{ course }}">{{ course }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" id="closeModal" class="bg-gray-500 text-white py-2 px-4 rounded mr-2">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const toggleNav = document.getElementById('toggleNav');
         const sideNav = document.getElementById('sideNav');
@@ -694,7 +792,133 @@
             }
         });
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const filterButton = document.getElementById('filter');
+            const filterModal = document.getElementById('filterModal');
+            const closeModal = document.getElementById('closeModal');
+            const modalContent = document.querySelector('.modal-content'); // Select the modal content
 
+            // Open the modal when the filter button is clicked
+            filterButton.addEventListener('click', () => {
+                filterModal.classList.add('active'); // Add the 'active' class to show the modal
+            });
+
+            // Close the modal when the "Cancel" button is clicked
+            closeModal.addEventListener('click', () => {
+                filterModal.classList.remove('active'); // Remove the 'active' class to hide the modal
+            });
+
+            // Close the modal when clicking outside the modal content
+            window.addEventListener('click', (event) => {
+                if (event.target === filterModal) {
+                    filterModal.classList.remove('active');
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const filterForm = document.getElementById('filterForm');
+            const questionBankBody = document.getElementById('question-bank-body');
+            const selectedQuestions = {}; // Object to store selected questions
+
+            // Handle form submission for filtering
+            filterForm.addEventListener('submit', (event) => {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Get filter values
+                const difficulty = document.getElementById('difficultyFilter').value;
+                const tag = document.getElementById('tagFilter').value;
+                const courseCode = document.getElementById('courseCodeFilter').value;
+
+                // Send a fetch request to the backend with the filter values
+                fetch(`/filter_questions_exams?difficulty=${difficulty}&tag=${tag}&course_code=${courseCode}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        // Update the question bank table with the filtered questions
+                        questionBankBody.innerHTML = ''; // Clear the current table rows
+
+                        data.questions.forEach((question) => {
+                            const row = document.createElement('tr');
+                            row.dataset.questionId = question.id;
+                            row.dataset.questionText = question.text;
+
+                            row.innerHTML = `
+    <td class="p-2">
+        <input type="checkbox" class="select-question" ${
+            selectedQuestions[question.id] ? 'checked' : ''
+        }>
+    </td>
+    <td class="p-2">${question.text}</td>
+    <td class="p-2">
+        ${question.tag ? question.tag.map((tag) => `<li>${tag}</li>`).join('') : ''}
+    </td>
+    <td class="p-2">${question.difficulty || ''}</td>
+    <td class="p-2">${question.courseCode || ''}</td>
+    
+    <td class="p-2">
+        
+        <ul>
+            ${
+                question.options && question.options.length > 0
+                    ? question.options.map((options) => `<li>${options}</li>`).join('')
+                    : '<li>No options available</li>'
+            }
+        </ul>
+    </td>
+    <td class="p-2">
+        <ul>
+            ${
+                question.option_isCorrect && question.option_isCorrect.length > 0
+                ? question.option_isCorrect.map((optionBody) => `<li>${optionBody}</li>`).join('')
+                : '<li>No correct answer</li>'
+            }
+        </ul>
+    </td>
+    <td class="p-1">
+        <div>
+            <button id="viewbutton" class="text-blue py-1 px-4 rounded">
+                <a href="/displayQuestion/${question.id}">
+                    View Question
+                </a>
+            </button>
+        </div>
+    </td>
+`;
+
+                            questionBankBody.appendChild(row);
+                        });
+
+                        // Re-check the checkboxes for already selected questions
+                        Object.keys(selectedQuestions).forEach((id) => {
+                            const checkbox = questionBankBody.querySelector(
+                                `tr[data-question-id="${id}"] .select-question`
+                            );
+                            if (checkbox) {
+                                checkbox.checked = true;
+                            }
+                        });
+                    })
+                    .catch((error) => {
+                        console.error('Error fetching filtered questions:', error);
+                        alert('An error occurred while filtering questions.');
+                    });
+            });
+
+            // Handle checkbox changes
+            questionBankBody.addEventListener('change', (event) => {
+                if (event.target.classList.contains('select-question')) {
+                    const row = event.target.closest('tr');
+                    const questionId = row.dataset.questionId;
+                    const questionText = row.dataset.questionText;
+
+                    if (event.target.checked) {
+                        selectedQuestions[questionId] = { id: questionId, text: questionText };
+                    } else {
+                        delete selectedQuestions[questionId];
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>

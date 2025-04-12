@@ -50,8 +50,16 @@ def my_questions_page():
     if not current_user.is_authenticated:
         return redirect(url_for('auth_views.login_action'))  # Redirect to login if not logged in
 
+    tags= Tag.query.all()  # Fetch all tags
+    
     questions = get_all_my_questions(current_user)  # Fetch only the logged-in teacher's questions
-    return render_template('MyQuestions.html', questions=questions)
+    courses = [question.courseCode for question in questions]
+    # Remove duplicates while preserving order
+    seen = set()
+    courses = [x for x in courses if not (x in seen or seen.add(x))]
+    
+    
+    return render_template('MyQuestions.html', tags=tags,courses=courses, questions=questions)
 
 @questions_views.route('/displayQuestion/<int:question_id>',methods=['GET'])
 @login_required
@@ -80,6 +88,18 @@ def getExam(teacher_exams, potential_exam_ids):
         if exam.id in potential_exam_ids:
             exam_list.append(exam)
     return exam_list
+
+@questions_views.route('/filter_questions', methods=['GET'])
+def filter_questions():
+    difficulty = request.args.get('difficulty')  # Get the selected difficulty
+    tag_id = request.args.get('tag')  # Get the selected tag ID
+    course_code = request.args.get('course_code')  # Get the selected course code
+
+    filtered_questions=filter(difficulty, tag_id, course_code)
+    # Pass the filtered questions, tags, and course codes back to the template
+    tags = Tag.query.all()
+    courses = Question.query.with_entities(Question.courseCode).distinct()  # Get unique course codes
+    return render_template('MyQuestions.html', questions=filtered_questions, tags=tags, courses=[c[0] for c in courses])
 
 @questions_views.route('/createQuestion',methods=['GET'])
 def createQuestionPage():

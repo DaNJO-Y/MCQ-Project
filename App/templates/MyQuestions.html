@@ -323,12 +323,36 @@
 
         @keyframes animatebottom { 
             from{ bottom:-100px; opacity:0 } 
-            to{ bottom:0; opacity:1 }
+            to{ bottom:0px; opacity:1 }
         }
 
         #myDiv {
             display: none;
             text-align: center;
+        }
+
+        #filterModal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Ensure it stays in place */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            z-index: 1000; /* Higher than other elements */
+            justify-content: center;
+            align-items: center;
+        }
+        #filterModal.active {
+            display: flex; /* Show the modal when active */
+        }
+        #filterModal .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 30%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1010; /* Ensure the modal content is above the background */
         }
     </style>
 </head>
@@ -398,7 +422,8 @@
                                 <tr class="bg-gray-200">
                                     <th class="p-2 text-left">Question</th>
                                     <th class="p-2 text-left">Tag</th>
-                                    <th class="p-2 text-left">Last used</th>
+                                    <th class="p-2 text-left">Difficulty</th>
+                                    <th class="p-2 text-left">Course Code</th>
                                     <th class="p-2 text-left">Options</th>
                                     <th class="p-2 text-left">Answer</th>
                                     <th class="p-2 text-left">Actions</th> </tr>
@@ -418,7 +443,10 @@
                                                     {% endfor %}
                                                 {% endif %}
                                             </td>
-                                            <td class="p-2">{{ question.lastUsed }}</td>
+                                            <td class="p-2">
+                                                       {{ question.difficulty }}
+                                            </td>
+                                            <td class="p-2">{{ question.courseCode }}</td>
                                             <ul>
                                             <td class="p-2">
                                                 {% if question.options %}
@@ -468,6 +496,46 @@
                         </table>
                     </div>
             </div>
+        </div>
+    </div>
+    
+    <!-- Filter Modal -->
+    <div id="filterModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="modal-content">
+            <h2 class="text-xl font-bold mb-4">Filter Questions</h2>
+            <form id="filterForm" method="GET" action="/filter_questions">
+                <div class="mb-4">
+                    <label for="difficultyFilter" class="block font-semibold mb-2">Difficulty:</label>
+                    <select id="difficultyFilter" name="difficulty" class="p-2 border border-gray-300 rounded w-full">
+                        <option value="" selected>All</option>
+                        <option value="Easy">Easy</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="tagFilter" class="block font-semibold mb-2">Tag:</label>
+                    <select id="tagFilter" name="tag" class="p-2 border border-gray-300 rounded w-full">
+                        <option value="" selected>All</option>
+                        {% for tag in tags %}
+                            <option value="{{ tag.id }}">{{ tag.tag_text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="courseCodeFilter" class="block font-semibold mb-2">Course Code:</label>
+                    <select id="courseCodeFilter" name="course_code" class="p-2 border border-gray-300 rounded w-full">
+                        <option value="" selected>All</option>
+                        {% for course in courses %}
+                            <option value="{{ course }}">{{ course }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" id="closeModal" class="bg-gray-500 text-white py-2 px-4 rounded mr-2">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded">Apply Filters</button>
+                </div>
+            </form>
         </div>
     </div>
     
@@ -542,6 +610,37 @@
                     sideNav.style.visibility = 'visible';
                     mainContent.style.marginLeft = '2rem';
                 }
+            });
+
+            const filterButton = document.getElementById('filter');
+            const filterModal = document.getElementById('filterModal');
+            const closeModal = document.getElementById('closeModal');
+
+            // Open the modal when the filter button is clicked
+            filterButton.addEventListener('click', () => {
+                filterModal.classList.add('active');
+            });
+
+            // Close the modal when the "Cancel" button is clicked
+            closeModal.addEventListener('click', () => {
+                filterModal.classList.remove('active');
+            });
+
+            // Close the modal when clicking outside the modal content
+            window.addEventListener('click', (event) => {
+                if (event.target === filterModal) {
+                    filterModal.classList.remove('active');
+                }
+            });
+
+            // Handle form submission (optional)
+            const filterForm = document.getElementById('filterForm');
+            filterForm.addEventListener('submit', (event) => {
+                const difficulty = document.getElementById('difficultyFilter').value;
+                const tag = document.getElementById('tagFilter').value;
+                const courseCode = document.getElementById('courseCodeFilter').value;
+
+                console.log('Filters applied:', { difficulty, tag, courseCode });
             });
         });
     </script>
