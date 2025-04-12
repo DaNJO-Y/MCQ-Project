@@ -30,10 +30,12 @@ def my_exams_page():
     return render_template('MyExams.html', exams=response["exams"])
 
 @exams_views.route('/new_exam')
-
 def newExamPage():
+    tags = Tag.query.all()
+    courses = Question.query.with_entities(Question.courseCode).distinct()
     questions = get_all_my_questions(current_user)
-    return render_template('create_exam.html', questions=questions)
+    return render_template('create_exam.html', tags=tags, courses=[c[0] for c in courses], questions=questions)
+
 
 @exams_views.route('/save_exams', methods=['POST'])
 @login_required

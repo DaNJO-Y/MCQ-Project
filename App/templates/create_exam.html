@@ -285,6 +285,14 @@
             display: flex;
         }
 
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
 
     </style>
 </head>
@@ -321,7 +329,9 @@
             <nav id="sideNav">
                 <div class=" w-full">
                     <div class="flex  mb-4 w-full">
-                        <button id="filter" class="filter-button">Filters</button>
+                        <div class="filters-container">
+                            <button id="filter" class="filter-button">Filters</button>
+                        </div>
                         <div class="relative">
                             <input id="searchbar" type="text" placeholder="Search Questions" class="searchbar">
                             <button class="absolute right-[-15rem] top-1/2 transform -translate-y-1/2 text-gray-500">
@@ -447,6 +457,47 @@
             </main>
         </div>
     </div>
+
+    <!-- Filter Modal -->
+    <div id="filterModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="modal-content">
+            <h2 class="text-xl font-bold mb-4">Filter Questions</h2>
+            <form id="filterForm" method="GET" action="/filter_questions">
+                <div class="mb-4">
+                    <label for="difficultyFilter" class="block font-semibold mb-2">Difficulty:</label>
+                    <select id="difficultyFilter" name="difficulty" class="p-2 border border-gray-300 rounded w-full">
+                        <option value="" selected>All</option>
+                        <option value="Easy">Easy</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="tagFilter" class="block font-semibold mb-2">Tag:</label>
+                    <select id="tagFilter" name="tag" class="p-2 border border-gray-300 rounded w-full">
+                        <option value="" selected>All</option>
+                        {% for tag in tags %}
+                            <option value="{{ tag.id }}">{{ tag.tag_text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="courseCodeFilter" class="block font-semibold mb-2">Course Code:</label>
+                    <select id="courseCodeFilter" name="course_code" class="p-2 border border-gray-300 rounded w-full">
+                        <option value="" selected>All</option>
+                        {% for course in courses %}
+                            <option value="{{ course }}">{{ course }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" id="closeModal" class="bg-gray-500 text-white py-2 px-4 rounded mr-2">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const toggleNav = document.getElementById('toggleNav');
         const sideNav = document.getElementById('sideNav');
@@ -694,7 +745,38 @@
             }
         });
 
+        document.addEventListener('DOMContentLoaded', () => {
+            const filterButton = document.getElementById('filter');
+            const filterModal = document.getElementById('filterModal');
+            const closeModal = document.getElementById('closeModal');
 
+            // Open the modal when the filter button is clicked
+            filterButton.addEventListener('click', () => {
+                filterModal.classList.add('active');
+            });
+
+            // Close the modal when the "Cancel" button is clicked
+            closeModal.addEventListener('click', () => {
+                filterModal.classList.remove('active');
+            });
+
+            // Close the modal when clicking outside the modal content
+            window.addEventListener('click', (event) => {
+                if (event.target === filterModal) {
+                    filterModal.classList.remove('active');
+                }
+            });
+
+            // Handle form submission (optional)
+            const filterForm = document.getElementById('filterForm');
+            filterForm.addEventListener('submit', (event) => {
+                const difficulty = document.getElementById('difficultyFilter').value;
+                const tag = document.getElementById('tagFilter').value;
+                const courseCode = document.getElementById('courseCodeFilter').value;
+
+                console.log('Filters applied:', { difficulty, tag, courseCode });
+            });
+        });
     </script>
 </body>
 </html>

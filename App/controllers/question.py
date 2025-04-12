@@ -1,4 +1,5 @@
 from App.models import Question
+from App.models import Tag
 from App.database import db
 from App.utils import shuffle
 from datetime import date
@@ -89,6 +90,26 @@ def toggle_isCorrectOption(id, option_id):
                 return {"message": "Option is_correct toggled"} 
         return {"error": "Option not found for this question"} 
     return {"error": "Question not found"}
+
+def filter(difficulty, tag_id, course_code):
+ # Base query
+    query = Question.query
+
+    # Apply difficulty filter if selected
+    if difficulty and difficulty != "All":
+        query = query.filter_by(difficulty=difficulty.upper())  # Convert to uppercase for consistency
+
+    # Apply tag filter if selected
+    if tag_id and tag_id.strip() and tag_id != "All":
+        query = query.join(Question.tag).filter(Tag.id == tag_id)
+
+    # Apply course code filter if selected
+    if course_code and course_code.strip() and course_code != "All":
+        query = query.filter_by(courseCode=course_code)
+
+    # Execute the query
+    filtered_questions = query.all()
+    return filtered_questions
         
     
 
