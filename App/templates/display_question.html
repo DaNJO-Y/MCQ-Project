@@ -484,15 +484,26 @@
                     {% endfor %}
                 </div>
                 <div>
-                    <h2 class="font-semibold">Usage History:</h2>
+                    
                     <div>
-                        <span>Last Used: {{question.lastUsed}}</span>
+                        <h2 class="font-semibold">Last Used: {{question.lastUsed}}</h2>
                     </div>
-                    <ul>
+                    {%if exams%}
+                        <h2 class="font-semibold">Usage History:</h2>
+                        {%for exam in exams%}
+                        <ul>
+                            <li>{{exam.title}} - {{exam.date_created}}</li>
+                        </ul>    
+                        {%endfor%}
+                    {%else%}
+                        <h1>Not Used Recently</h1>
+                    {%endif%}
+                    
+                    <!-- <ul>
                         <li>Nutrition Therapy Exam 1 - January 15, 2024</li>
                         <li>Metabolism Quiz 2 - February 10, 2024</li>
                         <li>NUTR 1600 Final Exam - March 5, 2024</li>
-                    </ul>
+                    </ul> -->
                     <br>
                     <h2 class="font-semibold">Stats:</h2>
                 </div>
