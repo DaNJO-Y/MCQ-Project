@@ -153,6 +153,26 @@
         #sideNav td {
             padding: 4px; /* Reduce padding to compensate for smaller text */
         }
+        .scrollable-table-container {
+            max-height: 500px; /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+
+        #question-bank-container {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #question-bank-container th,
+        #question-bank-container td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #question-bank-container th {
+            background-color: #f2f2f2;
+        }
         #question-table{
             margin-left: auto;
             margin-right: auto;
@@ -329,79 +349,81 @@
                         </div>
 
                     </div>
-
-                    <table id="question-bank-container" class="w-full">
-                        <thead>
-                            <tr class="bg-gray-200">
-                                <th class="p-2 text-left">Select</th>
-                                <th class="p-2 text-left">Question</th>
-                                <th class="p-2 text-left">Tag</th>
-                                <th class="p-2 text-left">Last used</th>
-                                <th class="p-2 text-left">Options</th>
-                                <th class="p-2 text-left">Answer</th>
-                                <th class="p-2 text-left">Actions</th>
-                            </tr>
-                        </thead>
-
-                        <tbody id="question-bank-body">
-                            {% if questions %}
-                                {% for question in questions %}
-                                    <tr data-question-id="{{ question.id }}" data-question-text="{{ question.text }}" data-question-tag="{{ question.tag }}">
-                                        <td class="p-2">
-                                            <input type="checkbox" class="select-question"
-                                                   {% if exam_question_ids and question.id in exam_question_ids %} checked {% endif %}>
-                                        </td>
-                                        <td class="p-2">{{ question.text }}</td>
-                                        <td class="p-2">
-                                            {% if question.tag %}
-                                                {% for tag in question.tag %}
-                                                    <li>{{ tag.tag_text }}</li>
-                                                {% endfor %}
-                                            {% endif %}
-                                        </td>
-                                        <td class="p-2">{{ question.lastUsed }}</td>
-                                        <ul>
-                                        <td class="p-2">
-                                            {% if question.options %}
+                    <div class="scrollable-table-container">
+                        <table id="question-bank-container" class="w-full">
+                            <thead>
+                                <tr class="bg-gray-200">
+                                    <th class="p-2 text-left">Select</th>
+                                    <th class="p-2 text-left">Question</th>
+                                    <th class="p-2 text-left">Tag</th>
+                                    <th class="p-2 text-left">Last used</th>
+                                    <th class="p-2 text-left">Options</th>
+                                    <th class="p-2 text-left">Answer</th>
+                                    <th class="p-2 text-left">Actions</th>
+                                </tr>
+                            </thead>
     
-    
-                                                    {% for option in question.options %}
-                                                        <li>{{ option.body }}</li>
+                            <tbody id="question-bank-body">
+                                {% if questions %}
+                                    {% for question in questions %}
+                                        <tr data-question-id="{{ question.id }}" data-question-text="{{ question.text }}" data-question-tag="{{ question.tag }}">
+                                            <td class="p-2">
+                                                <input type="checkbox" class="select-question"
+                                                       {% if exam_question_ids and question.id in exam_question_ids %} checked {% endif %}>
+                                            </td>
+                                            <td class="p-2">{{ question.text }}</td>
+                                            <td class="p-2">
+                                                {% if question.tag %}
+                                                    {% for tag in question.tag %}
+                                                        <li>{{ tag.tag_text }}</li>
                                                     {% endfor %}
-    
-                                            {% endif %}
-                                        </ul>
-                                        </td>
-                                        <ul>
-                                        <td class="p-2">
-                                            {% if question.options %}
-    
-    
-                                                    {% for option in question.options %}
-                                                        {% if option.is_correct %}
+                                                {% endif %}
+                                            </td>
+                                            <td class="p-2">{{ question.lastUsed }}</td>
+                                            <ul>
+                                            <td class="p-2">
+                                                {% if question.options %}
+        
+        
+                                                        {% for option in question.options %}
                                                             <li>{{ option.body }}</li>
-                                                        {% endif %}
-                                                    {% endfor %}
-    
-                                            {% endif %}
-                                        </ul>
-                                        </td>
-                                        <td class="p-1">
-                                            <div>
-                                                <button id="viewbutton" class="text-blue py-1 px-4 rounded">
-                                                    <a href="/displayQuestion/{{question.id}}">
-                                                        View Question
-                                                    </a>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    <tr><td class="p-4 text-center" colspan="6">No questions found.</td></tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
+                                                        {% endfor %}
+        
+                                                {% endif %}
+                                            </ul>
+                                            </td>
+                                            <ul>
+                                            <td class="p-2">
+                                                {% if question.options %}
+        
+        
+                                                        {% for option in question.options %}
+                                                            {% if option.is_correct %}
+                                                                <li>{{ option.body }}</li>
+                                                            {% endif %}
+                                                        {% endfor %}
+        
+                                                {% endif %}
+                                            </ul>
+                                            </td>
+                                            <td class="p-1">
+                                                <div>
+                                                    <button id="viewbutton" class="text-blue py-1 px-4 rounded">
+                                                        <a href="/displayQuestion/{{question.id}}">
+                                                            View Question
+                                                        </a>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr><td class="p-4 text-center" colspan="6">No questions found.</td></tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                    </div>
+                    
                     </div>
             </nav>
 
@@ -556,7 +578,7 @@
                 const listItem = document.createElement('li');
                 // listItem.textContent = `${question.text}`;
                 listItem.textContent = decodeHtml(`${question.text}`);
-                
+
                 // Add a "Remove" button to each question
                 const removeButton = document.createElement('button');
                 removeButton.textContent = 'Remove';
