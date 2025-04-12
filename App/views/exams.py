@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, unset_jwt_cookies, set_access_cooki
 from werkzeug.security import check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 from App.views.auth import auth_views
+from datetime import date
 import json
 
 from.index import index_views
@@ -68,6 +69,7 @@ def save_the_exam():
     for question_id in question_ids:
         question = Question.query.get(question_id)
         if question:
+            question.lastUsed = date.today()
             new_exam.exam_questions.append(question)
 
     db.session.add(new_exam)
