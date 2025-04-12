@@ -36,6 +36,34 @@ def newExamPage():
     questions = get_all_my_questions(current_user)
     return render_template('create_exam.html', tags=tags, courses=[c[0] for c in courses], questions=questions)
 
+@exams_views.route('/filter_questions_exams', methods=['GET'])
+def filter_questions_exams():
+    difficulty = request.args.get('difficulty')
+    tag = request.args.get('tag')
+    course_code = request.args.get('course_code')
+
+    query = Question.query
+
+    if difficulty:
+        query = query.filter_by(difficulty=difficulty)
+    if tag:
+        query = query.join(Question.tag).filter(Tag.id == tag)
+    if course_code:
+        query = query.filter_by(courseCode=course_code)
+
+    questions = query.all()
+    return jsonify({
+        'questions': [
+            {
+                'id': question.id,
+                'text': question.text,
+                'tag': [tag.tag_text for tag in question.tag],
+                'difficulty': question.difficulty,
+                'courseCode': question.courseCode,
+            }
+            for question in questions
+        ]
+    })
 
 @exams_views.route('/save_exams', methods=['POST'])
 @login_required
@@ -147,6 +175,7 @@ def edit_exam_route(exam_id):
     if "error" in result:
         return jsonify(result), 404
     return jsonify(result), 200
+
 
 
 
