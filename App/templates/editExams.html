@@ -536,7 +536,13 @@
                 updateExamBuilder();
             }
         });
+        function decodeHtml(html) {
+            var txt = document.createElement("textarea");
+            txt.innerHTML = html;
+            return txt.value;
+        }
 
+        
         function updateExamBuilder() {
             // Clear the current list of selected questions
             examQuestionsList.innerHTML = '';
@@ -548,8 +554,9 @@
 
                 // Create a list item for each selected question
                 const listItem = document.createElement('li');
-                listItem.textContent = `${question.text}`;
-
+                // listItem.textContent = `${question.text}`;
+                listItem.textContent = decodeHtml(`${question.text}`);
+                
                 // Add a "Remove" button to each question
                 const removeButton = document.createElement('button');
                 removeButton.textContent = 'Remove';

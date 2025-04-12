@@ -60,6 +60,8 @@ def filter_questions_exams():
                 'tag': [tag.tag_text for tag in question.tag],
                 'difficulty': question.difficulty,
                 'courseCode': question.courseCode,
+                'options': [option.body for option in question.options],
+                'option_isCorrect': [option.body for option in question.options if option.is_correct],
             }
             for question in questions
         ]
