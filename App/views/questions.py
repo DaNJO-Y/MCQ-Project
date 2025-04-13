@@ -341,3 +341,158 @@ def edit_question(question_id):
             flash(f'Error updating question: {str(e)}', 'error')
             current_app.logger.error(f"Error updating question: {str(e)}")
             return redirect(url_for('questions_views.edit_question', question_id=question_id))
+
+@questions_views.route('/api/create_question', methods=['POST'])
+@login_required
+def user_api_create_questions():
+    try: 
+        teacher = current_user
+        data = request.json
+        if not data or 'text' not in data or 'difficulty' not in data or 'courseCode' not in data:
+            return jsonify({"error":"Required fields missing"}), 400
+        
+        # options_list=[]
+        question = save_question(teacherId=teacher.id, text=data['text'], difficulty=data['difficulty'], courseCode=data['courseCode'],options=[])
+        if not question:
+            return jsonify({"error":"Question data was not formatted properly"}), 400
+        option_1 = create_option(question_id=question.id, body=data['option_1_text'], image=None,is_correct=False)
+        # options_list.append(option_1)
+        option_2 = create_option(question_id=question.id, body=data['option_2_text'], image=None,is_correct=False)
+        # options_list.append(option_2)
+        option_3 = create_option(question_id=question.id, body=data['option_3_text'], image=None,is_correct=False)
+        # options_list.append(option_3)
+        option_4 = create_option(question_id=question.id, body=data['option_4_text'], image=None,is_correct=True)
+        # options_list.append(option_4)
+
+        if associate_option(question.id, option_1) and associate_option(question.id, option_2) and associate_option(question.id, option_3) and associate_option(question.id, option_4):
+            return jsonify({"message": "Question created and options associated successfully"}), 200
+    except Exception as e:
+        return jsonify(error="An Error Occurred While Creating the question"), 500
+
+def help_populate_questions(teacher_id, focus):
+    teacher = get_teacher(teacher_id)
+    if teacher:
+        if focus == "courseCode":
+            question_1 = save_question(teacherId=teacher_id, text="Test question for course code", difficulty="Easy", courseCode="TestCourse 101",options=[])
+            
+            option_1 = create_option(question_id=question_1.id, body="Test option CC 1", image=None,is_correct=False)
+            option_2 = create_option(question_id=question_1.id, body="Test option CC 2", image=None,is_correct=False)
+            option_3 = create_option(question_id=question_1.id, body="Test option CC 3", image=None,is_correct=False)
+            option_4 = create_option(question_id=question_1.id, body="Test option CC 4", image=None,is_correct=True)
+            associate_option(question_1.id, option_1)
+            associate_option(question_1.id, option_2)
+            associate_option(question_1.id, option_3)
+            associate_option(question_1.id, option_4)
+
+            teacher.questions.append(question_1)
+
+            question_2 = save_question(teacherId=teacher_id, text="Test question for course code number 2", difficulty="Hard", courseCode="TestCourse 101",options=[])
+            
+            option_a = create_option(question_id=question_2.id, body="Test option CC 1", image=None,is_correct=False)
+            option_b = create_option(question_id=question_2.id, body="Test option CC 2", image=None,is_correct=False)
+            option_c = create_option(question_id=question_2.id, body="Test option CC 3", image=None,is_correct=False)
+            option_d = create_option(question_id=question_2.id, body="Test option CC 4", image=None,is_correct=True)
+            associate_option(question_2.id, option_a)
+            associate_option(question_2.id, option_b)
+            associate_option(question_2.id, option_c)
+            associate_option(question_2.id, option_d)
+
+            teacher.questions.append(question_2)
+
+        
+        if focus == "difficulty":
+            question_1 = save_question(teacherId=teacher_id, text="Test question for difficulty", difficulty="Easy", courseCode="TestCourse 101",options=[])
+            
+            option_1 = create_option(question_id=question_1.id, body="Test option CC 1", image=None,is_correct=False)
+            option_2 = create_option(question_id=question_1.id, body="Test option CC 2", image=None,is_correct=False)
+            option_3 = create_option(question_id=question_1.id, body="Test option CC 3", image=None,is_correct=False)
+            option_4 = create_option(question_id=question_1.id, body="Test option CC 4", image=None,is_correct=True)
+            associate_option(question_1.id, option_1)
+            associate_option(question_1.id, option_2)
+            associate_option(question_1.id, option_3)
+            associate_option(question_1.id, option_4)
+
+            teacher.questions.append(question_1)
+
+            question_2 = save_question(teacherId=teacher_id, text="Test question for difficulty 2", difficulty="Intermediate", courseCode="TestCourse 101",options=[])
+            
+            option_a = create_option(question_id=question_2.id, body="Test option CC 1", image=None,is_correct=False)
+            option_b = create_option(question_id=question_2.id, body="Test option CC 2", image=None,is_correct=False)
+            option_c = create_option(question_id=question_2.id, body="Test option CC 3", image=None,is_correct=False)
+            option_d = create_option(question_id=question_2.id, body="Test option CC 4", image=None,is_correct=True)
+            associate_option(question_2.id, option_a)
+            associate_option(question_2.id, option_b)
+            associate_option(question_2.id, option_c)
+            associate_option(question_2.id, option_d)
+
+            teacher.questions.append(question_2)
+
+            question_3 = save_question(teacherId=teacher_id, text="Test question for ", difficulty="Hard", courseCode="TestCourse 101",options=[])
+            
+            option_e = create_option(question_id=question_3.id, body="Test option CC 1", image=None,is_correct=False)
+            option_f = create_option(question_id=question_3.id, body="Test option CC 2", image=None,is_correct=False)
+            option_g = create_option(question_id=question_3.id, body="Test option CC 3", image=None,is_correct=False)
+            option_h = create_option(question_id=question_3.id, body="Test option CC 4", image=None,is_correct=True)
+            associate_option(question_3.id, option_e)
+            associate_option(question_3.id, option_f)
+            associate_option(question_3.id, option_g)
+            associate_option(question_3.id, option_h)
+
+            teacher.questions.append(question_3)
+
+        db.session.add(teacher)
+        db.session.commit()
+        return True
+    return False
+    
+@questions_views.route('/api/get_teacher_question', methods=['GET'])
+@login_required
+def user_api_get_questions():
+    try:
+        teacher = current_user
+        if not teacher:
+            return jsonify({"error":"Unauthourized user"}), 400
+        questions_list = [question.get_json() for question in teacher.questions]
+        # print(questions_list)
+        return jsonify(questions_list), 200
+    except Exception as e:
+        return jsonify(error="An Error Occurred While retrieving the questions"), 500
+
+
+@questions_views.route('/api/get_question_by_courseCode/<string:coursecode>', methods=['GET'])
+@login_required
+def user_api_get_questions_by_courseCode(coursecode):
+    # print(coursecode)
+    try:
+        teacher = current_user
+        if not teacher:
+            return jsonify({"error":"Unauthourized user"}), 400
+        # help_populate_questions(teacher.id, "courseCode")
+        list = get_questions_by_course_code(teacher.id, coursecode)
+        question_list = [q.get_json() for q in list]
+        # print(question_list)
+        return jsonify(question_list), 200
+    except Exception as e:
+        return jsonify(error=f"An Error Occurred While retrieving the questions by course code: {coursecode}"), 500
+        
+@questions_views.route('/api/get_question_by_difficulty/<string:difficulty>', methods=['GET'])
+@login_required
+def user_api_get_questions_by_difficulty(difficulty):
+    try:
+        teacher = current_user
+        if not teacher:
+            return jsonify({"error":"Unauthourized user"}), 400
+        if help_populate_questions(teacher.id, "difficulty"):
+            list = get_questions_by_difficulty(teacher.id, difficulty)
+            question_list = [q.get_json() for q in list]
+            # print(question_list)
+            return jsonify(question_list), 200
+    except Exception as e:
+        return jsonify(error=f"An Error Occurred While retrieving the questions by course code: {coursecode}"), 500
+
+# @questions_views.route('/api/update_question', methods=['POST'])
+# @questions_views.route('/api/delete_question', methods=['DELETE'])
+
+
+        
+        

@@ -2,6 +2,7 @@ from App.models import Question
 from App.models import Tag
 from App.models import exam_question
 from App.database import db
+from App.controllers import *
 from App.utils import shuffle
 from datetime import date
 from sqlalchemy import select
@@ -32,6 +33,15 @@ def edit_question(id, text, difficulty, courseCode):
             print(f"Error editing question: {e}")
             return None  # Indicate failure
     return None
+
+def associate_option(question_id, option):
+    question = get_question(question_id)
+    if question:
+        question.options.append(option)
+        db.session.add(question)
+        db.session.commit()
+        return True
+    return False
 
 def delete_question(id):
     question = get_question(id)
@@ -127,6 +137,28 @@ def get_questions_exams(questionId):
     for row in results:
         exam_ids.append(row[0]) #row is a tuple.
     return exam_ids
+
+def get_questions_by_course_code(teacher_id, courseCode):
+    teacher = get_teacher(teacher_id)
+    if not teacher:
+        return None
+    courseCode_questions = []
+    for question in teacher.questions:
+        if question.courseCode == courseCode:
+            courseCode_questions.append(question)
+            # print("hii")
+    return courseCode_questions
+
+def get_questions_by_difficulty(teacher_id, difficulty):
+    teacher = get_teacher(teacher_id)
+    if not teacher:
+        return None
+    difficulty_questions = []
+    for question in teacher.questions:
+        if question.difficulty == difficulty:
+            difficulty_questions.append(question)
+    return difficulty_questions
+     
 
 
     
