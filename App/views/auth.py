@@ -199,28 +199,29 @@ def signup_action():
 
 @auth_views.route('/signup', methods=['POST'])
 def signup_action_data():
-  data = request.form
-  response = None
-  email = data['email']
-  username = data['username']
-  # Check if email already exists
-  existing_user = User.query.filter_by(email=email).first()
-  if existing_user:
-    flash("Email address already exists. Please use a different email.")
-    return redirect(url_for('auth_views.signup_action_data'))
+    data = request.form
+    response = None
+    email = data['email']
+    username = data['username']
+    # Check if email already exists
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user:
+        flash("Email address already exists. Please use a different email.")
+        return redirect(url_for('auth_views.signup_action_data'))
 
-  existing_username = User.query.filter_by(username=username).first()
-  if existing_username:
-    flash("Username already exists. Please use a different username.")
-    return redirect(url_for('auth_views.signup_action_data'))
-  
-  try:
-    if data['radio'] == 'admin':
-        new_user = create_admin(data['first_name'], data['last_name'], data['username'], data['pwd'], email)
-    elif data['radio'] == 'teacher':
-        new_user = teacher.create_teacher(data['first_name'], data['last_name'], data['username'], data['pwd'], email)
-    else:
-        new_user = create_user(data['first_name'], data['last_name'], data['username'], data['pwd'], email)
+    existing_username = User.query.filter_by(username=username).first()
+    if existing_username:
+        flash("Username already exists. Please use a different username.")
+        return redirect(url_for('auth_views.signup_action_data'))
+    new_user = teacher.create_teacher(data['first_name'], data['last_name'], data['username'], data['pwd'], email)
+
+# try:
+#     if data['radio'] == 'admin':
+#         new_user = create_admin(data['first_name'], data['last_name'], data['username'], data['pwd'], email)
+#     elif data['radio'] == 'teacher':
+#         new_user = teacher.create_teacher(data['first_name'], data['last_name'], data['username'], data['pwd'], email)
+#     else:
+#         new_user = create_user(data['first_name'], data['last_name'], data['username'], data['pwd'], email)
 
     db.session.add(new_user)
     db.session.commit()
@@ -231,13 +232,13 @@ def signup_action_data():
     flash('Account created!')
     response = render_template('login.html')
 
-  except Exception as e:
-    db.session.rollback()
-    current_app.logger.error(f"Error occurred: {e}")
-    flash("An error occurred during signup. Please try again.")
-    response = redirect(url_for('auth_views.signup_action_data')) #redirect to signup page.
+    # except Exception as e:
+    #     db.session.rollback()
+    #     current_app.logger.error(f"Error occurred: {e}")
+    #     flash("An error occurred during signup. Please try again.")
+    #     response = redirect(url_for('auth_views.signup_action_data')) #redirect to signup page.
 
-  return response
+    return response
 
 '''
 API Routes
