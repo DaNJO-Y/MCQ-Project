@@ -27,6 +27,7 @@ def my_exams_page():
         if status == 404:
             flash("No exams found", "warning")
             response["exams"] = []
+            
 
     return render_template('MyExams.html', exams=response["exams"])
 

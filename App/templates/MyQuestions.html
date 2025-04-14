@@ -162,11 +162,11 @@
         }
 
         .searchbar {
-            width: 50%;
+            width: 80%; /* Increase the width to 70% */
             padding: 12px;
             border: 1px solid darkgrey;
             border-radius: 0.375rem;
-            margin-right:10%;
+            margin-right: 10%;
         }
         table {
           font-family: arial, sans-serif;
@@ -411,8 +411,7 @@
                         <button id="filter" class="filter-button">Filters</button>
                         <div class="search-wrapper">
                             <label for="searchbar" class="sr-only">Search Questions</label>
-                            <input type="search">
-                        <!-- <input id="searchbar" type="text" placeholder="Search Questions" class="searchbar"> -->
+                            <input id="searchbar" type="text" placeholder="Search Questions" class="searchbar">
                         </div>
     
                     </div>
@@ -641,6 +640,23 @@
                 const courseCode = document.getElementById('courseCodeFilter').value;
 
                 console.log('Filters applied:', { difficulty, tag, courseCode });
+            });
+
+            const searchbar = document.getElementById('searchbar');
+            const questionTable = document.querySelector('#question-table tbody');
+
+            searchbar.addEventListener('keyup', () => {
+                const query = searchbar.value.toLowerCase(); // Get the search query and convert to lowercase
+                const rows = questionTable.querySelectorAll('tr'); // Get all table rows
+
+                rows.forEach(row => {
+                    const questionText = row.querySelector('td:first-child')?.textContent.toLowerCase(); // Get the question text
+                    if (questionText && questionText.includes(query)) {
+                        row.style.display = ''; // Show the row if it matches the query
+                    } else {
+                        row.style.display = 'none'; // Hide the row if it doesn't match
+                    }
+                });
             });
         });
     </script>
