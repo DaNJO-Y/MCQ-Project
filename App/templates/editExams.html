@@ -746,6 +746,35 @@
                     return false; // Explicitly disable form submission
                 });
             }
+
+            const searchbar = document.getElementById('searchbar');
+            const questionTableRows = document.querySelectorAll('#question-bank-body tr'); // Get all rows in the table body
+
+            if (!searchbar) {
+                console.error("Search bar element with id 'searchbar' not found.");
+                return;
+            }
+
+            if (!questionTableRows.length) {
+                console.warn("No rows found in the question bank table.");
+                return;
+            }
+
+            console.log("Search bar and question table rows initialized successfully.");
+
+            searchbar.addEventListener('input', () => { // Use 'input' event for better responsiveness
+                const query = searchbar.value.toLowerCase().trim(); // Get the search query, convert to lowercase, and trim whitespace
+                console.log("Search query:", query);
+
+                questionTableRows.forEach(row => {
+                    const questionText = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase(); // Get the question text from the second column
+                    if (questionText && questionText.includes(query)) {
+                        row.style.display = ''; // Show the row if it matches the query
+                    } else {
+                        row.style.display = 'none'; // Hide the row if it doesn't match
+                    }
+                });
+            });
         });
 
         document.getElementById('save-exam-button').addEventListener('click', () => {
