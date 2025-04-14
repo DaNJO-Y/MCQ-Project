@@ -336,7 +336,7 @@
             padding: 20px;
             width: 30%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1010; /* Ensure the modal content is above the background */
+            z-index: 1010; 
         }
     </style>
 </head>
@@ -836,7 +836,7 @@
                     .then((data) => {
                         // Update the question bank table with the filtered questions
                         questionBankBody.innerHTML = ''; // Clear the current table rows
-
+  
                         data.questions.forEach((question) => {
                             const row = document.createElement('tr');
                             row.dataset.questionId = question.id;

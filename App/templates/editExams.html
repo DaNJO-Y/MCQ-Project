@@ -114,7 +114,7 @@
             position: fixed;
             top: 5rem;
             left: 1rem;
-            z-index: 10;
+            z-index: 50;
             background-color: var(--primary-color);
             padding: 0.75rem;
             border-radius: 0.5rem;
@@ -305,6 +305,38 @@
             display: flex;
         }
 
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        #filterModal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Ensure it stays in place */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            z-index: 1000; /* Higher than other elements */
+            justify-content: center;
+            align-items: center;
+        }
+        #filterModal.active {
+            display: flex; /* Show the modal when active */
+        }
+        #filterModal .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 30%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1010; 
+        }
 
     </style>
 </head>
@@ -339,16 +371,16 @@
             <button id="toggleNav"><i class="fas fa-angle-left"></i></button>
             <nav id="sideNav">
                 <div class=" w-full">
-                    <div class="flex  mb-4 w-full">
+                    <div class="filters-container">
                         <button id="filter" class="filter-button">Filters</button>
-                        <div class="relative">
-                            <input id="searchbar" type="text" placeholder="Search Questions" class="searchbar">
-                            <button class="absolute right-[-15rem] top-1/2 transform -translate-y-1/2 text-gray-500">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-
                     </div>
+                    <div class="relative">
+                        <input id="searchbar" type="text" placeholder="Search Questions" class="searchbar">
+                        <button class="absolute right-[-15rem] top-1/2 transform -translate-y-1/2 text-gray-500">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+
                     <div class="scrollable-table-container">
                         <table id="question-bank-container" class="w-full">
                             <thead>
@@ -356,7 +388,7 @@
                                     <th class="p-2 text-left">Select</th>
                                     <th class="p-2 text-left">Question</th>
                                     <th class="p-2 text-left">Tag</th>
-                                    <th class="p-2 text-left">Last used</th>
+                                    <th class="p-2 text-left">Last Used</th>
                                     <th class="p-2 text-left">Options</th>
                                     <th class="p-2 text-left">Answer</th>
                                     <th class="p-2 text-left">Actions</th>
@@ -379,7 +411,7 @@
                                                     {% endfor %}
                                                 {% endif %}
                                             </td>
-                                            <td class="p-2">{{ question.lastUsed }}</td>
+                                            <td class="p-2">{{ question.lastUsed or 'N/A' }}</td>
                                             <ul>
                                             <td class="p-2">
                                                 {% if question.options %}
@@ -464,6 +496,48 @@
             </main>
         </div>
     </div>
+
+    <!-- Filter Modal -->
+    <div id="filterModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="modal-content">
+            <h2 class="text-xl font-bold mb-4">Filter Questions</h2>
+            <form id="filterFormEdit" method="GET" action="/filter_questions_exams">
+                <input type="hidden" name="exam_id" value="{{ exam.id }}">
+                <div class="mb-4">
+                    <label for="difficultyFilterEdit" class="block font-semibold mb-2">Difficulty:</label>
+                    <select id="difficultyFilterEdit" name="difficulty" class="p-2 border border-gray-300 rounded w-full">
+                        <option value="" selected>All</option>
+                        <option value="Easy">Easy</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="tagFilterEdit" class="block font-semibold mb-2">Tag:</label>
+                    <select id="tagFilterEdit" name="tag" class="p-2 border border-gray-300 rounded w-full">
+                        <option value="" selected>All</option>
+                        {% for tag in tags %}
+                            <option value="{{ tag.id }}">{{ tag.tag_text }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="courseCodeFilterEdit" class="block font-semibold mb-2">Course Code:</label>
+                    <select id="courseCodeFilterEdit" name="course_code" class="p-2 border border-gray-300 rounded w-full">
+                        <option value="" selected>All</option>
+                        {% for course in courses %}
+                            <option value="{{ course }}">{{ course }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" id="closeModalEdit" class="bg-gray-500 text-white py-2 px-4 rounded mr-2">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const toggleNav = document.getElementById('toggleNav');
         const sideNav = document.getElementById('sideNav');
@@ -473,12 +547,10 @@
         const examQuestionCount = document.getElementById('exam-question-count');
         const examQuestionsEmpty = document.getElementById('exam-questions-empty');
         const selectedQuestions = {};
-        // const sideNavWidthPercentage = 20;
         let isNavOpen = true;
 
         toggleNav.addEventListener('click', () => {
             isNavOpen = !isNavOpen;
-            // updateNavAndContent();
             if (isNavOpen) {
                 sideNav.style.width = '50%';
                 sideNav.style.opacity = '1';
@@ -494,54 +566,50 @@
             }
         });
 
-        function updateNavAndContent() {
-            if (isNavOpen) {
-                sideNav.style.marginLeft = '0';
-                mainContent.style.marginLeft = `${sideNavWidthPercentage}%`;
-                toggleNav.innerHTML = '<i class="fas fa-angle-left"></i>';
-            } else {
-                sideNav.style.marginLeft = `-${sideNavWidthPercentage}%`;
-                mainContent.style.marginLeft = '2rem'; // Or your default closed margin
-                toggleNav.innerHTML = '<i class="fas fa-angle-right"></i>';
-            }
+        function decodeHtml(html) {
+            const txt = document.createElement("textarea");
+            txt.innerHTML = html;
+            return txt.value;
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // ... profile dropdown logic ...
-            const profileButton = document.getElementById('profileButton');
-            const profileDropdown = document.getElementById('profileDropdown');
+        function updateExamBuilder() {
+            examQuestionsList.innerHTML = '';
+            let count = 0;
 
-            profileButton.addEventListener('click', () => {
-                profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
-            });
+            for (const id in selectedQuestions) {
+                const question = selectedQuestions[id];
+                const listItem = document.createElement('li');
+                listItem.textContent = decodeHtml(`${question.text}`);
 
-        });
-        document.addEventListener('DOMContentLoaded', () => {
-            const profileButton = document.getElementById('profileButton');
-            const profileDropdown = document.getElementById('profileDropdown');
-
-            profileButton.addEventListener('click', () => {
-                profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
-            });
-
-            // Close the dropdown if clicked outside
-            document.addEventListener('click', (event) => {
-                if (!profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
-                    profileDropdown.style.display = 'none';
-                }
-            });
-
-        });
-
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768) {
-                isNavOpen = true;
-                updateNavAndContent();
-            } else if (window.innerWidth <= 768 && isNavOpen) {
-                isNavOpen = false;
-                updateNavAndContent();
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.classList.add(
+                    'bg-red-500',
+                    'hover:bg-red-700',
+                    'text-white',
+                    'font-bold',
+                    'py-1',
+                    'px-2',
+                    'rounded',
+                    'text-xs',
+                    'ml-2'
+                );
+                removeButton.addEventListener('click', () => {
+                    delete selectedQuestions[id];
+                    const bankCheckbox = questionBankBody.querySelector(`tr[data-question-id="${id}"] .select-question`);
+                    if (bankCheckbox) {
+                        bankCheckbox.checked = false;
+                    }
+                    updateExamBuilder();
+                });
+                listItem.appendChild(removeButton);
+                examQuestionsList.appendChild(listItem);
+                count++;
             }
-        });
+
+            examQuestionCount.textContent = count;
+            examQuestionsEmpty.style.display = count === 0 ? 'block' : 'none';
+        }
 
         questionBankBody.addEventListener('change', (event) => {
             if (event.target.classList.contains('select-question')) {
@@ -558,165 +626,15 @@
                 updateExamBuilder();
             }
         });
-        function decodeHtml(html) {
-            var txt = document.createElement("textarea");
-            txt.innerHTML = html;
-            return txt.value;
-        }
-
-        
-        function updateExamBuilder() {
-            // Clear the current list of selected questions
-            examQuestionsList.innerHTML = '';
-            let count = 0;
-
-            // Iterate over the selectedQuestions object
-            for (const id in selectedQuestions) {
-                const question = selectedQuestions[id];
-
-                // Create a list item for each selected question
-                const listItem = document.createElement('li');
-                // listItem.textContent = `${question.text}`;
-                listItem.textContent = decodeHtml(`${question.text}`);
-
-                // Add a "Remove" button to each question
-                const removeButton = document.createElement('button');
-                removeButton.textContent = 'Remove';
-                removeButton.classList.add(
-                    'bg-red-500',
-                    'hover:bg-red-700',
-                    'text-white',
-                    'font-bold',
-                    'py-1',
-                    'px-2',
-                    'rounded',
-                    'text-xs',
-                    'ml-2'
-                );
-
-                // Add an event listener to the "Remove" button
-                removeButton.addEventListener('click', () => {
-                    // Remove the question from the selectedQuestions object
-                    delete selectedQuestions[id];
-
-                    // Uncheck the corresponding checkbox in the question bank
-                    const bankCheckbox = questionBankBody.querySelector(`tr[data-question-id="${id}"] .select-question`);
-                    if (bankCheckbox) {
-                        bankCheckbox.checked = false;
-                    }
-
-                    // Update the exam builder
-                    updateExamBuilder();
-                });
-
-                // Append the "Remove" button to the list item
-                listItem.appendChild(removeButton);
-
-                // Append the list item to the examQuestionsList
-                examQuestionsList.appendChild(listItem);
-
-                count++;
-            }
-
-            // Update the question count and empty message
-            examQuestionCount.textContent = count;
-            examQuestionsEmpty.style.display = count === 0 ? 'block' : 'none';
-        }
-        const initialExamQuestionIds = JSON.parse('{{ exam_question_ids_json|default("[]")|safe }}');
-
-        document.getElementById('save-exam-button').addEventListener('click', () => {
-            const examTitle = document.getElementById('exam-title').value;
-            const courseCode = document.getElementById('course-code').value;
-            const questionIdsToAdd = Object.keys(selectedQuestions);
-            const examId = document.getElementById('save-exam-button').getAttribute('data-exam-id');
-
-            // Get the initial exam question IDs from the template (assuming you've made it available)
-            const initialExamQuestionIds = JSON.parse('{{ exam_question_ids_json|default("[]")|safe }}');
-
-            const questionIdsToRemove = [];
-
-            // Identify questions that were initially in the exam but are no longer selected
-            initialExamQuestionIds.forEach(initialId => {
-                if (!selectedQuestions.hasOwnProperty(String(initialId))) { // Convert to string for comparison
-                    questionIdsToRemove.push(initialId);
-                }
-            });
-
-            console.log("Initial Exam Question IDs:", initialExamQuestionIds);
-            console.log("Currently Selected Question IDs:", questionIdsToAdd);
-            console.log("Question IDs to Remove:", questionIdsToRemove);
-
-            if (questionIdsToAdd.length > 0 || questionIdsToRemove.length > 0 || examTitle.trim() !== "") {
-                // Prepare the data to send
-                const examData = {
-                    title: examTitle,
-                    courseCode: courseCode,
-                    add_questions: questionIdsToAdd,
-                    remove_questions: questionIdsToRemove,
-                    teacher_id: null
-                };
-
-                fetch(`/edit_exam/${examId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(examData),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Success:', data);
-                    alert('Exam updated successfully!');
-                })
-                .catch(error => {
-                    console.error('Error updating exam:', error);
-                    alert('An error occurred while updating the exam.');
-                });
-            } else {
-                alert("Please add questions and an exam title.");
-            }
-        });
-
-        // document.getElementById('download-exam-button').addEventListener('click', () => {
-        //     const button = document.getElementById('download-exam-button');
-        //     button.disabled = true;  // Disable the button to prevent multiple clicks
-
-        //     fetch('/download_exam/{{ exam.id }}', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: JSON.stringify({ format: 'pdf' }),
-        //     })
-        //     .then(response => {
-        //         if (!response.ok) {
-        //             throw new Error('Failed to download the file');
-        //         }
-        //         return response.blob();
-        //     })
-        //     .then(blob => {
-        //         const url = window.URL.createObjectURL(blob);
-        //         const a = document.createElement('a');
-        //         a.href = url;
-        //         a.download = 'exam.pdf';  // Set the filename
-        //         document.body.appendChild(a);
-        //         a.click();
-        //         document.body.removeChild(a);
-        //         window.URL.revokeObjectURL(url);  // Clean up the URL
-        //     })
-        //     .catch(error => {
-        //         console.error('Error:', error);
-        //         alert('An error occurred while downloading the exam.');
-        //     })
-        //     .finally(() => {
-        //         button.disabled = false;  // Re-enable the button
-        //     });
-        // });
 
         document.addEventListener('DOMContentLoaded', () => {
             const profileButton = document.getElementById('profileButton');
             const profileDropdown = document.getElementById('profileDropdown');
+            const filterFormEdit = document.getElementById('filterFormEdit');
+            const questionBankBody = document.getElementById('question-bank-body');
+            const selectedQuestions = {}; // Object to store selected questions
 
+            // Handle profile dropdown toggle
             if (profileButton) {
                 profileButton.addEventListener('click', () => {
                     profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
@@ -737,38 +655,129 @@
                 toggleNav.innerHTML = '<i class="fas fa-angle-right"></i>';
             }
 
-            // Populate selectedQuestions with the current exam's questions
-            {% if exam_question_ids %}
-                {% for question in questions %}
-                    {% if question.id in exam_question_ids %}
-                        selectedQuestions["{{ question.id }}"] = {
-                            id: "{{ question.id }}",
-                            text: "{{ question.text }}",
-                            tag: "{{ question.tag }}"
-                        };
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+            // Preserve selected state after page load (including after filter)
+            const initialExamQuestionIds = JSON.parse('{{ exam_question_ids_json|default("[]")|safe }}');
+            initialExamQuestionIds.forEach(questionId => {
+                const checkbox = questionBankBody.querySelector(`tr[data-question-id="${questionId}"] .select-question`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    // Also update the selectedQuestions object to reflect the initial state
+                    const row = checkbox.closest('tr');
+                    if (row) {
+                        const questionText = row.dataset.questionText;
+                        const questionTag = row.dataset.questionTag;
+                        selectedQuestions[questionId] = { id: questionId, text: questionText, tag: questionTag };
+                    }
+                }
+            });
 
-            // Update the exam builder with the preloaded questions
+            // Update the exam builder to reflect the initially selected questions
             updateExamBuilder();
-        });
 
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 768 && !isNavOpen) {
-                isNavOpen = true;
-                sideNav.style.marginLeft = '0';
-                mainContent.style.marginLeft = '20%';
-                toggleNav.innerHTML = '<i class="fas fa-angle-left"></i>';
-            } else if (window.innerWidth <= 768 && isNavOpen) {
-                isNavOpen = false;
-                sideNav.style.marginLeft = '-20%';
-                mainContent.style.marginLeft = '2rem';
-                toggleNav.innerHTML = '<i class="fas fa-angle-right"></i>';
+            // Handle filter form submission
+            if (filterFormEdit) {
+                filterFormEdit.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Prevent the default form submission
+
+                    const formData = new FormData(filterFormEdit);
+                    const url = this.action;
+
+                    // Fetch filtered questions from the server
+                    fetch(url + '?' + new URLSearchParams(formData).toString())
+                        .then(response => response.json())
+                        .then(data => {
+                            const filteredQuestions = data.questions;
+                            questionBankBody.innerHTML = ''; // Clear the existing list
+
+                            // Populate the table with filtered questions
+                            filteredQuestions.forEach(question => {
+                                const row = document.createElement('tr');
+                                row.dataset.questionId = question.id;
+                                row.dataset.questionText = question.text;
+                                row.dataset.lastUsed = question.lastUsed || 'N/A'; // Handle missing lastUsed field
+                                row.dataset.questionTag = question.tag.join(', '); // Assuming tag is a list
+
+                                const selectCell = document.createElement('td');
+                                const checkbox = document.createElement('input');
+                                checkbox.type = 'checkbox';
+                                checkbox.classList.add('select-question');
+                                if (selectedQuestions[question.id]) {
+                                    checkbox.checked = true; // Preserve previously selected questions
+                                }
+                                selectCell.appendChild(checkbox);
+
+                                const questionCell = document.createElement('td');
+                                questionCell.textContent = decodeHtml(question.text);
+
+                                const lastUsedCell = document.createElement('td');
+                                lastUsedCell.textContent = question.lastUsed || 'N/A'; // Display "N/A" if lastUsed is missing
+
+                                const tagCell = document.createElement('td');
+                                tagCell.textContent = question.tag.join(', '); // Assuming tag is a list
+
+                                const difficultyCell = document.createElement('td');
+                                difficultyCell.textContent = question.difficulty || 'N/A';
+
+                                const courseCodeCell = document.createElement('td');
+                                courseCodeCell.textContent = question.courseCode || 'N/A';
+
+                                row.appendChild(selectCell);
+                                row.appendChild(questionCell);
+                                row.appendChild(tagCell);
+                                row.appendChild(lastUsedCell);
+                                row.appendChild(difficultyCell);
+                                row.appendChild(courseCodeCell);
+                                questionBankBody.appendChild(row);
+                            });
+
+                            // Re-check the previously selected questions
+                            for (const questionId in selectedQuestions) {
+                                const checkbox = questionBankBody.querySelector(`tr[data-question-id="${questionId}"] .select-question`);
+                                if (checkbox) {
+                                    checkbox.checked = true;
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error filtering questions:', error);
+                            // Optionally display an error message
+                        });
+
+                    return false; // Explicitly disable form submission
+                });
             }
         });
 
+        document.getElementById('save-exam-button').addEventListener('click', () => {
+            // ... (rest of your save exam logic) ...
+        });
 
+        // Filter Modal Logic
+        const filterModal = document.getElementById('filterModal');
+        const filterButton = document.getElementById('filter');
+        const closeModal = document.getElementById('closeModal');
+
+        if (filterButton) {
+            filterButton.addEventListener('click', () => {
+                filterModal.classList.add('active');
+            });
+        }
+
+        if (closeModal) {
+            closeModal.addEventListener('click', () => {
+                filterModal.classList.remove('active');
+            });
+        }
+
+        window.addEventListener('click', (event) => {
+            if (event.target === filterModal) {
+                filterModal.classList.remove('active');
+            }
+        });
+        
+
+
+        
     </script>
 </body>
 </html>

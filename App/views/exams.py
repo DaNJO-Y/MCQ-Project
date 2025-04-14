@@ -33,9 +33,9 @@ def my_exams_page():
 @exams_views.route('/new_exam')
 def newExamPage():
     tags = Tag.query.all()
-    courses = Question.query.with_entities(Question.courseCode).distinct()
+    courses = [course[0] for course in Question.query.with_entities(Question.courseCode).distinct()]
     questions = get_all_my_questions(current_user)
-    return render_template('create_exam.html', tags=tags, courses=[c[0] for c in courses], questions=questions)
+    return render_template('create_exam.html', tags=tags, courses=courses, questions=questions)
 
 @exams_views.route('/filter_questions_exams', methods=['GET'])
 def filter_questions_exams():
@@ -153,9 +153,11 @@ def edit_exam(exam_id):
 
     # Get the IDs of the questions already in this exam
     exam_question_ids = [question.id for question in exam.exam_questions]
+    questions = Question.query.filter_by(teacherId=current_user.id).all()#all questions of the current user
     exam_question_ids_json = json.dumps(exam_question_ids)  # Convert the list to a JSON string
-
-    return render_template('editExams.html', exam=exam, questions=questions, exam_question_ids=exam_question_ids, exam_question_ids_json=exam_question_ids_json)
+    tags = Tag.query.all()
+    courses = [course[0] for course in Question.query.with_entities(Question.courseCode).distinct()]
+    return render_template('editExams.html', exam=exam, questions=questions, exam_question_ids=exam_question_ids, exam_question_ids_json=exam_question_ids_json,tags=tags,courses=courses)
 
 @exams_views.route('/edit_exam/<int:exam_id>', methods=['PUT'])
 def edit_exam_route(exam_id):
