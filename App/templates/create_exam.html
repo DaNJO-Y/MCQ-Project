@@ -336,7 +336,7 @@
             padding: 20px;
             width: 30%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 1010; /* Ensure the modal content is above the background */
+            z-index: 1010; 
         }
     </style>
 </head>
@@ -480,13 +480,13 @@
                                 <input type="text" id="course-code" class="shadow appearance-none border rounded w-32 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                             </div>
                         </div>
-                        <div class="mb-2">
+                        <!-- <div class="mb-2">
                             <div class="flex space-x-2">
                                 <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">micro</button>
                                 <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">bio</button>
                                 <button class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-1 px-2 rounded text-sm">hard</button>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div id="exam-questions-container" class="mt-4 border rounded p-2 bg-white">
                             <h3 class="text-lg font-semibold mb-2 text-gray-700">Selected Questions</h3>
@@ -836,7 +836,7 @@
                     .then((data) => {
                         // Update the question bank table with the filtered questions
                         questionBankBody.innerHTML = ''; // Clear the current table rows
-
+  
                         data.questions.forEach((question) => {
                             const row = document.createElement('tr');
                             row.dataset.questionId = question.id;
@@ -917,6 +917,37 @@
                         delete selectedQuestions[questionId];
                     }
                 }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchbar = document.getElementById('searchbar');
+            const questionTableRows = document.querySelectorAll('#question-bank-body tr'); // Get all rows in the table body
+
+            if (!searchbar) {
+                console.error("Search bar element with id 'searchbar' not found.");
+                return;
+            }
+
+            if (!questionTableRows.length) {
+                console.warn("No rows found in the question bank table.");
+                return;
+            }
+
+            console.log("Search bar and question table rows initialized successfully.");
+
+            searchbar.addEventListener('input', () => { // Use 'input' event for better responsiveness
+                const query = searchbar.value.toLowerCase().trim(); // Get the search query, convert to lowercase, and trim whitespace
+                console.log("Search query:", query);
+
+                questionTableRows.forEach(row => {
+                    const questionText = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase(); // Get the question text from the second column
+                    if (questionText && questionText.includes(query)) {
+                        row.style.display = ''; // Show the row if it matches the query
+                    } else {
+                        row.style.display = 'none'; // Hide the row if it doesn't match
+                    }
+                });
             });
         });
     </script>

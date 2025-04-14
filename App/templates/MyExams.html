@@ -162,7 +162,7 @@
         }
 
         .searchbar {
-            width: 50%;
+            width: 100%;
             padding: 12px;
             border: 1px solid darkgrey;
             border-radius: 0.375rem;
@@ -325,10 +325,9 @@
                 <h1 class="MyExams-title">
                     My Exams
                 </h1>
-                <div class="filters-container">
-                    <button id="filter" class="filter-button">Filters</button>
-                    <input id="searchbar" type="text" placeholder="Search Exams" class="searchbar">
-
+                <div class="search-wrapper">
+                    <label for="searchbar" class="sr-only">Search Exam Title</label>
+                    <input id="searchbar" type="text" placeholder="Search Exam Title" class="searchbar">
                 </div>
                 <tbody>
                     {% if exams %}
@@ -452,6 +451,45 @@
                     }
 
                     console.log('Selected Exams:', Array.from(selectedExams)); // Log selected exams
+                });
+            });
+
+            const searchbar = document.getElementById('searchbar');
+            const examTableRows = document.querySelectorAll('tbody tr'); // Get all rows in the table body
+
+            if (!searchbar) {
+                console.error("Search bar element with id 'searchbar' not found.");
+                return;
+            }
+
+            if (!examTableRows.length) {
+                console.error("No table rows found in the table body.");
+                return;
+            }
+
+            console.log("Search bar and table rows initialized successfully.");
+
+            searchbar.addEventListener('input', () => { // Use 'input' event for better responsiveness
+                const query = searchbar.value.toLowerCase().trim(); // Get the search query, convert to lowercase, and trim whitespace
+                console.log("Search query:", query);
+
+                examTableRows.forEach(row => {
+                    const examTitleElement = row.querySelector('label.check-container');
+                    if (!examTitleElement) {
+                        console.error("No 'label.check-container' element found in row:", row);
+                        return;
+                    }
+
+                    const examTitle = examTitleElement.textContent.toLowerCase();
+                    console.log("Exam title:", examTitle);
+
+                    if (examTitle.includes(query)) {
+                        row.style.display = ''; // Show the row if it matches the query
+                        console.log(`Row with exam title "${examTitle}" matches the query.`);
+                    } else {
+                        row.style.display = 'none'; // Hide the row if it doesn't match
+                        console.log(`Row with exam title "${examTitle}" does not match the query.`);
+                    }
                 });
             });
         });
