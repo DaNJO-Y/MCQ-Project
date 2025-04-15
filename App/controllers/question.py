@@ -110,7 +110,7 @@ def filter(difficulty, tag_id, course_code):
 
     # Apply difficulty filter if selected
     if difficulty and difficulty != "All":
-        query = query.filter_by(difficulty=difficulty.upper())  # Convert to uppercase for consistency
+        query = query.filter_by(difficulty=difficulty)  # Convert to uppercase for consistency
 
     # Apply tag filter if selected
     if tag_id and tag_id.strip() and tag_id != "All":

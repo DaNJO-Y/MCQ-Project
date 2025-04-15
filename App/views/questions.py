@@ -59,7 +59,8 @@ def my_questions_page():
     # Remove duplicates while preserving order
     seen = set()
     courses = [x for x in courses if not (x in seen or seen.add(x))]
-    difficulties = [x for x in difficulties if not (x in seen or seen.add(x))]
+    seen_d = set()
+    difficulties = [x for x in difficulties if not (x in seen_d or seen_d.add(x))]
     
     
     return render_template('MyQuestions.html', tags=tags,courses=courses, questions=questions, difficulties=difficulties)
