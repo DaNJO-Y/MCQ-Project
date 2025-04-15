@@ -6,6 +6,7 @@ from App.controllers import *
 from App.utils import shuffle
 from datetime import date
 from sqlalchemy import select
+import json
 
 
 def save_question(teacherId, text, difficulty, courseCode, options):
@@ -46,11 +47,12 @@ def associate_option(question_id, option):
 def delete_question(id):
     question = get_question(id)
     if not question:
-        print(f'User with {id} not found')
-        return
+        print(f'Question with {id} not found')
+        return None
     db.session.delete(question)
     db.session.commit()
-    print(f'User with {id} deleted')
+    message = f'Question deleted successfully'
+    return message
 
 
 def shuffle_options(options):
