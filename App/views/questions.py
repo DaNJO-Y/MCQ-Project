@@ -238,7 +238,7 @@ def editQuestionsPage(question_id):
 
 @questions_views.route('/edit_question/<int:question_id>', methods=['GET', 'POST'])
 @login_required
-def edit_question(question_id):
+def edit_question_route(question_id):
     potentialQuestion = get_question(question_id)
     if not potentialQuestion:
         flash('Question not found')
@@ -510,10 +510,64 @@ def user_api_get_questions_by_difficulty(difficulty):
             # print(question_list)
             return jsonify(question_list), 200
     except Exception as e:
-        return jsonify(error=f"An Error Occurred While retrieving the questions by course code: {coursecode}"), 500
+        return jsonify(error=f"An Error Occurred While retrieving the questions by difficulty: {difficulty}"), 500
 
-# @questions_views.route('/api/update_question', methods=['POST'])
-# @questions_views.route('/api/delete_question', methods=['DELETE'])
+@questions_views.route('/api/update_question/<int:id>', methods=['PUT'])
+@login_required
+def user_api_update_question(id):
+    try:
+        data = request.json
+        teacher = current_user
+        if not teacher:
+            return jsonify({"error":"Unauthourized user"}), 400
+        question = get_question(id)
+        if not question:
+            return jsonify({"error":"Question not found"}), 404
+        if question.teacherId != teacher.id:
+            return jsonify({"error":"You do not have permission to edit this question"}), 403
+        new_text = data.get('text')
+        new_difficulty = data.get('difficulty')
+        new_courseCode = data.get('courseCode')
+        new_question = edit_question(id, new_text, new_difficulty, new_courseCode)
+        if not new_question:
+            return jsonify({"error":"Question data was not formatted properly"}), 400
+        i = 1
+        for option in new_question.options:
+            string = f"option_body_{i}"
+            if string not in data:
+                return jsonify({"error": f"Missing option data: {string}"}), 400
+            new_option = add_text(option.id, data[string], question.id)
+            if not new_option:
+                return jsonify({"error":"Option data was not formatted properly"})
+            i += 1
+        return jsonify({"message": "Question updated successfully"}), 200
+    
+    except Exception as e:
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
+
+@questions_views.route('/api/delete_question/<int:id>', methods=['DELETE'])
+@login_required
+def user_api_delete_question(id):
+    try:
+        teacher = current_user
+        if not teacher:
+            return jsonify({"error":"Unauthourized user"}), 400
+        question = get_question(id)
+        if not question:
+            return jsonify({"error":"Question not found"}), 404
+        if question.teacherId != teacher.id:
+            return jsonify({"error":"You do not have permission to edit this question"}), 403
+        for option in question.options:
+            db.session.delete(option)
+        db.session.commit()
+        response =delete_question(id)
+        if not response:
+            return jsonify({"error":"Question was not deleted properly"}), 400
+        print(response)
+        return jsonify({"message":"Question deleted successfully"}),200
+    except Exception as e:
+        return jsonify({"error": f"Server error: {str(e)}"}), 500
+    
 
 
         
