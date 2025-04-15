@@ -5,6 +5,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
 from.index import index_views
 from App.models import *
+from collections import Counter
 
 from App.controllers import *
 import os
@@ -54,12 +55,14 @@ def my_questions_page():
     
     questions = get_all_my_questions(current_user)  # Fetch only the logged-in teacher's questions
     courses = [question.courseCode for question in questions]
+    difficulties = [question.difficulty for question in questions]
     # Remove duplicates while preserving order
     seen = set()
     courses = [x for x in courses if not (x in seen or seen.add(x))]
+    difficulties = [x for x in difficulties if not (x in seen or seen.add(x))]
     
     
-    return render_template('MyQuestions.html', tags=tags,courses=courses, questions=questions)
+    return render_template('MyQuestions.html', tags=tags,courses=courses, questions=questions, difficulties=difficulties)
 
 @questions_views.route('/displayQuestion/<int:question_id>',methods=['GET'])
 @login_required
@@ -99,11 +102,29 @@ def filter_questions():
     # Pass the filtered questions, tags, and course codes back to the template
     tags = Tag.query.all()
     courses = Question.query.with_entities(Question.courseCode).distinct()  # Get unique course codes
-    return render_template('MyQuestions.html', questions=filtered_questions, tags=tags, courses=[c[0] for c in courses])
+    difficulties = Question.query.with_entities(Question.difficulty).distinct()  # Get unique difficulties
+    return render_template('MyQuestions.html', questions=filtered_questions, tags=tags, courses=[c[0] for c in courses], difficulties=[d[0] for d in difficulties ])
 
 @questions_views.route('/createQuestion',methods=['GET'])
+@login_required
 def createQuestionPage():
-    return render_template('create_question.html')
+    teacher = current_user
+    if len(teacher.questions) != 0:
+        # unique_difficulties = list({q.difficulty for q in teacher.questions if q.difficulty})
+        # unique_course_codes = list({q.courseCode for q in teacher.questions if q.courseCode})
+        difficulty_counts = Counter(q.difficulty for q in teacher.questions if q.difficulty)
+        # Get a list of difficulties sorted by frequency (most common first)
+        sorted_difficulties = [difficulty for difficulty, _ in difficulty_counts.most_common()]
+
+        courseCode_counts = Counter(q.courseCode for q in teacher.questions if q.courseCode)
+        # Get a list of difficulties sorted by frequency (most common first)
+        sorted_courseCodes = [courseCode for courseCode, _ in courseCode_counts.most_common()]
+        hasQuestion = True
+    else:
+        sorted_difficulties = []
+        sorted_courseCodes = []
+        hasQuestion = False
+    return render_template('create_question.html', question=hasQuestion, difficulties = sorted_difficulties, courseCodes = sorted_courseCodes)
 
 @questions_views.route('/questions', methods=['POST'])
 @login_required

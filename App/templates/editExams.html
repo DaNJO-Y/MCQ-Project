@@ -507,9 +507,12 @@
                     <label for="difficultyFilterEdit" class="block font-semibold mb-2">Difficulty:</label>
                     <select id="difficultyFilterEdit" name="difficulty" class="p-2 border border-gray-300 rounded w-full">
                         <option value="" selected>All</option>
-                        <option value="Easy">Easy</option>
+                        <!-- <option value="Easy">Easy</option>
                         <option value="Intermediate">Intermediate</option>
-                        <option value="Hard">Hard</option>
+                        <option value="Hard">Hard</option> -->
+                        {% for d in difficulties %}
+                            <option value="{{ d }}">{{ d }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="mb-4">
@@ -715,18 +718,40 @@
                                 const tagCell = document.createElement('td');
                                 tagCell.textContent = question.tag.join(', '); // Assuming tag is a list
 
-                                const difficultyCell = document.createElement('td');
-                                difficultyCell.textContent = question.difficulty || 'N/A';
+                                const optionCell = document.createElement('td');
+                                const ul = document.createElement('ul');
+                                ul.style.listStyleType = 'disc';
+                                ul.style.paddingLeft = '20px';
 
-                                const courseCodeCell = document.createElement('td');
-                                courseCodeCell.textContent = question.courseCode || 'N/A';
+                                question.options.forEach((option) => {
+                                    const li = document.createElement('li');
+                                    li.textContent = option;
+                                    ul.appendChild(li);
+                                });
+                                optionCell.appendChild(ul);
+                                // optionCell.textContent = question.options.join(',');
+
+                                // const courseCodeCell = document.createElement('td');
+                                // courseCodeCell.textContent = question.courseCode || 'N/A';
+                                const correctAnswersCell = document.createElement('td');
+                                correctAnswersCell.innerHTML = question.option_isCorrect|| 'No correct answer';
+                                
+                                const actionCell = document.createElement('td');
+                                actionCell.innerHTML = `<div class="p-1">
+                                                            <button id="viewbutton" class="text-blue py-1 px-4 rounded">
+                                                                <a href="/displayQuestion/${question.id}">
+                                                                    View Question
+                                                                </a>
+                                                            </button>
+                                                        </div>`;
 
                                 row.appendChild(selectCell);
                                 row.appendChild(questionCell);
                                 row.appendChild(tagCell);
                                 row.appendChild(lastUsedCell);
-                                row.appendChild(difficultyCell);
-                                row.appendChild(courseCodeCell);
+                                row.appendChild(optionCell);
+                                row.appendChild(correctAnswersCell);
+                                row.appendChild(actionCell);
                                 questionBankBody.appendChild(row);
                             });
 

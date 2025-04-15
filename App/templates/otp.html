@@ -111,6 +111,21 @@
             pointer-events: none;
             cursor:initial;
         }
+
+        .otp-box form + form {
+            margin-top: 1em;
+        }
+
+        .inputs input#otp {
+            width: 100%;
+            height: 40px;
+            border: 1px solid #bbb;
+            border-radius: 8px;
+            font-size: 18px;
+            padding: 0 10px;
+            text-align: center;
+            margin-bottom: 1em;
+        }
   </style>
 
   </head>
@@ -124,22 +139,16 @@
     <div class="otp-box">
         <form action="/authenticate" method="POST" id="myForm">
             <div class="content-box">
-                <h2>Verification code</h2>
-                <p>We have sent a verification code to your registered email</p>
+              <h2>Verification code</h2>
+              <p>We have sent a verification code to your registered email</p>
             </div>
             <div class="inputs">
-                <input type="text" maxlength="1" class="otp-input"/>
-                <input type="text" maxlength="1" class="otp-input"/>
-                <input type="text" maxlength="1" class="otp-input"/>
-                <input type="text" maxlength="1" class="otp-input"/>
-                <input type="text" maxlength="1" class="otp-input"/>
-                <input type="text" maxlength="1" class="otp-input"/>
+              <input type="text" name="otp" id="otp" maxlength="6" pattern="\d{6}" required placeholder="Enter 6-digit code" />
             </div>
-            <input type="hidden" name="otp" id="hidden-otp">
             <div class="verify-btn">
-                <button type="submit" disabled>Verify</button>
+              <button type="submit">Verify</button>
             </div>
-        </form>
+          </form>
         <form action="/resend" method="POST">
             <input type="hidden" id="op" name="email" value={{email}}>
             <button type="submit" class="login-btn bg-[#2b96ad] text-white py-3 px-4 rounded-md hover:opacity-90 transition duration-300 text-lg">Resend OTP</button>
@@ -161,46 +170,7 @@
           {% endif %}
         {% endwith %}
 
-       const inputs = [...document.querySelectorAll(".otp-box input.otp-input")];
-       const submitBtn = document.querySelector(".otp-box button");
-       const hiddenOtpInput = document.getElementById("hidden-otp");
-
-       inputs.forEach((input, index) => {
-        input.addEventListener("keyup", (e) => {
-            if(!(e.keyCode >= 48 && e.keyCode <= 57)){
-                e.target.value = "";
-                updateHiddenOtp();
-                return;
-            }
-            
-            e.target.value = String.fromCharCode(e.keyCode);
-
-            if(index < (inputs.length - 1)){
-                inputs[index + 1].focus();
-            }
-
-            setTimeout(() =>{
-                const isDisabledBtn = inputs.some(e => e.value.length !== 1);
-                submitBtn.disabled = isDisabledBtn;
-                updateHiddenOtp();
-            }, 0);
-        });
-        input.addEventListener("input", () => {
-            updateHiddenOtp(); 
-        });
-       });
-
-       function updateHiddenOtp() {
-            let otpValue = "";
-            inputs.forEach(input => {
-                otpValue += input.value;
-            });
-            hiddenOtpInput.value = otpValue;
-        }
-        const form = document.getElementById("myForm");
-        form.addEventListener("submit", () => {
-            updateHiddenOtp();
-        });
+       
     </script>
   </body>
 </html>

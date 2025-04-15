@@ -23,9 +23,99 @@ def import_page():
 
 questions_data = []
 
+# def extract_questions_from_text(text):
+#     questions = []
+#     current_question = {}
+#     options_started = False
+#     option_counter = 'A'
+
+#     for line in text.strip().split('\n'):
+#         line = line.strip()
+#         if not line:
+#             continue
+#         # print(f"Processing line: '{line}'")
+
+#         if line.startswith("CourseCode:"):
+#             current_question['courseCode'] = line.split(":")[1].strip()
+#         elif line.startswith("Difficulty:"):
+#             current_question['difficulty'] = line.split(":")[1].strip().upper()
+#         elif line.startswith("Question:"):
+#             if current_question.get('text'):
+#                 questions.append(current_question)
+#             current_question = {'options': {}}
+#             current_question['text'] = line.split(":")[1].strip()
+#             options_started = True
+#             option_counter = 'A'
+#         elif line.startswith("Tags:"):
+#             current_question['tags'] = [tag.strip() for tag in line.split(":")[1].strip().split(',')]
+#         elif options_started:
+#             if line.startswith(f"{option_counter}:"):
+#                 current_question['options'][option_counter] = line.split(":")[1].strip()
+#                 option_counter = chr(ord(option_counter) + 1)
+#             elif line.startswith("Correct:"):
+#                 current_question['correct_answer'] = line.split(":")[1].strip().upper()
+#                 options_started = False
+
+#     if current_question.get('text'):
+#         questions.append(current_question)
+
+#     return questions
+
+# works good p1
+# def extract_questions_from_text(text):
+#     questions = []
+#     current_question = None
+#     options_started = False
+#     option_counter = 'A'
+
+#     for line in text.strip().split('\n'):
+#         line = line.strip()
+#         if not line:
+#             continue
+
+#         if line.startswith("CourseCode:"):
+#             if current_question and current_question.get('text'):
+#                 questions.append(current_question)
+#             current_question = {'options': {}}
+#             current_question['courseCode'] = line.split(":", 1)[1].strip()
+
+#         elif line.startswith("Difficulty:"):
+#             if not current_question:
+#                 current_question = {'options': {}}
+#             current_question['difficulty'] = line.split(":", 1)[1].strip().upper()
+
+#         elif line.startswith("Question:"):
+#             if current_question and current_question.get('text'):
+#                 questions.append(current_question)
+#             if not current_question:
+#                 current_question = {'options': {}}
+#             else:
+#                 current_question.setdefault('options', {})
+#             current_question['text'] = line.split(":", 1)[1].strip()
+#             options_started = True
+#             option_counter = 'A'
+
+#         elif line.startswith("Tags:"):
+#             if not current_question:
+#                 current_question = {'options': {}}
+#             current_question['tags'] = [tag.strip() for tag in line.split(":", 1)[1].strip().split(',')]
+
+#         elif options_started:
+#             if line.startswith(f"{option_counter}:"):
+#                 current_question['options'][option_counter] = line.split(":", 1)[1].strip()
+#                 option_counter = chr(ord(option_counter) + 1)
+#             elif line.startswith("Correct:"):
+#                 current_question['correct_answer'] = line.split(":", 1)[1].strip().upper()
+#                 options_started = False
+
+#     if current_question and current_question.get('text'):
+#         questions.append(current_question)
+
+#     return questions
+
 def extract_questions_from_text(text):
     questions = []
-    current_question = {}
+    current_question = None
     options_started = False
     option_counter = 'A'
 
@@ -33,30 +123,44 @@ def extract_questions_from_text(text):
         line = line.strip()
         if not line:
             continue
-        # print(f"Processing line: '{line}'")
 
         if line.startswith("CourseCode:"):
-            current_question['courseCode'] = line.split(":")[1].strip()
-        elif line.startswith("Difficulty:"):
-            current_question['difficulty'] = line.split(":")[1].strip().upper()
-        elif line.startswith("Question:"):
-            if current_question.get('text'):
+            if current_question and current_question.get('text'):
                 questions.append(current_question)
             current_question = {'options': {}}
-            current_question['text'] = line.split(":")[1].strip()
+            current_question['courseCode'] = line.split(":", 1)[1].strip()
+
+        elif line.startswith("Difficulty:"):
+            if not current_question:
+                current_question = {'options': {}}
+            current_question['difficulty'] = line.split(":", 1)[1].strip()  # no .upper()
+
+        elif line.startswith("Question:"):
+            if current_question and current_question.get('text'):
+                questions.append(current_question)
+            if not current_question:
+                current_question = {'options': {}}
+            else:
+                current_question.setdefault('options', {})
+            current_question['text'] = line.split(":", 1)[1].strip()
             options_started = True
             option_counter = 'A'
+
         elif line.startswith("Tags:"):
-            current_question['tags'] = [tag.strip() for tag in line.split(":")[1].strip().split(',')]
+            if not current_question:
+                current_question = {'options': {}}
+            tag_string = line.split(":", 1)[1].strip()
+            current_question['tags'] = [tag.strip() for tag in tag_string.split(',') if tag.strip()]
+
         elif options_started:
             if line.startswith(f"{option_counter}:"):
-                current_question['options'][option_counter] = line.split(":")[1].strip()
+                current_question['options'][option_counter] = line.split(":", 1)[1].strip()
                 option_counter = chr(ord(option_counter) + 1)
             elif line.startswith("Correct:"):
-                current_question['correct_answer'] = line.split(":")[1].strip().upper()
+                current_question['correct_answer'] = line.split(":", 1)[1].strip().upper()
                 options_started = False
 
-    if current_question.get('text'):
+    if current_question and current_question.get('text'):
         questions.append(current_question)
 
     return questions

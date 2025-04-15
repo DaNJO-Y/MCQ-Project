@@ -5,7 +5,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 from App.views.auth import auth_views
 from datetime import date
 import json
-
+from collections import Counter
 from.index import index_views
 
 from App.controllers import *
@@ -32,11 +32,19 @@ def my_exams_page():
     return render_template('MyExams.html', exams=response["exams"])
 
 @exams_views.route('/new_exam')
+@login_required
 def newExamPage():
-    tags = Tag.query.all()
-    courses = [course[0] for course in Question.query.with_entities(Question.courseCode).distinct()]
-    questions = get_all_my_questions(current_user)
-    return render_template('create_exam.html', tags=tags, courses=courses, questions=questions)
+    teacher = current_user
+    tags= Tag.query.all()  # Fetch all tags
+    
+    questions = get_all_my_questions(current_user)  # Fetch only the logged-in teacher's questions
+    courses = [question.courseCode for question in questions]
+    difficulties = [question.difficulty for question in questions]
+    # Remove duplicates while preserving order
+    seen = set()
+    courses = [x for x in courses if not (x in seen or seen.add(x))]
+    difficulties = [x for x in difficulties if not (x in seen or seen.add(x))]
+    return render_template('create_exam.html', tags=tags, courses=courses, questions=questions, difficulties=difficulties)
 
 @exams_views.route('/filter_questions_exams', methods=['GET'])
 def filter_questions_exams():
@@ -64,6 +72,7 @@ def filter_questions_exams():
                 'courseCode': question.courseCode,
                 'options': [option.body for option in question.options],
                 'option_isCorrect': [option.body for option in question.options if option.is_correct],
+                'lastUsed': question.lastUsed,
             }
             for question in questions
         ]
@@ -157,8 +166,14 @@ def edit_exam(exam_id):
     questions = Question.query.filter_by(teacherId=current_user.id).all()#all questions of the current user
     exam_question_ids_json = json.dumps(exam_question_ids)  # Convert the list to a JSON string
     tags = Tag.query.all()
-    courses = [course[0] for course in Question.query.with_entities(Question.courseCode).distinct()]
-    return render_template('editExams.html', exam=exam, questions=questions, exam_question_ids=exam_question_ids, exam_question_ids_json=exam_question_ids_json,tags=tags,courses=courses)
+    # courses = [course[0] for course in Question.query.with_entities(Question.courseCode).distinct()]
+    courses = [question.courseCode for question in questions]
+    difficulties = [question.difficulty for question in questions]
+    # Remove duplicates while preserving order
+    seen = set()
+    courses = [x for x in courses if not (x in seen or seen.add(x))]
+    difficulties = [x for x in difficulties if not (x in seen or seen.add(x))]
+    return render_template('editExams.html', exam=exam, questions=questions, exam_question_ids=exam_question_ids, exam_question_ids_json=exam_question_ids_json,tags=tags,courses=courses, difficulties=difficulties)
 
 @exams_views.route('/edit_exam/<int:exam_id>', methods=['PUT'])
 def edit_exam_route(exam_id):
