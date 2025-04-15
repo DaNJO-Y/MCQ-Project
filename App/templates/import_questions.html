@@ -194,6 +194,7 @@
             left: auto; /* Override Materialize's left positioning */
             transform: none !important; /* Prevent Materialize's default transform */
             color: white ; 
+            /* font-size: 1.2em; */
             /* color: #2b96ad; */
             /* background-color: rgba(0, 0, 0, 0.7) ; */
         }
@@ -371,12 +372,13 @@
                     // Optionally redirect the user or provide further feedback
                     setTimeout(() => {
                         window.location.href = '{{ url_for('questions_views.my_questions_page') }}';
-                    }, 2000);
+                    }, 200);
                 }
             })
             .catch(error => {
                 console.error('Error uploading file:', error);
-                uploadStatus.textContent = 'Error uploading file.';
+                window.location.href = '{{ url_for('import_page_views.import_page') }}';
+                // uploadStatus.textContent = 'Error uploading file.';
             });
         }
     </script>

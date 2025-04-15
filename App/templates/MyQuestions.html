@@ -507,9 +507,9 @@
                     <label for="difficultyFilter" class="block font-semibold mb-2">Difficulty:</label>
                     <select id="difficultyFilter" name="difficulty" class="p-2 border border-gray-300 rounded w-full">
                         <option value="" selected>All</option>
-                        <option value="Easy">Easy</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Hard">Hard</option>
+                        {% for d in difficulties %}
+                            <option value="{{ d }}">{{ d }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="mb-4">
@@ -542,7 +542,7 @@
         var myVar;
 
         function myFunction() {
-            myVar = setTimeout(showPage, 2500);
+            myVar = setTimeout(showPage, 1100);
         }
 
         function showPage() {
