@@ -33,6 +33,8 @@ def load_config(app, overrides):
     # app.config['SECRET_KEY'] = 'c?|CVNoxkYqfB}|o$A6G'
     app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
     app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+    app.config['MAILGUN_API_KEY'] = os.getenv('MAILGUN_API_KEY')
+    app.config['MAILGUN_DOMAIN'] = os.getenv('MAILGUN_DOMAIN')
     # app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     mail = Mail(app)
    
