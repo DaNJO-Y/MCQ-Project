@@ -180,13 +180,16 @@ def edit_exam(exam_id):
 @exams_views.route('/edit_exam/<int:exam_id>', methods=['PUT'])
 def edit_exam_route(exam_id):
     data = request.get_json()
+    print("Received Data:", data)  # Log the received data
+
     title = data.get('title')
     course_code = data.get('courseCode')
     add_questions = data.get('add_questions', [])
     remove_questions = data.get('remove_questions', [])
     teacher_id = data.get('teacher_id')  
 
-    print("Remove Questions:", remove_questions)  
+    print("Add Questions:", add_questions)  # Log the questions to be added
+    print("Remove Questions:", remove_questions)  # Log the questions to be removed
 
     result = update_exam(
         exam_id=exam_id,

@@ -7,7 +7,7 @@
 - Use the empty version  at the bottom, feel free to add more options
 
 CourseCode: BIOL2345
-Difficulty: Easy
+Difficulty: 1
 Question: What is the capital of France?
 Tags: Cities, Capitals
 A: London
@@ -17,7 +17,7 @@ D: Rome
 Correct: B
 
 CourseCode: BIOL2345
-Difficulty: Easy 
+Difficulty: 1 
 Question: Which planet is known as the "Red Planet"?
 Tags: Planets
 A: Venus
@@ -27,7 +27,7 @@ D: Saturn
 Correct: B
 
 CourseCode: BIOL2345
-Difficulty: Easy
+Difficulty: 5
 Question: What is 2 + 2?
 Tags: Arithmetic
 A: 3
