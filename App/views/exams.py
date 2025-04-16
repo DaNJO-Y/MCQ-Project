@@ -55,11 +55,13 @@ def filter_questions_exams():
     query = Question.query
 
     if difficulty:
-        query = query.filter_by(difficulty=difficulty)
+        query = query.filter(Question.difficulty == difficulty)
     if tag:
-        query = query.join(Question.tag).filter(Tag.id == tag)
+        # Ensure tag is queried by name or ID as needed
+        query = query.filter(Question.tag).filter(Tag.id == tag)
     if course_code:
-        query = query.filter_by(courseCode=course_code)
+        # Ensure the filter is applied to the Question model
+        query = query.filter(Question.courseCode == course_code)
 
     questions = query.all()
     return jsonify({
