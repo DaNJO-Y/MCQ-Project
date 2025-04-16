@@ -7,6 +7,7 @@ from App.controllers import teacher
 from App.models import *
 from flask_mail import Mail, Message
 from flask import current_app
+import requests
 import os
 import uuid
 import json
@@ -68,6 +69,30 @@ def send_email(otp, user_email):
         print(response.headers)
     except Exception as e:
             print(f"Error sending email: {str(e)}")
+
+# def send_email(otp, user_email):
+#     api_key = current_app.config['MAILGUN_API_KEY']
+#     domain = current_app.config['MAILGUN_DOMAIN']
+#     sender_email = f"noreply@{domain}"
+
+#     subject = 'This e-mail message is being sent to deliver your one-time password.'
+#     html_content = f'<strong>This is your one-time password code: {otp}</strong>'
+
+#     try:
+#         response = requests.post(
+#             f"https://api.mailgun.net/v3/{domain}/messages",
+#             auth=("api", api_key),
+#             data={
+#                 "from": sender_email,
+#                 "to": [user_email],
+#                 "subject": subject,
+#                 "html": html_content
+#             }
+#         )
+#         print(response.status_code)
+#         print(response.text)
+#     except Exception as e:
+#         print(f"Error sending email: {str(e)}")
 
 RESEND_LIMIT = 3  
 RESEND_WINDOW = 60  
