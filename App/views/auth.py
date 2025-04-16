@@ -57,7 +57,7 @@ def verify_otp(secret_key, otp):
 
 def send_email(otp, user_email):
     message = Mail(
-    from_email='d4884781@gmail.com',
+    from_email='joelyoung580@gmail.com',
     to_emails=[user_email],
     subject='This e-mail message is being sent to deliver your one-time password.',
     html_content=f'<strong>This is your one-time password code: {otp} .</strong>')
@@ -68,7 +68,7 @@ def send_email(otp, user_email):
         print(response.body)
         print(response.headers)
     except Exception as e:
-            print(f"Error sending email: {str(e)}")
+            print(f"Error sending email-hi: {str(e)}")
 
 # def send_email(otp, user_email):
 #     api_key = current_app.config['MAILGUN_API_KEY']
