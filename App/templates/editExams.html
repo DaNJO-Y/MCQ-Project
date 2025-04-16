@@ -154,13 +154,16 @@
             padding: 4px; /* Reduce padding to compensate for smaller text */
         }
         .scrollable-table-container {
-            max-height: 500px; /* Adjust the height as needed */
-            overflow-y: auto;
+            max-height: 500px;
+            overflow-y: scroll; /* Always show the scroll bar */
         }
 
         #question-bank-container {
             width: 100%;
+            table-layout: fixed; /* Ensures the table fits within the container */
             border-collapse: collapse;
+            margin: 0;
+            padding: 0;
         }
 
         #question-bank-container th,
@@ -336,6 +339,10 @@
             width: 30%;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             z-index: 1010; 
+        }
+
+        .parent-container {
+            overflow: visible; /* Ensure the parent allows overflow */
         }
 
     </style>
@@ -540,298 +547,341 @@
             </form>
         </div>
     </div>
-
     <script>
-        const toggleNav = document.getElementById('toggleNav');
-        const sideNav = document.getElementById('sideNav');
-        const mainContent = document.getElementById('mainContent');
-        const questionBankBody = document.getElementById('question-bank-body');
-        const examQuestionsList = document.getElementById('exam-questions-list');
-        const examQuestionCount = document.getElementById('exam-question-count');
-        const examQuestionsEmpty = document.getElementById('exam-questions-empty');
-        const selectedQuestions = {};
-        let isNavOpen = true;
+      const toggleNav = document.getElementById('toggleNav');
+const sideNav = document.getElementById('sideNav');
+const mainContent = document.getElementById('mainContent');
+const questionBankBody = document.getElementById('question-bank-body');
+const examQuestionsList = document.getElementById('exam-questions-list');
+const examQuestionCount = document.getElementById('exam-question-count');
+const examQuestionsEmpty = document.getElementById('exam-questions-empty');
+const selectedQuestions = {};
+let isNavOpen = true;
 
-        toggleNav.addEventListener('click', () => {
-            isNavOpen = !isNavOpen;
-            if (isNavOpen) {
-                sideNav.style.width = '50%';
-                sideNav.style.opacity = '1';
-                sideNav.style.visibility = 'visible';
-                mainContent.style.marginLeft = '10px';
-                toggleNav.innerHTML = '<i class="fas fa-angle-left"></i>';
-            } else {
-                sideNav.style.width = '0';
-                sideNav.style.opacity = '0';
-                sideNav.style.visibility = 'hidden';
-                mainContent.style.marginLeft = '10px';
-                toggleNav.innerHTML = '<i class="fas fa-angle-right"></i>';
+// Toggle navigation
+toggleNav.addEventListener('click', () => {
+    isNavOpen = !isNavOpen;
+    if (isNavOpen) {
+        sideNav.style.width = '50%';
+        sideNav.style.opacity = '1';
+        sideNav.style.visibility = 'visible';
+        mainContent.style.marginLeft = '10px';
+        toggleNav.innerHTML = '<i class="fas fa-angle-left"></i>';
+    } else {
+        sideNav.style.width = '0';
+        sideNav.style.opacity = '0';
+        sideNav.style.visibility = 'hidden';
+        mainContent.style.marginLeft = '10px';
+        toggleNav.innerHTML = '<i class="fas fa-angle-right"></i>';
+    }
+});
+
+// HTML decoding function
+function decodeHtml(html) {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+}
+
+// Update exam builder with selected questions
+function updateExamBuilder() {
+    examQuestionsList.innerHTML = '';
+    let count = 0;
+
+    for (const id in selectedQuestions) {
+        const question = selectedQuestions[id];
+        const listItem = document.createElement('li');
+        listItem.textContent = decodeHtml(`${question.text}`);
+
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.classList.add(
+            'bg-red-500',
+            'hover:bg-red-700',
+            'text-white',
+            'font-bold',
+            'py-1',
+            'px-2',
+            'rounded',
+            'text-xs',
+            'ml-2'
+        );
+        removeButton.addEventListener('click', () => {
+            delete selectedQuestions[id];
+            const bankCheckbox = questionBankBody.querySelector(`tr[data-question-id="${id}"] .select-question`);
+            if (bankCheckbox) {
+                bankCheckbox.checked = false;
             }
+            updateExamBuilder();
         });
+        listItem.appendChild(removeButton);
+        examQuestionsList.appendChild(listItem);
+        count++;
+    }
 
-        function decodeHtml(html) {
-            const txt = document.createElement("textarea");
-            txt.innerHTML = html;
-            return txt.value;
+    examQuestionCount.textContent = count;
+    examQuestionsEmpty.style.display = count === 0 ? 'block' : 'none';
+}
+
+// Handle checkbox changes in question bank
+questionBankBody.addEventListener('change', (event) => {
+    if (event.target.classList.contains('select-question')) {
+        const row = event.target.closest('tr');
+        const questionId = row.dataset.questionId;
+        const questionText = row.dataset.questionText;
+        const questionTag = row.dataset.questionTag;
+
+        if (event.target.checked) {
+            selectedQuestions[questionId] = { id: questionId, text: questionText, tag: questionTag };
+        } else {
+            delete selectedQuestions[questionId];
         }
+        updateExamBuilder();
+    }
+});
 
-        function updateExamBuilder() {
-            examQuestionsList.innerHTML = '';
-            let count = 0;
+// Save exam button handler
+document.getElementById('save-exam-button').addEventListener('click', () => {
+    const examTitle = document.getElementById('exam-title').value;
+    const courseCode = document.getElementById('course-code').value;
+    const questionIdsToAdd = Object.keys(selectedQuestions);
+    const examId = document.getElementById('save-exam-button').getAttribute('data-exam-id');
 
-            for (const id in selectedQuestions) {
-                const question = selectedQuestions[id];
-                const listItem = document.createElement('li');
-                listItem.textContent = decodeHtml(`${question.text}`);
+    const initialExamQuestionIds = JSON.parse('{{ exam_question_ids_json|default("[]")|safe }}');
+    const questionIdsToRemove = [];
 
-                const removeButton = document.createElement('button');
-                removeButton.textContent = 'Remove';
-                removeButton.classList.add(
-                    'bg-red-500',
-                    'hover:bg-red-700',
-                    'text-white',
-                    'font-bold',
-                    'py-1',
-                    'px-2',
-                    'rounded',
-                    'text-xs',
-                    'ml-2'
-                );
-                removeButton.addEventListener('click', () => {
-                    delete selectedQuestions[id];
-                    const bankCheckbox = questionBankBody.querySelector(`tr[data-question-id="${id}"] .select-question`);
-                    if (bankCheckbox) {
-                        bankCheckbox.checked = false;
-                    }
-                    updateExamBuilder();
-                });
-                listItem.appendChild(removeButton);
-                examQuestionsList.appendChild(listItem);
-                count++;
-            }
-
-            examQuestionCount.textContent = count;
-            examQuestionsEmpty.style.display = count === 0 ? 'block' : 'none';
+    // Identify questions that were initially in the exam but are no longer selected
+    initialExamQuestionIds.forEach(initialId => {
+        if (!selectedQuestions.hasOwnProperty(String(initialId))) {
+            questionIdsToRemove.push(initialId);
         }
+    });
 
-        questionBankBody.addEventListener('change', (event) => {
-            if (event.target.classList.contains('select-question')) {
-                const row = event.target.closest('tr');
-                const questionId = row.dataset.questionId;
+    if (questionIdsToAdd.length > 0 || questionIdsToRemove.length > 0 || examTitle.trim() !== "") {
+        const examData = {
+            title: examTitle,
+            courseCode: courseCode,
+            add_questions: questionIdsToAdd,
+            remove_questions: questionIdsToRemove,
+            teacher_id: null
+        };
+
+        fetch(`/edit_exam/${examId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(examData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            alert('Exam updated successfully!');
+        })
+        .catch(error => {
+            console.error('Error updating exam:', error);
+            alert('An error occurred while updating the exam.');
+        });
+    } else {
+        alert("Please add questions and an exam title.");
+    }
+});
+
+// DOM Content Loaded event handler
+document.addEventListener('DOMContentLoaded', () => {
+    const profileButton = document.getElementById('profileButton');
+    const profileDropdown = document.getElementById('profileDropdown');
+    const filterFormEdit = document.getElementById('filterFormEdit');
+    const searchbar = document.getElementById('searchbar');
+    const questionTableRows = document.querySelectorAll('#question-bank-body tr');
+
+    // Profile dropdown toggle
+    if (profileButton) {
+        profileButton.addEventListener('click', () => {
+            profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (event) => {
+        if (profileButton && profileDropdown && !profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+            profileDropdown.style.display = 'none';
+        }
+    });
+
+    // Initial state for smaller screens
+    if (window.innerWidth <= 768) {
+        isNavOpen = false;
+        sideNav.style.width = '0';
+        sideNav.style.opacity = '0';
+        sideNav.style.visibility = 'hidden';
+        mainContent.style.marginLeft = '10px';
+        toggleNav.innerHTML = '<i class="fas fa-angle-right"></i>';
+    }
+
+    // Preserve selected state after page load
+    const initialExamQuestionIds = JSON.parse('{{ exam_question_ids_json|default("[]")|safe }}');
+    initialExamQuestionIds.forEach(questionId => {
+        const checkbox = questionBankBody.querySelector(`tr[data-question-id="${questionId}"] .select-question`);
+        if (checkbox) {
+            checkbox.checked = true;
+            const row = checkbox.closest('tr');
+            if (row) {
                 const questionText = row.dataset.questionText;
                 const questionTag = row.dataset.questionTag;
-
-                if (event.target.checked) {
-                    selectedQuestions[questionId] = { id: questionId, text: questionText, tag: questionTag };
-                } else {
-                    delete selectedQuestions[questionId];
-                }
-                updateExamBuilder();
+                selectedQuestions[questionId] = { id: questionId, text: questionText, tag: questionTag };
             }
-        });
+        }
+    });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const profileButton = document.getElementById('profileButton');
-            const profileDropdown = document.getElementById('profileDropdown');
-            const filterFormEdit = document.getElementById('filterFormEdit');
-            const questionBankBody = document.getElementById('question-bank-body');
-            const selectedQuestions = {}; // Object to store selected questions
+    // Update exam builder with initial questions
+    updateExamBuilder();
 
-            // Handle profile dropdown toggle
-            if (profileButton) {
-                profileButton.addEventListener('click', () => {
-                    profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
-                });
-            }
+    // Filter form submission
+    if (filterFormEdit) {
+        filterFormEdit.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(filterFormEdit);
+            const url = this.action;
 
-            document.addEventListener('click', (event) => {
-                if (profileButton && profileDropdown && !profileButton.contains(event.target) && !profileDropdown.contains(event.target)) {
-                    profileDropdown.style.display = 'none';
-                }
-            });
+            fetch(url + '?' + new URLSearchParams(formData).toString())
+                .then(response => response.json())
+                .then(data => {
+                    const filteredQuestions = data.questions;
+                    questionBankBody.innerHTML = '';
 
-            // Initial state for smaller screens (optional)
-            if (window.innerWidth <= 768) {
-                isNavOpen = false;
-                sideNav.style.marginLeft = '-20%';
-                mainContent.style.marginLeft = '2rem';
-                toggleNav.innerHTML = '<i class="fas fa-angle-right"></i>';
-            }
+                    filteredQuestions.forEach(question => {
+                        const row = document.createElement('tr');
+                        row.dataset.questionId = question.id;
+                        row.dataset.questionText = question.text;
+                        row.dataset.lastUsed = question.lastUsed || 'N/A';
+                        row.dataset.questionTag = question.tag.join(', ');
 
-            // Preserve selected state after page load (including after filter)
-            const initialExamQuestionIds = JSON.parse('{{ exam_question_ids_json|default("[]")|safe }}');
-            initialExamQuestionIds.forEach(questionId => {
-                const checkbox = questionBankBody.querySelector(`tr[data-question-id="${questionId}"] .select-question`);
-                if (checkbox) {
-                    checkbox.checked = true;
-                    // Also update the selectedQuestions object to reflect the initial state
-                    const row = checkbox.closest('tr');
-                    if (row) {
-                        const questionText = row.dataset.questionText;
-                        const questionTag = row.dataset.questionTag;
-                        selectedQuestions[questionId] = { id: questionId, text: questionText, tag: questionTag };
-                    }
-                }
-            });
+                        const selectCell = document.createElement('td');
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.classList.add('select-question');
+                        if (selectedQuestions[question.id]) {
+                            checkbox.checked = true;
+                        }
+                        selectCell.appendChild(checkbox);
 
-            // Update the exam builder to reflect the initially selected questions
-            updateExamBuilder();
+                        const questionCell = document.createElement('td');
+                        questionCell.textContent = decodeHtml(question.text);
 
-            // Handle filter form submission
-            if (filterFormEdit) {
-                filterFormEdit.addEventListener('submit', function(event) {
-                    event.preventDefault(); // Prevent the default form submission
+                        const lastUsedCell = document.createElement('td');
+                        lastUsedCell.textContent = question.lastUsed || 'N/A';
 
-                    const formData = new FormData(filterFormEdit);
-                    const url = this.action;
+                        const tagCell = document.createElement('td');
+                        tagCell.textContent = question.tag.join(', ');
 
-                    // Fetch filtered questions from the server
-                    fetch(url + '?' + new URLSearchParams(formData).toString())
-                        .then(response => response.json())
-                        .then(data => {
-                            const filteredQuestions = data.questions;
-                            questionBankBody.innerHTML = ''; // Clear the existing list
+                        const optionCell = document.createElement('td');
+                        const ul = document.createElement('ul');
+                        ul.style.listStyleType = 'disc';
+                        ul.style.paddingLeft = '20px';
 
-                            // Populate the table with filtered questions
-                            filteredQuestions.forEach(question => {
-                                const row = document.createElement('tr');
-                                row.dataset.questionId = question.id;
-                                row.dataset.questionText = question.text;
-                                row.dataset.lastUsed = question.lastUsed || 'N/A'; // Handle missing lastUsed field
-                                row.dataset.questionTag = question.tag.join(', '); // Assuming tag is a list
-
-                                const selectCell = document.createElement('td');
-                                const checkbox = document.createElement('input');
-                                checkbox.type = 'checkbox';
-                                checkbox.classList.add('select-question');
-                                if (selectedQuestions[question.id]) {
-                                    checkbox.checked = true; // Preserve previously selected questions
-                                }
-                                selectCell.appendChild(checkbox);
-
-                                const questionCell = document.createElement('td');
-                                questionCell.textContent = decodeHtml(question.text);
-
-                                const lastUsedCell = document.createElement('td');
-                                lastUsedCell.textContent = question.lastUsed || 'N/A'; // Display "N/A" if lastUsed is missing
-
-                                const tagCell = document.createElement('td');
-                                tagCell.textContent = question.tag.join(', '); // Assuming tag is a list
-
-                                const optionCell = document.createElement('td');
-                                const ul = document.createElement('ul');
-                                ul.style.listStyleType = 'disc';
-                                ul.style.paddingLeft = '20px';
-
-                                question.options.forEach((option) => {
-                                    const li = document.createElement('li');
-                                    li.textContent = option;
-                                    ul.appendChild(li);
-                                });
-                                optionCell.appendChild(ul);
-                                // optionCell.textContent = question.options.join(',');
-
-                                // const courseCodeCell = document.createElement('td');
-                                // courseCodeCell.textContent = question.courseCode || 'N/A';
-                                const correctAnswersCell = document.createElement('td');
-                                correctAnswersCell.innerHTML = question.option_isCorrect|| 'No correct answer';
-                                
-                                const actionCell = document.createElement('td');
-                                actionCell.innerHTML = `<div class="p-1">
-                                                            <button id="viewbutton" class="text-blue py-1 px-4 rounded">
-                                                                <a href="/displayQuestion/${question.id}">
-                                                                    View Question
-                                                                </a>
-                                                            </button>
-                                                        </div>`;
-
-                                row.appendChild(selectCell);
-                                row.appendChild(questionCell);
-                                row.appendChild(tagCell);
-                                row.appendChild(lastUsedCell);
-                                row.appendChild(optionCell);
-                                row.appendChild(correctAnswersCell);
-                                row.appendChild(actionCell);
-                                questionBankBody.appendChild(row);
-                            });
-
-                            // Re-check the previously selected questions
-                            for (const questionId in selectedQuestions) {
-                                const checkbox = questionBankBody.querySelector(`tr[data-question-id="${questionId}"] .select-question`);
-                                if (checkbox) {
-                                    checkbox.checked = true;
-                                }
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error filtering questions:', error);
-                            // Optionally display an error message
+                        question.options.forEach((option) => {
+                            const li = document.createElement('li');
+                            li.textContent = option;
+                            ul.appendChild(li);
                         });
+                        optionCell.appendChild(ul);
 
-                    return false; // Explicitly disable form submission
-                });
-            }
+                        const correctAnswersCell = document.createElement('td');
+                        correctAnswersCell.innerHTML = question.option_isCorrect || 'No correct answer';
+                        
+                        const actionCell = document.createElement('td');
+                        actionCell.innerHTML = `<div class="p-1">
+                                                    <button id="viewbutton" class="text-blue py-1 px-4 rounded">
+                                                        <a href="/displayQuestion/${question.id}">
+                                                            View Question
+                                                        </a>
+                                                    </button>
+                                                </div>`;
 
-            const searchbar = document.getElementById('searchbar');
-            const questionTableRows = document.querySelectorAll('#question-bank-body tr'); // Get all rows in the table body
+                        row.appendChild(selectCell);
+                        row.appendChild(questionCell);
+                        row.appendChild(tagCell);
+                        row.appendChild(lastUsedCell);
+                        row.appendChild(optionCell);
+                        row.appendChild(correctAnswersCell);
+                        row.appendChild(actionCell);
+                        questionBankBody.appendChild(row);
+                    });
 
-            if (!searchbar) {
-                console.error("Search bar element with id 'searchbar' not found.");
-                return;
-            }
-
-            if (!questionTableRows.length) {
-                console.warn("No rows found in the question bank table.");
-                return;
-            }
-
-            console.log("Search bar and question table rows initialized successfully.");
-
-            searchbar.addEventListener('input', () => { // Use 'input' event for better responsiveness
-                const query = searchbar.value.toLowerCase().trim(); // Get the search query, convert to lowercase, and trim whitespace
-                console.log("Search query:", query);
-
-                questionTableRows.forEach(row => {
-                    const questionText = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase(); // Get the question text from the second column
-                    if (questionText && questionText.includes(query)) {
-                        row.style.display = ''; // Show the row if it matches the query
-                    } else {
-                        row.style.display = 'none'; // Hide the row if it doesn't match
+                    // Re-check previously selected questions
+                    for (const questionId in selectedQuestions) {
+                        const checkbox = questionBankBody.querySelector(`tr[data-question-id="${questionId}"] .select-question`);
+                        if (checkbox) {
+                            checkbox.checked = true;
+                        }
                     }
+                })
+                .catch(error => {
+                    console.error('Error filtering questions:', error);
                 });
+
+            return false;
+        });
+    }
+
+    // Search functionality
+    if (searchbar && questionTableRows.length) {
+        searchbar.addEventListener('input', () => {
+            const query = searchbar.value.toLowerCase().trim();
+            questionTableRows.forEach(row => {
+                const questionText = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase();
+                if (questionText && questionText.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
             });
         });
+    }
 
-        document.getElementById('save-exam-button').addEventListener('click', () => {
-            // ... (rest of your save exam logic) ...
+    // Filter Modal Logic
+    const filterModal = document.getElementById('filterModal');
+    const filterButton = document.getElementById('filter');
+    const closeModal = document.getElementById('closeModal');
+
+    if (filterButton) {
+        filterButton.addEventListener('click', () => {
+            filterModal.classList.add('active');
         });
+    }
 
-        // Filter Modal Logic
-        const filterModal = document.getElementById('filterModal');
-        const filterButton = document.getElementById('filter');
-        const closeModal = document.getElementById('closeModal');
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            filterModal.classList.remove('active');
+        });
+    }
 
-        if (filterButton) {
-            filterButton.addEventListener('click', () => {
-                filterModal.classList.add('active');
-            });
+    window.addEventListener('click', (event) => {
+        if (event.target === filterModal) {
+            filterModal.classList.remove('active');
         }
+    });
+});
 
-        if (closeModal) {
-            closeModal.addEventListener('click', () => {
-                filterModal.classList.remove('active');
-            });
-        }
-
-        window.addEventListener('click', (event) => {
-            if (event.target === filterModal) {
-                filterModal.classList.remove('active');
-            }
-        });
-        
-
-
-        
+// Window resize handler
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 768 && !isNavOpen) {
+        isNavOpen = true;
+        sideNav.style.width = '50%';
+        sideNav.style.opacity = '1';
+        sideNav.style.visibility = 'visible';
+        mainContent.style.marginLeft = '10px';
+        toggleNav.innerHTML = '<i class="fas fa-angle-left"></i>';
+    } else if (window.innerWidth <= 768 && isNavOpen) {
+        isNavOpen = false;
+        sideNav.style.width = '0';
+        sideNav.style.opacity = '0';
+        sideNav.style.visibility = 'hidden';
+        mainContent.style.marginLeft = '10px';
+        toggleNav.innerHTML = '<i class="fas fa-angle-right"></i>';
+    }
+});
     </script>
 </body>
 </html>
