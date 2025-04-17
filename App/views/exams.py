@@ -2,6 +2,7 @@ from flask import Flask, Blueprint, render_template, jsonify, request, flash, se
 from flask_jwt_extended import jwt_required, unset_jwt_cookies, set_access_cookies, create_access_token, JWTManager
 from werkzeug.security import check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
+from App.controllers.question import associate_option, get_all_my_questions, save_question
 from App.views.auth import auth_views
 from datetime import date
 import json
@@ -200,8 +201,47 @@ def edit_exam_route(exam_id):
         return jsonify(result), 404
     return jsonify(result), 200
 
-
-
-
-
+@exams_views.route('/api/create_exam', methods=['POST'])
+@login_required
+def user_api_create_exam():
+    try:
+        teacher = current_user
+        data = request.json
+        if not data or 'title' not in data or 'course_code' not in data:
+            return jsonify({'error':'Missing required data'}), 400
+        title = data['title']
+        course_code = data['course_code']
+        text_1 = data['text_1']
+        text_2 = data['text_2']
+        difficulty_1 = data['difficulty_1']
+        difficulty_2 = data['difficulty_2']
+        body_1 = data['option_1']
+        body_2 = data['option_2']
+        body_3 = data['option_3']
+        body_4 = data['option_4']
+        question_1 =  save_question(teacherId=teacher.id, text=data['text_1'], difficulty=data['difficulty_1'], courseCode=data['course_code'], options=[])
+        if not question_1:
+            return jsonify({'error':'Failed to save question 1'}), 400
+        option_1 = create_option(question_id=question_1.id, body=data['option_1'], image=None, is_correct=False)
+        option_2 = create_option(question_id=question_1.id, body=data['option_2'], image=None, is_correct=False)
+        option_3 = create_option(question_id=question_1.id, body=data['option_3'], image=None, is_correct=True)
+        option_4 = create_option(question_id=question_1.id, body=data['option_4'], image=None, is_correct=False)
+        if not option_1 or not option_2 or not option_3 or not option_4:
+            return jsonify({'error':'Failed to save options'}), 400
+        associate_option(question_1.id, option_1) 
+        associate_option(question_1.id, option_2) 
+        associate_option(question_1.id, option_3) 
+        associate_option(question_1.id, option_4)
+        question_2 = save_question(teacherId=teacher.id, text=data['text_2'], difficulty=data['difficulty_2'], courseCode=data['course_code'], options=[])
+        if not question_2:
+            return jsonify({'error':'Failed to save question 2'}), 400
+        questions_id = [question_1.id, question_2.id]
+        exam_json = create_exam(title=data['title'], course_code=data['course_code'], questions=[], teacher_id=teacher.id)
+        if add_questions(id=exam_json['id'], question_ids=questions_id) == True:
+            return jsonify ({'message':'Exam created successfully'}), 200
+    except Exception as e:
+        # return jsonify(error="Failed to create exam"),500
+        return jsonify(error=f"Failed to create exam: {str(e)}"), 500
+        
+        
 
