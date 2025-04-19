@@ -23,9 +23,3 @@ def initialize():
     user2 = is_admin(teacher.id)
     if not user2:
         print(f'user is not an admin')
-    #print(user2.type)
-    #print(admin_type)
-    #print(teacher_type)
-    #print(get_teacher_json(teacher.id))
-    #print(get_all_users())
-    #print(get_all_admin())

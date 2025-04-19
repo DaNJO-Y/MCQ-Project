@@ -362,11 +362,6 @@
             </nav>
 
             <main id="mainContent">
-                <!-- <button id="backbutton" class="text-white py-1 px-4 rounded">
-                    <a href="/myQuestions">
-                        Back To My Questions
-                    </a>
-                </button> -->
                 <button id="backbutton" class="text-white py-1 px-4 rounded" onclick="window.history.back()">
                     Back
                 </button>
@@ -375,10 +370,6 @@
                 </h1>
                 <!-- Question Content -->
                 <div id="maindiv">
-                    <!-- <div class="mb-4">
-                        <h2 class="font-semibold">Question Title:</h2>
-                        <p id=questiontitle><u>Nutrition Therapy</u></p>
-                    </div> -->
                     <div class="mb-4 flex">
                         <div id="questiontext" class="w-2/3 pr-2">
                             <h2 class="font-semibold">Question Text</h2>
@@ -406,17 +397,7 @@
                     </div>
 
                     <div class="mb-4 grid grid-cols-2 gap-2">
-                        <!-- <label class="optioncontainer">Albumin level
-                          <input type="radio" checked="checked" name="radio">
-                          <span class="checkmark"></span>
-                        </label>
-                        <p id="option">Lymphocyte count</p>
-                        <p id="option">Serum potassium level</p>
-                        <p id="option">CBC differential</p> -->
                         {% for option in question.options %}
-                            <!-- <label class="optioncontainer">
-                                <p id="option">Option: {{option.body}}</p>
-                            </label> -->
                             {% if option.image == None %}
                             <label class="optioncontainer">
                                 <p id="option">Option: {{option.body}}</p>
@@ -434,20 +415,7 @@
 
 
                             {% endif %}
-                        {% endfor %}
-                        <!--<label class="optioncontainer">Lymphocyte count
-                          <input type="radio" checked="checked" name="radio">
-                          <span class="checkmark"></span>
-                        </label>
-                        <label class="optioncontainer">Serum potassium level
-                          <input type="radio" checked="checked" name="radio">
-                          <span class="checkmark"></span>
-                        </label>
-                        <label class="optioncontainer">CBC differential
-                          <input type="radio" checked="checked" name="radio">
-                          <span class="checkmark"></span>
-                        </label>-->
-                        
+                        {% endfor %}    
                     </div>
                     <div>
                         {% for option in question.options %}
@@ -470,15 +438,12 @@
                                 Edit
                             </a>
                         </button>
-                        <!-- <button id="editbutton" class="text-white py-1 px-4 rounded">Edit</button> -->
                     </div>
                 </div>
             </main>
             <aside id="rightnav" class="w-1/4 border-l pl-4">
                 <div class="mb-4">
                     <h2 class="font-semibold">Tags</h2>
-                    <!-- <p class="taginfo">Metabolism</p>
-                    <p class="taginfo">Nutrition</p> -->
                     {% for tag in question.tag %}
                         <p class="taginfo">{{tag.tag_text}}</p>
                     {% endfor %}
@@ -498,12 +463,6 @@
                     {%else%}
                         <h1>Not Used Recently</h1>
                     {%endif%}
-                    
-                    <!-- <ul>
-                        <li>Nutrition Therapy Exam 1 - January 15, 2024</li>
-                        <li>Metabolism Quiz 2 - February 10, 2024</li>
-                        <li>NUTR 1600 Final Exam - March 5, 2024</li>
-                    </ul> -->
                     <br>
                     <h2 class="font-semibold">Stats:</h2>
                 </div>
