@@ -6,7 +6,7 @@ index_views = Blueprint('index_views', __name__, template_folder='../templates')
 @index_views.route('/', methods=['GET'])
 def index_page():
     # initialized will be commented off when in production to prevent loss of data
-    initialize()
+    # initialize()
     return render_template('login.html')
 
 @index_views.route('/init', methods=['GET'])
