@@ -49,6 +49,11 @@ def get_exams(user, page=1, per_page=10):
     
     return {"message": "No exams found"}, 404
 
+def get_exam_and_return_exam(exam_id):
+    exam = Exam.query.get(exam_id)
+    if not exam:
+        return None
+    return exam
 
 def get_exam_by_id(exam_id):
     exam = Exam.query.get(exam_id)  # Fix: Corrected typo from `quesy` to `query`

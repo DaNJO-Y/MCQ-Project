@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, unset_jwt_cookies, set_access_cooki
 from werkzeug.security import check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 from App.controllers.question import associate_option, get_all_my_questions, save_question
+from App.controllers.teacher import myExams
 from App.views.auth import auth_views
 from datetime import date
 import json
@@ -209,16 +210,16 @@ def user_api_create_exam():
         data = request.json
         if not data or 'title' not in data or 'course_code' not in data:
             return jsonify({'error':'Missing required data'}), 400
-        title = data['title']
-        course_code = data['course_code']
-        text_1 = data['text_1']
-        text_2 = data['text_2']
-        difficulty_1 = data['difficulty_1']
-        difficulty_2 = data['difficulty_2']
-        body_1 = data['option_1']
-        body_2 = data['option_2']
-        body_3 = data['option_3']
-        body_4 = data['option_4']
+        # title = data['title']
+        # course_code = data['course_code']
+        # text_1 = data['text_1']
+        # text_2 = data['text_2']
+        # difficulty_1 = data['difficulty_1']
+        # difficulty_2 = data['difficulty_2']
+        # body_1 = data['option_1']
+        # body_2 = data['option_2']
+        # body_3 = data['option_3']
+        # body_4 = data['option_4']
         question_1 =  save_question(teacherId=teacher.id, text=data['text_1'], difficulty=data['difficulty_1'], courseCode=data['course_code'], options=[])
         if not question_1:
             return jsonify({'error':'Failed to save question 1'}), 400
@@ -242,6 +243,126 @@ def user_api_create_exam():
     except Exception as e:
         # return jsonify(error="Failed to create exam"),500
         return jsonify(error=f"Failed to create exam: {str(e)}"), 500
+    
+@exams_views.route('/api/update_exam_details/<int:exam_id>', methods=['PUT'])
+@login_required
+def user_api_update_exam_details(exam_id):
+    try:
+        teacher = current_user
+        data = request.json
+        if not data or 'title' not in data or 'course_code' not in data:
+            return jsonify({'error':'Missing required data'}), 400
+        if not teacher:
+            return jsonify({'error':'Unauthorized'}), 401
+        exam_id_list = [e.id for e in teacher.my_exams]
+        if exam_id not in exam_id_list:
+            return jsonify({'error':'Invalid Id'}), 401
+        
+        exam = get_exam_and_return_exam(exam_id)
+      
+        response = update_exam(exam_id=exam_id, title=data['title'], course_code=data['course_code'], add_questions=[], remove_questions=[])
+        if "message" in response:
+            return jsonify(response),200
+    except Exception as e:
+    # return jsonify(error="Failed to create exam"),500
+        return jsonify(error=f"Failed to update exam: {str(e)}"), 500
+        
+@exams_views.route('/api/add_question_to_exam/<int:exam_id>', methods=['PUT'])
+@login_required
+def user_api_add_question_to_exam_details(exam_id):
+    try:
+        teacher = current_user
+        data = request.json
+        if not data  or 'course_code' not in data:
+            return jsonify({'error':'Missing required data'}), 400
+        if not teacher:
+            return jsonify({'error':'Unauthorized'}), 401
+        exam_id_list = [e.id for e in teacher.my_exams]
+        if exam_id not in exam_id_list:
+            return jsonify({'error':'Unauthorized'}), 401
+        add_list = []
+        question_1 =  save_question(teacherId=teacher.id, text=data['new_question_text'], difficulty=data['new_question_difficulty'], courseCode=data['course_code'], options=[])
+        if not question_1:
+            return jsonify({'error':'Failed to save question 1'}), 400
+        option_1 = create_option(question_id=question_1.id, body=data['option_1'], image=None, is_correct=False)
+        option_2 = create_option(question_id=question_1.id, body=data['option_2'], image=None, is_correct=False)
+        option_3 = create_option(question_id=question_1.id, body=data['option_3'], image=None, is_correct=True)
+        option_4 = create_option(question_id=question_1.id, body=data['option_4'], image=None, is_correct=False)
+        if not option_1 or not option_2 or not option_3 or not option_4:
+            return jsonify({'error':'Failed to save options'}), 400
+        associate_option(question_1.id, option_1) 
+        associate_option(question_1.id, option_2) 
+        associate_option(question_1.id, option_3) 
+        associate_option(question_1.id, option_4)
+        add_list.append(question_1.id)
+        exam = get_exam_and_return_exam(exam_id)
+        if add_questions(id=exam_id,question_ids=add_list):
+            response = {"message": "Question added successfully", "exam": exam.get_json()}
+            return jsonify(response), 200
+    except Exception as e:
+    # return jsonify(error="Failed to create exam"),500
+        return jsonify(error=f"Failed to add question to  exam: {str(e)}"), 500
+# remove a questio
+#   remove_list = []
+# remove_question = exam.exam_questions[0]
+# remove_list.append(remove_question.id)
+@exams_views.route('/api/remove_question_from_exam/<int:exam_id>', methods=['PUT'])
+@login_required
+def user_api_remove_question_from_exam(exam_id):
+    try:
+        teacher = current_user
+        if not teacher:
+            return jsonify({'error':'Unauthorized'}), 401
+        exam_id_list = [e.id for e in teacher.my_exams]
+        if exam_id not in exam_id_list:
+            return jsonify({'error':'Unauthorized'}), 401
+        exam = get_exam_and_return_exam(exam_id)
+        remove_list = []
+        remove_question = exam.exam_questions[0]
+        remove_list.append(remove_question.id)
+        response = update_exam(exam_id=exam_id,title=None, course_code=None, add_questions=[], remove_questions=remove_list)
+        if "message" in response:
+            updated_exam = get_exam_and_return_exam(exam_id)
+            new_response = {"message": "Question removed successfully", "exam": updated_exam.get_json()}
+            return jsonify(new_response),200
+    except Exception as e:
+    # return jsonify(error="Failed to create exam"),500
+        return jsonify(error=f"Failed to remove question from  exam: {str(e)}"), 500
+    
+
+@exams_views.route('/api/save_exam/<int:exam_id>', methods=['PUT'])
+@login_required
+def user_api_save_exam(exam_id):
+    try:
+        teacher = current_user
+        if not teacher:
+            return jsonify({'error':'Unauthorized'}), 401
+        exam_id_list = [e.id for e in teacher.my_exams]
+        if exam_id not in exam_id_list:
+            return jsonify({'error':'Unauthorized'}), 401
+        response = save_exam(exam_id=exam_id)
+        if "message" in response:
+            return jsonify(response),200
+    except Exception as e:
+        return jsonify(error=f"Failed to save exam: {str(e)}"), 500
+        
+@exams_views.route('/api/get_teacher_exams', methods=['GET'])
+@login_required
+def user_api_get_exams():
+    try:
+        teacher = current_user
+        if not teacher:
+            return jsonify({'error':'Unauthorized'}), 401
+        exams = myExams(id=teacher.id)
+        if not exams:
+            return jsonify({'message':'No exams found'}), 404
+        exams_json = [exam.get_json() for exam in exams]
+        return jsonify(exams_json), 200
+    except Exception as e:
+        return jsonify(error=f"Error: {str(e)}"), 500
+
+    
+    
         
         
 
