@@ -83,7 +83,7 @@ def createQuestion(teacher_id, text, difficulty, courseCode, options):
 def myExams(id):
     teacher = get_teacher(id)
     if teacher:
-        return teacher.exams
+        return teacher.my_exams
     return None
 
 def myQuestions(id):

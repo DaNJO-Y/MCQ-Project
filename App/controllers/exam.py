@@ -26,6 +26,15 @@ def create_exam(title, course_code, questions, teacher_id):
     db.session.commit()
     return new_exam.get_json()  # Return the created exam as JSON
 
+def add_questions(id, question_ids):
+    exam = Exam.query.get(id)
+    if not exam:
+        return None
+    questions = Question.query.filter(Question.id.in_(question_ids)).all()
+    exam.exam_questions.extend(questions)
+    db.session.commit()
+    return True
+
 def get_exams(user, page=1, per_page=10):
     paginated_exams = Exam.query.filter_by(teacher_id=user.id).paginate(page=page, per_page=per_page, error_out=False)
 
@@ -40,6 +49,11 @@ def get_exams(user, page=1, per_page=10):
     
     return {"message": "No exams found"}, 404
 
+def get_exam_and_return_exam(exam_id):
+    exam = Exam.query.get(exam_id)
+    if not exam:
+        return None
+    return exam
 
 def get_exam_by_id(exam_id):
     exam = Exam.query.get(exam_id)  # Fix: Corrected typo from `quesy` to `query`

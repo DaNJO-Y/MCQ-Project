@@ -3,6 +3,8 @@ from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, se
 from werkzeug.security import check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
+
+from App.controllers.question import associate_option, edit_question, get_all_my_questions, get_questions_by_course_code, get_questions_by_difficulty, get_questions_exams, save_question
 from.index import index_views
 from App.models import *
 from collections import Counter
