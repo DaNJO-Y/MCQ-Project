@@ -391,19 +391,7 @@
         var newTagNameInput = document.getElementById("newTagName");
         var selectedTags = [];
 
-        // tagList.addEventListener('click', function(event) {
-        //     if (event.target && event.target.classList.contains('tag-item')) {
-        //         const tagName = event.target.textContent;
-        //         event.target.classList.toggle('selected');
-        //         if (selectedTags.includes(tagName)) {
-        //             selectedTags = selectedTags.filter(tag => tag !== tagName);
-        //         } else {
-        //             selectedTags.push(tagName);
-        //         }
-        //         console.log('Selected Tags:', selectedTags);
-        //         // You would typically update a hidden input or display the selected tags elsewhere
-        //     }
-        // });
+        
             tagList.addEventListener('click', function(event) {
             if (event.target && event.target.classList.contains('tag-item')) {
                 const tagName = event.target.textContent;
